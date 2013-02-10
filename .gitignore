@@ -1,13 +1,12 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
+# Visual studio project files:
+*.sdf
+*.opensdf
+*.vcxproj.user
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+# Windows build folders:
+windows/Debug
+windows/Release
+windows/Samples/Debug
+windows/Samples/Release
+windows/VegaEnginePlusWindows/Debug
+windows/VegaEnginePlusWindows/Release
