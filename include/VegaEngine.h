@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "SDL.h"
-#include "VegaFunctions.h"
+#include "Functions.h"
 
 #define INITAPP(scriptName, moduleObjectName) \
 	int main(int argc, char** argv) \

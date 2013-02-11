@@ -16,5 +16,5 @@ Folder structure explanation:
 - include: C++ header files
 - unit_test: C++ header and source files for unit tests
 - samples: C++ header and source files for samples
-- script: Lua scripts
+- vega_lua: VegaEngine Lua scripts
 - android, ios, windows: projects, libraries and binaries for each platform (main project, unit tests and samples)
