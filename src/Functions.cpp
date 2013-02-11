@@ -18,8 +18,6 @@ void VegaInit()
 		cerr << "Unable to init SDL: " << SDL_GetError() << "." << endl;
 		return;
 	}
-	//freopen("CON", "wt", stdout);
-	//freopen("CON", "wt", stderr);
 	int flags = (false ? SDL_FULLSCREEN : 0) | SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
 	SDL_SetVideoMode(800, 600, 32, flags);
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
@@ -76,6 +74,9 @@ static int VegaCheckInput(lua_State *luaState)
 		switch (evt.type)
 		{
 		case SDL_QUIT:
+			lua_pushstring(luaState, "executing");
+			lua_pushboolean(luaState, 0);
+			lua_settable(luaState, 1); // "context" table arg
 			break;
 		}
 	}

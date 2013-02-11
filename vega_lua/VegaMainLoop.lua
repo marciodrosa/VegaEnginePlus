@@ -17,23 +17,23 @@ end
 
 function VegaMainLoop:update()
 	self:checkmodule()
-	if context.scene then
-		self:refreshviewportsize(context.scene)
-		context.scene:updatecontrollers()
+	if self.context.scene then
+		self:refreshviewportsize(self.context.scene)
+		self.context.scene:updatecontrollers()
 	end
 end
 
 function VegaMainLoop:draw()
-	if context.scene then
-		vegarender(context.scene)
+	if self.context.scene then
+		vegarender(self.context.scene)
 	else
 		vegaclearscreen()
 	end
 end
 
 function VegaMainLoop:sync()
-	if (context.scene) then
-		vegasync(context.scene.fps)
+	if (self.context.scene) then
+		vegasync(self.context.scene.fps)
 	else
 		vegasync(30)
 	end
@@ -41,7 +41,7 @@ end
 
 function VegaMainLoop:executeloop()
 	while self.context.executing do
-		vegacheckinput()
+		vegacheckinput(self.context)
 		self:update()
 		self:draw()
 		self:sync()
@@ -53,8 +53,7 @@ function VegaMainLoop:start(startmodule)
 		module = startmodule,
 		executing = true
 	}
-	--self:executeloop()
-	print "main loop started."
+	self:executeloop()
 end
 
 VegaMainLoop:start()
