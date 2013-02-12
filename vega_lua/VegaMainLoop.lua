@@ -13,7 +13,7 @@ end
 function VegaMainLoop:checkmodule()
 	if currentmodule ~= self.context.module then
 		currentmodule = self.context.module;
-		currentmodule:executemodule()
+		currentmodule:executemodule(self.context)
 	end
 end
 
@@ -51,9 +51,10 @@ function VegaMainLoop:executeloop()
 	end
 end
 
-function VegaMainLoop:start(startmodule)
+function VegaMainLoop:start()
+	-- creates the context and sets the StartModule into it
 	self.context = {
-		module = startmodule,
+		module = StartModule,
 		executing = true
 	}
 	self:executeloop()

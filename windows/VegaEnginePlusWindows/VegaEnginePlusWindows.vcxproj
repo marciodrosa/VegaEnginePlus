@@ -103,6 +103,7 @@
     <ClInclude Include="..\..\include\Functions.h" />
     <ClInclude Include="..\..\include\Lua.h" />
     <ClInclude Include="..\..\include\SDL.h" />
+    <ClInclude Include="..\..\include\VegaDefines.h" />
     <ClInclude Include="..\..\include\VegaEngine.h" />
   </ItemGroup>
   <ItemGroup>

@@ -2,10 +2,11 @@
 #define VEGAENGINE_FUNCTIONS_H
 
 #include "Lua.h"
+#include <string>
 
 void VegaInit();
 void VegaLuaInit();
-void VegaLoop();
+void VegaLoop(std::string startModuleScriptName);
 void VegaFinish();
 
 // Functions called from Lua scripts:

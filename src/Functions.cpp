@@ -50,8 +50,12 @@ void VegaFinish()
 	SDL_Quit();
 }
 
-void VegaLoop()
+void VegaLoop(string startModuleScriptName)
 {
+	if (luaL_loadfile(luaState, startModuleScriptName.c_str()) != 0)
+		OnLuaError(luaState);
+	else if (lua_pcall(luaState, 0, 0, 0) != 0)
+		OnLuaError(luaState);
 	if (luaL_loadfile(luaState, "vega_lua/VegaMainLoop.lua") != 0)
 		OnLuaError(luaState);
 	else if (lua_pcall(luaState, 0, 0, 0) != 0)

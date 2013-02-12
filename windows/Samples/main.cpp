@@ -1,3 +1,3 @@
 #include "../../include/VegaEngine.h"
 
-INITAPP("", "")
+INITAPP("SampleModule.lua")
