@@ -1,4 +1,6 @@
-VegaMainLoop = {}
+VegaMainLoop = {
+	startframetime = 0,
+}
 
 function VegaMainLoop:refreshviewportsize(scene)
 	screensize = vegascreensize()
@@ -33,14 +35,15 @@ end
 
 function VegaMainLoop:sync()
 	if (self.context.scene) then
-		vegasync(self.context.scene.fps)
+		vegasyncend(self.context.scene.fps)
 	else
-		vegasync(30)
+		vegasyncend(30)
 	end
 end
 
 function VegaMainLoop:executeloop()
 	while self.context.executing do
+		vegasyncbegin()
 		vegacheckinput(self.context)
 		self:update()
 		self:draw()

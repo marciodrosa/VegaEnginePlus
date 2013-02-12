@@ -2,9 +2,11 @@
 #include "../include/SDL.h"
 #include "../include/Lua.h"
 #include <iostream>
+#include <ctime>
 using namespace std;
 
 lua_State *luaState;
+time_t startFrameTime;
 
 void OnLuaError(lua_State *luaState)
 {
@@ -32,8 +34,10 @@ void VegaLuaInit()
 	luaL_openlibs(luaState);
 	lua_pushcfunction(luaState, VegaCheckInput);
 	lua_setglobal(luaState, "vegacheckinput");
-	lua_pushcfunction(luaState, VegaSync);
-	lua_setglobal(luaState, "vegasync");
+	lua_pushcfunction(luaState, VegaSyncEnd);
+	lua_setglobal(luaState, "vegasyncend");
+	lua_pushcfunction(luaState, VegaSyncBegin);
+	lua_setglobal(luaState, "vegasyncbegin");
 	lua_pushcfunction(luaState, VegaRender);
 	lua_setglobal(luaState, "vegarender");
 	lua_pushcfunction(luaState, VegaClearScreen);
@@ -52,19 +56,11 @@ void VegaLoop()
 		OnLuaError(luaState);
 	else if (lua_pcall(luaState, 0, 0, 0) != 0)
 		OnLuaError(luaState);
-	/*
-	else
-	{
-		lua_getglobal(luaState, "VegaMainLoop");
-		lua_getfield(luaState, -1, "start");
-		if (lua_pcall(luaState, 0, 0, 0) != 0)
-			OnLuaError(luaState);
-	}
-	*/
 }
 
 /**
 Called by the main loop Lua script. Answer to the input events of the application.
+On lua, call vegacheckinput(context).
 */
 static int VegaCheckInput(lua_State *luaState)
 {
@@ -84,10 +80,25 @@ static int VegaCheckInput(lua_State *luaState)
 }
 
 /**
-Called by the main loop Lua script. Sync to the expected frames per second.
+Called by the main loop Lua script, before update the frame.
 */
-static int VegaSync(lua_State *luaState)
+static int VegaSyncBegin(lua_State *luaState)
 {
+	startFrameTime = time(NULL);
+	return 0;
+}
+
+/**
+Called by the main loop Lua script, after update the frame. Sync to the expected frames per second.
+On lua, call vegasyncend(framespersecond).
+*/
+static int VegaSyncEnd(lua_State *luaState)
+{
+	lua_Number fps = luaL_checknumber(luaState, 1);
+	time_t synchTime = 1000 / fps;
+	long waitTime = synchTime - (time(NULL) - startFrameTime);
+	if (waitTime > 0)
+		SDL_Delay(waitTime);
 	return 0;
 }
 
