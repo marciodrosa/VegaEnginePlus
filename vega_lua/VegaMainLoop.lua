@@ -10,15 +10,16 @@ function VegaMainLoop:refreshviewportsize(scene)
 	end
 end
 
-function VegaMainLoop:checkmodule()
-	if currentmodule ~= self.context.module then
-		currentmodule = self.context.module;
-		currentmodule:executemodule(self.context)
+function VegaMainLoop:checkcomponent()
+	if currentcomponent ~= self.context.component then
+		currentcomponent = self.context.component;
+		currentcomponent:load(self.context)
+		currentcomponent:exec(self.context)
 	end
 end
 
 function VegaMainLoop:update()
-	self:checkmodule()
+	self:checkcomponent()
 	if self.context.scene then
 		self:refreshviewportsize(self.context.scene)
 		self.context.scene:updatecontrollers()
@@ -52,9 +53,9 @@ function VegaMainLoop:executeloop()
 end
 
 function VegaMainLoop:start()
-	-- creates the context and sets the StartModule into it
+	-- creates the context and sets the StartComponent into it
 	self.context = {
-		module = StartModule,
+		component = StartComponent,
 		executing = true
 	}
 	self:executeloop()

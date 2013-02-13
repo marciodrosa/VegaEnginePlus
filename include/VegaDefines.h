@@ -5,11 +5,11 @@
 #include "SDL.h"
 #include "Functions.h"
 
-#define INITAPP(startModuleScriptName) \
+#define INITAPP(startComponentScriptName) \
 	int main(int argc, char** argv) \
 	{ \
 		VegaInit(); \
-		VegaLoop(startModuleScriptName); \
+		VegaLoop(startComponentScriptName); \
 		VegaFinish(); \
 		return 0; \
 	}

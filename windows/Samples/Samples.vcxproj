@@ -61,7 +61,7 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>mkdir $(OutDir)\vega_lua &amp; xcopy /y $(SolutionDir)\..\vega_lua\*.lua $(OutDir)\vega_lua &amp; xcopy /y $(ProjectDir)SampleModule.lua $(OutDir)</Command>
+      <Command>mkdir $(OutDir)\vega_lua &amp; xcopy /y $(SolutionDir)\..\vega_lua\*.lua $(OutDir)\vega_lua &amp; xcopy /y $(ProjectDir)SampleComponent.lua $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,7 +84,7 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>mkdir $(OutDir)\vega_lua &amp; xcopy /y $(SolutionDir)\..\vega_lua\*.lua $(OutDir)\vega_lua &amp; xcopy /y $(ProjectDir)SampleModule.lua $(OutDir)</Command>
+      <Command>mkdir $(OutDir)\vega_lua &amp; xcopy /y $(SolutionDir)\..\vega_lua\*.lua $(OutDir)\vega_lua &amp; xcopy /y $(ProjectDir)SampleComponent.lua $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
