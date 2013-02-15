@@ -1,0 +1,2 @@
+lua vegasuite.lua
+pause
