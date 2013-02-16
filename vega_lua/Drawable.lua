@@ -93,22 +93,18 @@ end
 -- object is already a child of this Drawable. If the Drawable is child of another Drawable,
 -- it is first removed from the current parent.
 -- @param child the Drawable to add.
-function _Drawable:addchild(child)
-	self:insertchildat(child, #self.children)
-end
-
---- Same of addchild, but the child can be added at any index of the children list.
--- @param child the Drawable to add.
--- @param index the index. If less than 1, then the child is added in the index 1. If greater than
--- list size, then the child is added in the end of the list.
-function _Drawable:insertchildat(child, index)
-	if type(child) ~= "table" then error "The child argument of insertchildat function must be a table." end
-	if type(index) ~= "number" then error "The index argument of insertchildat function must be a number." end
+-- @param the index. If not defined, the child is appended to the end of the children list.
+-- If less than 1, then the child is added in the index 1. If greater than list size, then
+-- the child is added in the end of the list.
+function _Drawable:addchild(child, index)
+	if (index == nil) then index = #self.children + 1 end
+	if type(child) ~= "table" then error "The child argument of addchild function must be a table." end
+	if type(index) ~= "number" then error "The index argument of addchild function must be a number." end
 	if index < 1 then index = 1 end
 	if index > #self.children + 1 then index = #self.children + 1 end
 	if child.parent ~= self then
 		if (child.parent) then child.parent:removechild(child) end
-		self.children[index] = child
+		table.insert(self.children, index, child)
 		child.parent = self
 	end
 end
@@ -117,9 +113,10 @@ end
 -- @param child the child to be removed.
 function _Drawable:removechild(child)
 	if child and child.parent == self then
-		for i, k in pairs(self.children) do
-			if (self.children[k] == child) then
-				table.remove(self.children, k)
+		for i, v in ipairs(self.children) do
+			if (v == child) then
+				table.remove(self.children, i)
+				child.parent = nil
 				break
 			end
 		end
@@ -129,10 +126,10 @@ end
 --- First, it removes all current children of this Drawable. Then, it adds the new children.
 -- @param children the children list to be added to this Drawable.
 function _Drawable:setchildren(children)
-	for i, v in ipairs(self.children) do
-		self:removechild(v)
+	while (#self.children > 0) do
+		self:removechild(self.children[#self.children])
 	end
-	for i, v in ipairs(children) do
+	for k, v in pairs(children) do
 		self:addchild(v)
 	end
 end
