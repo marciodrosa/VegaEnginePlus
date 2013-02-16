@@ -6,7 +6,7 @@ VegaEnginePlus
 -------------------------------
 
 The gols of the project:
-- be a 2D game engine, initially based on VegaEngine (XNA project available here: https://github.com/marciodrosa/VegaEngine.git)
+- be a 2D game engine, initially based on VegaEngine for XNA (XNA project available here: https://github.com/marciodrosa/VegaEngine.git)
 - use the Lua script for many of the features, using C++ as root platform.
 - compatibility with Windows Phone, Windows 8, iOS and Android.
 
@@ -14,7 +14,7 @@ Folder structure explanation:
 
 - src: C++ source files
 - include: C++ header files
-- unit_test: C++ header and source files for unit tests
+- unit_test: unit tests for the Lua scripts
 - samples: C++ header and source files for samples
 - vega_lua: VegaEngine Lua scripts
 - android, ios, windows: projects, libraries and binaries for each platform (main project, unit tests and samples)
