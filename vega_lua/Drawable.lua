@@ -18,6 +18,7 @@ require "Vector2"
 -- @field isrelativeoriginy set to true to make the y coordinate of the origin relative to the size of the Drawable.
 -- @field children the children list. Please do not modify this list. Use the addchild, insertchild, setchildren or removechild functions instead.
 -- @field parent the parent Drawable. It is nil until this Drawable is added to another Drawable with the addchild function.
+-- @field background the background Drawable. To set, use the setbackground function, so the drawable is also added as child.
 Drawable = {}
 local _Drawable = {}
 
@@ -139,6 +140,16 @@ function _Drawable:removefromparent()
 	if self.parent then self.parent:removechild(self) end
 end
 
+
+--- Sets a child with one special feature: it is drawn before this drawable itself.
+-- This function also added the background to the children list with the addchild
+-- function. If this function is called again with another background the old background
+-- is not removed from the children, so it must be done manually.
+function _Drawable:setbackground(bg)
+	self.background = bg
+	if bg ~= nil then self:addchild(bg) end
+end
+
 --- Creates a new instance of a drawable table.
 -- @param o the new table, can be nil.
 function Drawable.new(o)
@@ -170,7 +181,8 @@ function Drawable.new(o)
 		insertchildat = _Drawable.insertchildat,
 		removechild = _Drawable.removechild,
 		setchildren = _Drawable.setchildren,
-		removefromparent = _Drawable.removefromparent
+		removefromparent = _Drawable.removefromparent,
+		setbackground = _Drawable.setbackground
 	}
 	local metatable = {
 		__index = defaultdata

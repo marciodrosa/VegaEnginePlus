@@ -26,6 +26,8 @@ function test_drawable_fields()
 	assert_equal(false, drawable.isrelativeoriginy, "isrelativeoriginy is not the expected.")
 	assert_table(drawable.children, "children should be a table.")
 	assert_equal(0, #drawable.children, "children size is not the expected.")
+	assert_nil(drawable.parent, "parent should be nil.")
+	assert_nil(drawable.background, "background should be nil.")
 end
 
 function test_create_new_drawable_with_an_existing_object()
@@ -404,11 +406,15 @@ function test_should_remove_from_old_parents_when_set_children_list()
 	assert_nil(oldchild2.parent, "The second old child should not have a parent anymore.")
 end
 
-
-
-
-
-
-
-
-
+function test_should_set_background()
+	-- given:
+	local background = Drawable.new()
+	
+	-- when:
+	drawable:setbackground(background)
+	
+	-- then:
+	assert_equal(background, drawable.background, "The background is not the expected.")
+	assert_equal(1, #drawable.children, "Should have 1 child, because the background should be added as child.")
+	assert_equal(background, drawable.children[1], "The child should be the background.")
+end
