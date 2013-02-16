@@ -18,33 +18,16 @@ require "Vector2"
 -- @field isrelativeoriginy set to true to make the y coordinate of the origin relative to the size of the Drawable.
 -- @field children the children list. Please do not modify this list. Use the addchild, insertchild, setchildren or removechild functions instead.
 -- @field parent the parent Drawable. It is nil until this Drawable is added to another Drawable with the addchild function.
-local DrawablePrototype = {
-	position = Vector2.zero,
-	size = Vector2.one,
-	origin = Vector2.zero,
-	scale = Vector2.one,
-	childrenorigin = Vector2.zero,
-	rotation = 0,
-	visibility = 1,
-	isrelativex = false,
-	isrelativey = false,
-	isrelativewidth = false,
-	isrelativeheigth = false,
-	isrelativeoriginx = false,
-	isrelativeoriginy = false,
-	children = {}
-}
 
 local _Drawable = {}
-_Drawable.__index = DrawablePrototype
 
 --- Returns the position, relative to the parent size.
 -- @return a Vector2 with the relative position.
 function _Drawable:getrelativeposition()
 	local rp = Vector2.new(self.position.x, self.position.y)
 	if (self.parent) then
-		if not isrelativex then rp.x = self.position.x / self.parent:getabsolutesize().x end
-		if not isrelativey then rp.y = self.position.y / self.parent:getabsolutesize().y end
+		if not self.isrelativex then rp.x = self.position.x / self.parent:getabsolutesize().x end
+		if not self.isrelativey then rp.y = self.position.y / self.parent:getabsolutesize().y end
 	end
 	return rp
 end
@@ -54,8 +37,8 @@ end
 function _Drawable:getrelativesize()
 	local rs = Vector2.new(self.size.x, self.size.y)
 	if (self.parent) then
-		if not isrelativewidth then rs.x = self.size.x / self.parent:getabsolutesize().x end
-		if not isrelativeheigth then rs.y = self.size.y / self.parent:getabsolutesize().y end
+		if not self.isrelativewidth then rs.x = self.size.x / self.parent:getabsolutesize().x end
+		if not self.isrelativeheigth then rs.y = self.size.y / self.parent:getabsolutesize().y end
 	end
 	return rs
 end
@@ -64,8 +47,8 @@ end
 -- @return a Vector2 with the relative origin.
 function _Drawable:getrelativeorigin()
 	local ro = Vector2.new(self.origin.x, self.origin.y)
-	if not isrelativeoriginx then ro.x = self.origin.x / self:getabsolutesize().x end
-	if not isrelativeoriginy then ro.y = self.origin.y / self:getabsolutesize().y end
+	if not self.isrelativeoriginx then ro.x = self.origin.x / self:getabsolutesize().x end
+	if not self.isrelativeoriginy then ro.y = self.origin.y / self:getabsolutesize().y end
 	return ro
 end
 
@@ -74,8 +57,8 @@ end
 function _Drawable:getabsoluteposition()
 	local ap = Vector2.new(self.position.x, self.position.y)
 	if (self.parent) then
-		if isrelativex then ap.x = self.position.x * self.parent:getabsolutesize().x end
-		if isrelativey then ap.y = self.position.y * self.parent:getabsolutesize().y end
+		if self.isrelativex then ap.x = self.position.x * self.parent:getabsolutesize().x end
+		if self.isrelativey then ap.y = self.position.y * self.parent:getabsolutesize().y end
 	end
 	return ap
 end
@@ -85,8 +68,8 @@ end
 function _Drawable:getabsolutesize()
 	local as = Vector2.new(self.size.x, self.size.y)
 	if (self.parent) then
-		if isrelativewidth then as.x = self.size.x * self.parent:getabsolutesize().x end
-		if isrelativeheigth then as.y = self.size.y * self.parent:getabsolutesize().y end
+		if self.isrelativewidth then as.x = self.size.x * self.parent:getabsolutesize().x end
+		if self.isrelativeheigth then as.y = self.size.y * self.parent:getabsolutesize().y end
 	end
 	return as
 end
@@ -95,8 +78,8 @@ end
 -- @return a Vector2 with the absolute origin.
 function _Drawable:getabsoluteorigin()
 	local ao = Vector2.new(self.origin.x, self.origin.y)
-	if isrelativeoriginx then ao.x = self.origin.x * self:getabsolutesize().x end
-	if isrelativeoriginy then ao.y = self.origin.y * self:getabsolutesize().y end
+	if self.isrelativeoriginx then ao.x = self.origin.x * self:getabsolutesize().x end
+	if self.isrelativeoriginy then ao.y = self.origin.y * self:getabsolutesize().y end
 	return ao
 end
 
@@ -111,7 +94,7 @@ end
 -- it is first removed from the current parent.
 -- @param child the Drawable to add.
 function _Drawable:addchild(child)
-	self:insertchildat(child, #children)
+	self:insertchildat(child, #self.children)
 end
 
 --- Same of addchild, but the child can be added at any index of the children list.
@@ -164,7 +147,39 @@ Drawable = {
 	-- @param o the new table, can be nil.
 	new = function(o)
 		o = o or {}
-		setmetatable(o, _Drawable)
+		local defaultdata = {
+			position = Vector2.zero,
+			size = Vector2.one,
+			origin = Vector2.zero,
+			scale = Vector2.one,
+			childrenorigin = Vector2.zero,
+			rotation = 0,
+			visibility = 1,
+			isrelativex = false,
+			isrelativey = false,
+			isrelativewidth = false,
+			isrelativeheigth = false,
+			isrelativeoriginx = false,
+			isrelativeoriginy = false,
+			children = {},
+			getrelativeposition = _Drawable.getrelativeposition,
+			getrelativesize = _Drawable.getrelativesize,
+			getrelativeorigin = _Drawable.getrelativeorigin,
+			getabsoluteposition = _Drawable.getabsoluteposition,
+			getabsolutesize = _Drawable.getabsolutesize,
+			getabsoluteorigin = _Drawable.getabsoluteorigin,
+			getmatrix = _Drawable.getmatrix,
+			getglobalmatrix = _Drawable.getglobalmatrix,
+			addchild = _Drawable.addchild,
+			insertchildat = _Drawable.insertchildat,
+			removechild = _Drawable.removechild,
+			setchildren = _Drawable.setchildren,
+			removefromparent = _Drawable.removefromparent
+		}
+		local metatable = {
+			__index = defaultdata
+		}
+		setmetatable(o, metatable)
 		return o;
 	end
 }
