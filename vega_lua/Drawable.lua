@@ -154,7 +154,7 @@ end
 -- @param o the new table, can be nil.
 function Drawable.new(o)
 	o = o or {}
-		local defaultdata = {
+	local defaultdata = {
 		position = Vector2.zero,
 		size = Vector2.one,
 		origin = Vector2.zero,
