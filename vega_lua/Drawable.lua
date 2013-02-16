@@ -18,7 +18,7 @@ require "Vector2"
 -- @field isrelativeoriginy set to true to make the y coordinate of the origin relative to the size of the Drawable.
 -- @field children the children list. Please do not modify this list. Use the addchild, insertchild, setchildren or removechild functions instead.
 -- @field parent the parent Drawable. It is nil until this Drawable is added to another Drawable with the addchild function.
-
+Drawable = {}
 local _Drawable = {}
 
 --- Returns the position, relative to the parent size.
@@ -139,44 +139,42 @@ function _Drawable:removefromparent()
 	if self.parent then self.parent:removechild(self) end
 end
 
-Drawable = {
-	--- Creates a new instance of a drawable table.
-	-- @param o the new table, can be nil.
-	new = function(o)
-		o = o or {}
+--- Creates a new instance of a drawable table.
+-- @param o the new table, can be nil.
+function Drawable.new(o)
+	o = o or {}
 		local defaultdata = {
-			position = Vector2.zero,
-			size = Vector2.one,
-			origin = Vector2.zero,
-			scale = Vector2.one,
-			childrenorigin = Vector2.zero,
-			rotation = 0,
-			visibility = 1,
-			isrelativex = false,
-			isrelativey = false,
-			isrelativewidth = false,
-			isrelativeheigth = false,
-			isrelativeoriginx = false,
-			isrelativeoriginy = false,
-			children = {},
-			getrelativeposition = _Drawable.getrelativeposition,
-			getrelativesize = _Drawable.getrelativesize,
-			getrelativeorigin = _Drawable.getrelativeorigin,
-			getabsoluteposition = _Drawable.getabsoluteposition,
-			getabsolutesize = _Drawable.getabsolutesize,
-			getabsoluteorigin = _Drawable.getabsoluteorigin,
-			getmatrix = _Drawable.getmatrix,
-			getglobalmatrix = _Drawable.getglobalmatrix,
-			addchild = _Drawable.addchild,
-			insertchildat = _Drawable.insertchildat,
-			removechild = _Drawable.removechild,
-			setchildren = _Drawable.setchildren,
-			removefromparent = _Drawable.removefromparent
-		}
-		local metatable = {
-			__index = defaultdata
-		}
-		setmetatable(o, metatable)
-		return o;
-	end
-}
+		position = Vector2.zero,
+		size = Vector2.one,
+		origin = Vector2.zero,
+		scale = Vector2.one,
+		childrenorigin = Vector2.zero,
+		rotation = 0,
+		visibility = 1,
+		isrelativex = false,
+		isrelativey = false,
+		isrelativewidth = false,
+		isrelativeheigth = false,
+		isrelativeoriginx = false,
+		isrelativeoriginy = false,
+		children = {},
+		getrelativeposition = _Drawable.getrelativeposition,
+		getrelativesize = _Drawable.getrelativesize,
+		getrelativeorigin = _Drawable.getrelativeorigin,
+		getabsoluteposition = _Drawable.getabsoluteposition,
+		getabsolutesize = _Drawable.getabsolutesize,
+		getabsoluteorigin = _Drawable.getabsoluteorigin,
+		getmatrix = _Drawable.getmatrix,
+		getglobalmatrix = _Drawable.getglobalmatrix,
+		addchild = _Drawable.addchild,
+		insertchildat = _Drawable.insertchildat,
+		removechild = _Drawable.removechild,
+		setchildren = _Drawable.setchildren,
+		removefromparent = _Drawable.removefromparent
+	}
+	local metatable = {
+		__index = defaultdata
+	}
+	setmetatable(o, metatable)
+	return o;
+end

@@ -1,3 +1,10 @@
+--- A table with x and y coordinates.
+-- @field x the x coordinate.
+-- @field y the y coordinate.
+-- @field zero a Vector2 object with coordinates (0, 0).
+-- @field one a Vector2 object with coordinates (1, 1).
+Vector2 = {}
+
 local Vector2MT = {
 	__eq = function(a, b)
 		return a.x == b.x and a.y == b.y
@@ -7,8 +14,9 @@ local Vector2MT = {
 	end
 }
 
-Vector2 = {}
-
+--- Creates a new Vector2.
+-- @param xvalue the x coordinate
+-- @param yvalue the y coordinate
 function Vector2.new(xvalue, yvalue)
 	local v2 = {
 		x = xvalue or 0,
