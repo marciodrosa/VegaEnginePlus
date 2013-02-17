@@ -10,7 +10,7 @@ local ColorMT = {
 		return a.r == b.r and a.g == b.g and a.b == b.b and a.a == b.a
 	end,
 	__tostring = function(c)
-		return "Color(r:"..c.r.." g:"..c.g.." b: "..c.b.." a: "..c.a..")"
+		return "Color(r:"..c.r.." g:"..c.g.." b:"..c.b.." a:"..c.a..")"
 	end
 }
 

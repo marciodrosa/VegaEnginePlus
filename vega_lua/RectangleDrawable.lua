@@ -7,20 +7,8 @@ RectangleDrawable = {}
 local _RectangleDrawable = {}
 
 --- Creates a new instance of a rectangle drawable table.
--- @param o the new table, can be nil.
-function RectangleDrawable.new(o)
-	o = o or {}
-	local defaultdata = Drawable.new {
-		color = Color.new()
-		--[[texture = {},
-		lefttopuv = Vector2.zero,
-		rightbottomuv = Vector2.one,
-		texturemodeu = "clamp",
-		texturemodev = "clamp",]]
-	}
-	local metatable = {
-		__index = defaultdata
-	}
-	setmetatable(o, metatable)
-	return o;
+function RectangleDrawable.new()
+	local drawable = Drawable.new()
+	drawable.color = Color.new()
+	return drawable
 end

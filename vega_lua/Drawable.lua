@@ -151,10 +151,8 @@ function _Drawable:setbackground(bg)
 end
 
 --- Creates a new instance of a drawable table.
--- @param o the new table, can be nil.
-function Drawable.new(o)
-	o = o or {}
-	local defaultdata = {
+function Drawable.new()
+	return {
 		position = Vector2.zero,
 		size = Vector2.one,
 		origin = Vector2.zero,
@@ -184,9 +182,4 @@ function Drawable.new(o)
 		removefromparent = _Drawable.removefromparent,
 		setbackground = _Drawable.setbackground
 	}
-	local metatable = {
-		__index = defaultdata
-	}
-	setmetatable(o, metatable)
-	return o;
 end

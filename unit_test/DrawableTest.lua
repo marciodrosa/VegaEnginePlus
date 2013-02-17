@@ -1,16 +1,14 @@
+local DrawableTest = {}
 local drawable = {}
 local parent = {}
 
-function suite_setup()
-end
-
-function setup()
+function DrawableTest.setup()
 	drawable = Drawable.new()
 	parent = Drawable.new()
 	assert_table(drawable, "Should create a table for the drawable.")
 end
 
-function test_drawable_fields()
+function DrawableTest.test_drawable_fields()
 	assert_equal(Vector2.zero, drawable.position, "position is not the expected.")
 	assert_equal(Vector2.one, drawable.size, "size is not the expected.")
 	assert_equal(Vector2.zero, drawable.origin, "origin is not the expected.")
@@ -30,19 +28,7 @@ function test_drawable_fields()
 	assert_nil(drawable.background, "background should be nil.")
 end
 
-function test_create_new_drawable_with_an_existing_object()
-	-- when:
-	local newdrawable = Drawable.new { position = Vector2.new(10, 20), visibility = 0.5 }
-	
-	-- then:
-	assert_table(newdrawable, "Should create a table for the drawable.")
-	assert_equal(10, newdrawable.position.x, "The position.x is not the expected.")
-	assert_equal(20, newdrawable.position.y, "The position.y is not the expected.")
-	assert_equal(0.5, newdrawable.visibility, "The visibility is not the expected.")
-	assert_equal(Vector2.one, newdrawable.scale, "The scale is not the expected (should be the default Drawable value).")
-end
-
-function test_should_return_position_relative_to_parent_size()
+function DrawableTest.test_should_return_position_relative_to_parent_size()
 	-- given:
 	parent:addchild(drawable)
 	parent.size = Vector2.new(50, 200)
@@ -55,7 +41,7 @@ function test_should_return_position_relative_to_parent_size()
 	assert_equal(Vector2.new(0.1, 0.5), relativeposition, "The relative position is not the expected.")
 end
 
-function test_should_relative_position_be_equal_to_position_when_there_is_no_parent()
+function DrawableTest.test_should_relative_position_be_equal_to_position_when_there_is_no_parent()
 	-- given:
 	drawable.position = Vector2.new(5, 100)
 	
@@ -66,7 +52,7 @@ function test_should_relative_position_be_equal_to_position_when_there_is_no_par
 	assert_equal(Vector2.new(5, 100), relativeposition, "The relative position is not the expected.")
 end
 
-function test_should_return_size_relative_to_parent_size()
+function DrawableTest.test_should_return_size_relative_to_parent_size()
 	-- given:
 	parent:addchild(drawable)
 	parent.size = Vector2.new(50, 200)
@@ -79,7 +65,7 @@ function test_should_return_size_relative_to_parent_size()
 	assert_equal(Vector2.new(0.1, 0.5), relativesize, "The relative size is not the expected.")
 end
 
-function test_should_relative_size_be_equal_to_size_when_there_is_no_parent()
+function DrawableTest.test_should_relative_size_be_equal_to_size_when_there_is_no_parent()
 	-- given:
 	drawable.size = Vector2.new(5, 100)
 	
@@ -90,7 +76,7 @@ function test_should_relative_size_be_equal_to_size_when_there_is_no_parent()
 	assert_equal(Vector2.new(5, 100), relativesize, "The relative size is not the expected.")
 end
 
-function test_should_return_origin_relative_to_size()
+function DrawableTest.test_should_return_origin_relative_to_size()
 	-- given:
 	drawable.size = Vector2.new(50, 200)
 	drawable.origin = Vector2.new(5, 100)
@@ -102,7 +88,7 @@ function test_should_return_origin_relative_to_size()
 	assert_equal(Vector2.new(0.1, 0.5), relativeorigin, "The relative origin is not the expected.")
 end
 
-function test_should_calculate_absolute_position_when_x_is_relative()
+function DrawableTest.test_should_calculate_absolute_position_when_x_is_relative()
 	-- given:
 	parent:addchild(drawable)
 	parent.size = Vector2.new(50, 200)
@@ -117,7 +103,7 @@ function test_should_calculate_absolute_position_when_x_is_relative()
 	assert_equal(Vector2.new(5, 0.5), absoluteposition, "The absolute position is not the expected.")
 end
 
-function test_should_calculate_absolute_position_when_y_is_relative()
+function DrawableTest.test_should_calculate_absolute_position_when_y_is_relative()
 	-- given:
 	parent:addchild(drawable)
 	parent.size = Vector2.new(50, 200)
@@ -132,7 +118,7 @@ function test_should_calculate_absolute_position_when_y_is_relative()
 	assert_equal(Vector2.new(0.1, 100), absoluteposition, "The absolute position is not the expected.")
 end
 
-function test_should_absolute_position_be_equal_to_position_when_there_is_no_parent()
+function DrawableTest.test_should_absolute_position_be_equal_to_position_when_there_is_no_parent()
 	-- given:
 	drawable.position = Vector2.new(0.1, 0.5)
 	drawable.isrelativex = true
@@ -145,7 +131,7 @@ function test_should_absolute_position_be_equal_to_position_when_there_is_no_par
 	assert_equal(Vector2.new(0.1, 0.5), absoluteposition, "The absolute position is not the expected.")
 end
 
-function test_should_calculate_absolute_size_when_width_is_relative()
+function DrawableTest.test_should_calculate_absolute_size_when_width_is_relative()
 	-- given:
 	parent:addchild(drawable)
 	parent.size = Vector2.new(50, 200)
@@ -160,7 +146,7 @@ function test_should_calculate_absolute_size_when_width_is_relative()
 	assert_equal(Vector2.new(5, 0.5), absolutesize, "The absolute size is not the expected.")
 end
 
-function test_should_calculate_absolute_size_when_heigth_is_relative()
+function DrawableTest.test_should_calculate_absolute_size_when_heigth_is_relative()
 	-- given:
 	parent:addchild(drawable)
 	parent.size = Vector2.new(50, 200)
@@ -175,7 +161,7 @@ function test_should_calculate_absolute_size_when_heigth_is_relative()
 	assert_equal(Vector2.new(0.1, 100), absolutesize, "The absolute size is not the expected.")
 end
 
-function test_should_absolute_size_be_equal_to_size_when_there_is_no_parent()
+function DrawableTest.test_should_absolute_size_be_equal_to_size_when_there_is_no_parent()
 	-- given:
 	drawable.size = Vector2.new(0.1, 0.5)
 	drawable.isrelativewidth = true
@@ -188,7 +174,7 @@ function test_should_absolute_size_be_equal_to_size_when_there_is_no_parent()
 	assert_equal(Vector2.new(0.1, 0.5), absolutesize, "The absolute size is not the expected.")
 end
 
-function test_should_calculate_absolute_origin_when_originx_is_relative()
+function DrawableTest.test_should_calculate_absolute_origin_when_originx_is_relative()
 	-- given:
 	drawable.size = Vector2.new(50, 100)
 	drawable.origin = Vector2.new(0.1, 0.5)
@@ -202,7 +188,7 @@ function test_should_calculate_absolute_origin_when_originx_is_relative()
 	assert_equal(Vector2.new(5, 0.5), absoluteorigin, "The absolute origin is not the expected.")
 end
 
-function test_should_calculate_absolute_origin_when_originy_is_relative()
+function DrawableTest.test_should_calculate_absolute_origin_when_originy_is_relative()
 	-- given:
 	drawable.size = Vector2.new(50, 100)
 	drawable.origin = Vector2.new(0.1, 0.5)
@@ -216,7 +202,7 @@ function test_should_calculate_absolute_origin_when_originy_is_relative()
 	assert_equal(Vector2.new(0.1, 50), absoluteorigin, "The absolute origin is not the expected.")
 end
 
-function test_should_add_child()
+function DrawableTest.test_should_add_child()
 	-- given:
 	local child1 = Drawable.new()
 	local child2 = Drawable.new()
@@ -237,7 +223,7 @@ function test_should_add_child()
 	assert_equal(drawable, child3.parent, "Should set the drawable as parent of the third child.")
 end
 
-function test_should_add_child_at_index()
+function DrawableTest.test_should_add_child_at_index()
 	-- given:
 	local child1 = Drawable.new()
 	local child2 = Drawable.new()
@@ -255,7 +241,7 @@ function test_should_add_child_at_index()
 	assert_equal(child2, drawable.children[3], "The third child is not the expected.")
 end
 
-function test_should_not_add_child_if_it_is_already_a_child_of_the_drawable()
+function DrawableTest.test_should_not_add_child_if_it_is_already_a_child_of_the_drawable()
 	-- given:
 	local child = Drawable.new()
 	drawable:addchild(child)
@@ -268,7 +254,7 @@ function test_should_not_add_child_if_it_is_already_a_child_of_the_drawable()
 	assert_equal(child, drawable.children[1], "The child is not the expected.")
 end
 
-function test_should_add_child_at_end_when_index_is_greater_than_children_count()
+function DrawableTest.test_should_add_child_at_end_when_index_is_greater_than_children_count()
 	-- given:
 	local child1 = Drawable.new()
 	local child2 = Drawable.new()
@@ -286,7 +272,7 @@ function test_should_add_child_at_end_when_index_is_greater_than_children_count(
 	assert_equal(child3, drawable.children[3], "The third child is not the expected.")
 end
 
-function test_should_add_child_at_begin_when_index_is_less_than_zero()
+function DrawableTest.test_should_add_child_at_begin_when_index_is_less_than_zero()
 	-- given:
 	local child1 = Drawable.new()
 	local child2 = Drawable.new()
@@ -304,7 +290,7 @@ function test_should_add_child_at_begin_when_index_is_less_than_zero()
 	assert_equal(child2, drawable.children[3], "The third child is not the expected.")
 end
 
-function test_should_throw_error_when_child_is_not_a_table()
+function DrawableTest.test_should_throw_error_when_child_is_not_a_table()
 	-- when:
 	local status, err = pcall(drawable.addchild, drawable, 1)
 	
@@ -313,7 +299,7 @@ function test_should_throw_error_when_child_is_not_a_table()
 	assert_true(string.match(err, "The child argument of addchild function must be a table."), "Error message is not the expected.")
 end
 
-function test_should_throw_error_when_index_is_not_a_number()
+function DrawableTest.test_should_throw_error_when_index_is_not_a_number()
 	-- when:
 	local status, err = pcall(drawable.addchild, drawable, {}, "str")
 	
@@ -322,7 +308,7 @@ function test_should_throw_error_when_index_is_not_a_number()
 	assert_true(string.match(err, "The index argument of addchild function must be a number."), "Error message is not the expected.")
 end
 
-function test_should_remove_from_old_parent_when_add_child()
+function DrawableTest.test_should_remove_from_old_parent_when_add_child()
 	-- given:
 	local oldparent = Drawable.new()
 	local child = Drawable.new()
@@ -338,7 +324,7 @@ function test_should_remove_from_old_parent_when_add_child()
 	assert_equal(child, drawable.children[1], "The child of the new parent is not the expected.")
 end
 
-function test_should_remove_child()
+function DrawableTest.test_should_remove_child()
 	-- given:
 	local child1 = Drawable.new()
 	local child2 = Drawable.new()
@@ -359,7 +345,7 @@ function test_should_remove_child()
 	assert_equal(child3, drawable.children[2], "The second child is not the expected.")
 end
 
-function test_should_set_children_list()
+function DrawableTest.test_should_set_children_list()
 	-- given:
 	local child1 = Drawable.new()
 	local child2 = Drawable.new()
@@ -379,7 +365,7 @@ function test_should_set_children_list()
 	assert_equal(drawable, child2.parent, "Should set the parent of the third child.")
 end
 
-function test_should_remove_from_old_parents_when_set_children_list()
+function DrawableTest.test_should_remove_from_old_parents_when_set_children_list()
 	-- given:
 	local oldchild1 = Drawable.new()
 	local oldchild2 = Drawable.new()
@@ -406,7 +392,7 @@ function test_should_remove_from_old_parents_when_set_children_list()
 	assert_nil(oldchild2.parent, "The second old child should not have a parent anymore.")
 end
 
-function test_should_set_background()
+function DrawableTest.test_should_set_background()
 	-- given:
 	local background = Drawable.new()
 	
@@ -418,3 +404,5 @@ function test_should_set_background()
 	assert_equal(1, #drawable.children, "Should have 1 child, because the background should be added as child.")
 	assert_equal(background, drawable.children[1], "The child should be the background.")
 end
+
+return DrawableTest
