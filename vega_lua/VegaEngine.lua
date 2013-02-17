@@ -1,4 +1,6 @@
 require "Color"
+require "Context"
 require "Drawable"
 require "RectangleDrawable"
+require "Scene"
 require "Vector2"

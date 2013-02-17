@@ -1,3 +1,5 @@
+require "Context"
+
 VegaMainLoop = {
 	startframetime = 0,
 }
@@ -18,8 +20,16 @@ function VegaMainLoop:checkcomponent()
 	end
 end
 
+function VegaMainLoop:checkscene()
+	if self.context.scene ~= self.context.nextscene then
+		self.context.scene = self.context.nextscene;
+		self.context.nextscene = nil
+	end
+end
+
 function VegaMainLoop:update()
 	self:checkcomponent()
+	self:checkscene()
 	if self.context.scene then
 		self:refreshviewportsize(self.context.scene)
 		self.context.scene:updatecontrollers()
@@ -54,10 +64,7 @@ end
 
 function VegaMainLoop:start()
 	-- creates the context and sets the StartComponent into it
-	self.context = {
-		component = StartComponent,
-		executing = true
-	}
+	self.context = Context.new()
 	self:executeloop()
 end
 
