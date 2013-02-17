@@ -8,5 +8,6 @@ lunatest.suite("ContextTest")
 lunatest.suite("DrawableTest")
 lunatest.suite("RectangleDrawableTest")
 lunatest.suite("Vector2Test")
+lunatest.suite("ViewportTest")
 
 lunatest.run()
