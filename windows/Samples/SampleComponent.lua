@@ -1,3 +1,5 @@
+require "VegaEngine"
+
 StartComponent = {}
 
 function StartComponent:load(context)
@@ -6,4 +8,5 @@ end
 
 function StartComponent:exec(context)
 	print "Component executed."
+	context.nextscene = Scene.new()
 end

@@ -5,11 +5,8 @@ VegaMainLoop = {
 }
 
 function VegaMainLoop:refreshviewportsize(scene)
-	screensize = vegascreensize()
-	sizechanged = screensize.x ~= scene.viewport.screensize.x or screensize.y ~= scene.viewport.screensize.y
-	if sizechanged then
-		scene.viewport:onscreensizechanged(screensize)
-	end
+	local screenwidth, screenheight = vegascreensize()
+	scene.viewport:updatescreensize(screenwidth, screenheight)
 end
 
 function VegaMainLoop:checkcomponent()
@@ -23,7 +20,6 @@ end
 function VegaMainLoop:checkscene()
 	if self.context.scene ~= self.context.nextscene then
 		self.context.scene = self.context.nextscene;
-		self.context.nextscene = nil
 	end
 end
 
@@ -32,7 +28,7 @@ function VegaMainLoop:update()
 	self:checkscene()
 	if self.context.scene then
 		self:refreshviewportsize(self.context.scene)
-		self.context.scene:updatecontrollers()
+		--self.context.scene:updatecontrollers()
 	end
 end
 
@@ -46,7 +42,7 @@ end
 
 function VegaMainLoop:sync()
 	if (self.context.scene) then
-		vegasyncend(self.context.scene.fps)
+		vegasyncend(self.context.scene.framespersecond)
 	else
 		vegasyncend(30)
 	end

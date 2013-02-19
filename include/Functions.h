@@ -15,5 +15,6 @@ static int VegaSyncBegin(lua_State *luaState);
 static int VegaSyncEnd(lua_State *luaState);
 static int VegaRender(lua_State *luaState);
 static int VegaClearScreen(lua_State *luaState);
+static int VegaScreenSize(lua_State *luaState);
 
 #endif

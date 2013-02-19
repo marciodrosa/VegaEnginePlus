@@ -54,7 +54,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;lua51.lib;lua5.1.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;lua51.lib;lua5.1.lib;opengl32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)\Lib</AdditionalLibraryDirectories>
@@ -84,7 +84,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;lua51.lib;lua5.1.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;lua51.lib;lua5.1.lib;opengl32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)\Lib</AdditionalLibraryDirectories>
@@ -102,12 +102,14 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\Functions.h" />
     <ClInclude Include="..\..\include\Lua.h" />
+    <ClInclude Include="..\..\include\SceneRender.h" />
     <ClInclude Include="..\..\include\SDL.h" />
     <ClInclude Include="..\..\include\VegaDefines.h" />
     <ClInclude Include="..\..\include\VegaEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Functions.cpp" />
+    <ClCompile Include="..\..\src\SceneRender.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

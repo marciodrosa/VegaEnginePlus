@@ -4,5 +4,6 @@
 #include <iostream>
 #include "VegaDefines.h"
 #include "Functions.h"
+#include "SceneRender.h"
 
 #endif
