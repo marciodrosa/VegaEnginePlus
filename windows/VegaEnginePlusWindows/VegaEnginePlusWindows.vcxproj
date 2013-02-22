@@ -54,7 +54,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;lua51.lib;lua5.1.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>liblua52.a;SDL.lib;SDLmain.lib;opengl32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)\Lib</AdditionalLibraryDirectories>
@@ -84,7 +84,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;lua51.lib;lua5.1.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>liblua52.a;SDL.lib;SDLmain.lib;opengl32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)\Lib</AdditionalLibraryDirectories>

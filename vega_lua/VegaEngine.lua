@@ -1,3 +1,4 @@
+require "Camera"
 require "Color"
 require "Context"
 require "Drawable"
