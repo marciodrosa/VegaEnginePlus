@@ -91,29 +91,54 @@ void vega::SceneRender::RenderDrawable(lua_State* luaState)
 	lua_pop(luaState, 1);
 	glPushMatrix();
 	ApplyTransform(luaState);
+	RenderBackground(luaState);
 	RenderRectangle(luaState);
 	RenderChildren(luaState);
 	glPopMatrix();
 }
 
 /**
-Renders the drawable. Expected the Drawable table in the top of the stack, where this Drawable is the parent of the children.
+Renders the drawable children. Expected the Drawable table in the top of the stack, where this Drawable is the parent of the children.
 */
 void vega::SceneRender::RenderChildren(lua_State* luaState)
 {
 	glPushMatrix();
 	ApplyTransformForChildren(luaState);
-	lua_getfield(luaState, -1, "children");
+	lua_getfield(luaState, -1, "background");
+	lua_getfield(luaState, -2, "children");
 	lua_len(luaState, -1);
 	int childrenCount = (int) lua_tonumber(luaState, -1);
-	lua_pop(luaState, 1);
+	lua_pop(luaState, 1); // pops the children length
 	for (int i = 1; i <= childrenCount; i++)
 	{
 		lua_rawgeti(luaState, -1, i);
-		RenderDrawable(luaState);
+		if (!lua_rawequal(luaState, -1, -3)) // checks if the current child is the same object of the "background" field
+			RenderDrawable(luaState);
 		lua_pop(luaState, 1);
 	}
+	lua_pop(luaState, 2); // pops "background" and "children"
 	glPopMatrix();
+}
+
+/**
+Renders the drawable background child, if defined. Expected the Drawable table in the top of the stack,
+where this Drawable is the parent of the children.
+*/
+void vega::SceneRender::RenderBackground(lua_State* luaState)
+{
+	lua_getfield(luaState, -1, "background");
+	if (!lua_isnil(luaState, -1))
+	{
+		glPushMatrix();
+		lua_pop(luaState, 1);
+		ApplyTransformForChildren(luaState);
+		lua_getfield(luaState, -1, "background");
+		RenderDrawable(luaState);
+		lua_pop(luaState, 1);
+		glPopMatrix();
+	}
+	else
+		lua_pop(luaState, 1);
 }
 
 /**

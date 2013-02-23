@@ -31,6 +31,7 @@ namespace vega
 		void RenderViewport(lua_State* luaState);
 		void RenderDrawable(lua_State* luaState);
 		void RenderChildren(lua_State* luaState);
+		void RenderBackground(lua_State* luaState);
 		void RenderRectangle(lua_State* luaState);
 		void ApplyTransform(lua_State* luaState);
 		void ApplyTransformForChildren(lua_State* luaState);
