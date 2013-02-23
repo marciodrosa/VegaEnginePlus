@@ -90,7 +90,7 @@ void vega::SceneRender::RenderDrawable(lua_State* luaState)
 	lua_Number rotation = lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
 	glPushMatrix();
-	// todo: apply transform here
+	ApplyTransform(luaState);
 	RenderRectangle(luaState);
 	RenderChildren(luaState);
 	glPopMatrix();
@@ -101,6 +101,8 @@ Renders the drawable. Expected the Drawable table in the top of the stack, where
 */
 void vega::SceneRender::RenderChildren(lua_State* luaState)
 {
+	glPushMatrix();
+	ApplyTransformForChildren(luaState);
 	lua_getfield(luaState, -1, "children");
 	lua_len(luaState, -1);
 	int childrenCount = (int) lua_tonumber(luaState, -1);
@@ -111,6 +113,7 @@ void vega::SceneRender::RenderChildren(lua_State* luaState)
 		RenderDrawable(luaState);
 		lua_pop(luaState, 1);
 	}
+	glPopMatrix();
 }
 
 /**
@@ -124,7 +127,7 @@ void vega::SceneRender::RenderRectangle(lua_State* luaState)
 	{
 		Color color = GetColor(luaState);
 		lua_pop(luaState, 1);
-		Vector2 size = GetVector2FromTableField(luaState, "size");
+		Vector2 size = GetVector2FromTableFunction(luaState, "getabsolutesize");
 		glColor4f(color.r, color.g, color.b, color.a);
 		glBegin(GL_QUADS);
 		glVertex2f(0.f, 0.f);
@@ -135,6 +138,33 @@ void vega::SceneRender::RenderRectangle(lua_State* luaState)
 	}
 	else
 		lua_pop(luaState, 1);
+}
+
+/**
+Apply the transform on current matrix. Expected the Drawable table in the top of the stack.
+*/
+void vega::SceneRender::ApplyTransform(lua_State* luaState)
+{
+	Vector2 origin = GetVector2FromTableFunction(luaState, "getabsoluteorigin");
+	Vector2 position = GetVector2FromTableFunction(luaState, "getabsoluteposition");
+	Vector2 scale = GetVector2FromTableField(luaState, "scale");
+	lua_getfield(luaState, -1, "rotation");
+	GLfloat rotation = lua_tonumber(luaState, -1);
+	lua_pop(luaState, 1);
+
+	glTranslatef(position.x, position.y, 0.f);
+	glRotatef(rotation, 0.f, 0.f, 1.f);
+	glScalef(scale.x, scale.y, 1.f);
+	glTranslatef(-origin.x, -origin.y, 0.f);
+}
+
+/**
+Apply the transform of the children origin on current matrix. Expected the parent Drawable table in the top of the stack.
+*/
+void vega::SceneRender::ApplyTransformForChildren(lua_State* luaState)
+{
+	Vector2 childrenorigin = GetVector2FromTableField(luaState, "childrenorigin");
+	glTranslatef(childrenorigin.x, childrenorigin.y, 0.f);
 }
 
 /**
@@ -198,6 +228,20 @@ Creates a Vector2 struct from the given Lua state. Expected the table owner of t
 Vector2 vega::SceneRender::GetVector2FromTableField(lua_State* luaState, std::string fieldName)
 {
 	lua_getfield(luaState, -1, fieldName.c_str());
+	Vector2 vector2 = GetVector2(luaState);
+	lua_pop(luaState, 1);
+	return vector2;
+}
+
+/**
+Creates a Vector2 struct from the given Lua state. Expected the table owner of the Vector2 in the top of the stack. The only
+arg sent to the function is the "self" table.
+*/
+Vector2 vega::SceneRender::GetVector2FromTableFunction(lua_State* luaState, std::string functionName)
+{
+	lua_getfield(luaState, -1, functionName.c_str());
+	lua_pushvalue(luaState, -2);
+	lua_call(luaState, 1, 1);
 	Vector2 vector2 = GetVector2(luaState);
 	lua_pop(luaState, 1);
 	return vector2;
