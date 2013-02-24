@@ -28,7 +28,7 @@ function VegaMainLoop:update()
 	self:checkscene()
 	if self.context.scene then
 		self:refreshviewportsize(self.context.scene)
-		--self.context.scene:updatecontrollers()
+		self.context.scene:updatecontrollers(self.context)
 	end
 end
 
