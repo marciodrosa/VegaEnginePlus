@@ -54,7 +54,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>liblua52.a;SDL.lib;SDLmain.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>liblua52.a;SDL.lib;SDLmain.lib;opengl32.lib;SDL_image.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)\Lib</AdditionalLibraryDirectories>
@@ -84,7 +84,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>liblua52.a;SDL.lib;SDLmain.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>liblua52.a;SDL.lib;SDLmain.lib;opengl32.lib;SDL_image.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)\Lib</AdditionalLibraryDirectories>
@@ -100,6 +100,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\App.h" />
     <ClInclude Include="..\..\include\Functions.h" />
     <ClInclude Include="..\..\include\Lua.h" />
     <ClInclude Include="..\..\include\SceneRender.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="..\..\include\VegaEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\App.cpp" />
     <ClCompile Include="..\..\src\Functions.cpp" />
     <ClCompile Include="..\..\src\SceneRender.cpp" />
   </ItemGroup>

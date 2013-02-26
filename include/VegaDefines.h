@@ -3,14 +3,13 @@
 
 #include <iostream>
 #include "SDL.h"
-#include "Functions.h"
+#include "App.h"
 
 #define INITAPP(startComponentScriptName) \
 	int main(int argc, char** argv) \
 	{ \
-		VegaInit(); \
-		VegaLoop(startComponentScriptName); \
-		VegaFinish(); \
+		vega::App app; \
+		app.ExecuteMainLoop(startComponentScriptName); \
 		return 0; \
 	}
 
