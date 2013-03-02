@@ -31,7 +31,9 @@ function StartComponent:exec(context)
 	
 	local texturedrectangle = vega.Drawable.new()
 	texturedrectangle.texture = context.contentmanager:gettexture("vegatexture.png")
-	texturedrectangle.bottomrightuv = vega.Vector2.new(0.9, 0.5)
+	texturedrectangle.bottomrightuv = vega.Vector2.new(3, 3)
+	texturedrectangle.texturemodeu = "repeat"
+	texturedrectangle.texturemodev = "repeat"
 	texturedrectangle.size = vega.Vector2.new(0.4, 0.4)
 	texturedrectangle.origin = vega.Vector2.new(0.5, 0.5)
 	texturedrectangle.position = vega.Vector2.new(0.5, 0.5)

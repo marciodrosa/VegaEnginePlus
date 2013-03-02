@@ -162,8 +162,12 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState)
 		Vector2 bottomRightUV = { 1.f, 1.f };
 		ReadVector2FromTableField(luaState, "topleftuv", topLeftUV);
 		ReadVector2FromTableField(luaState, "bottomrightuv", bottomRightUV);
+		
 		glBindTexture(GL_TEXTURE_2D, textureId);
+		SetUpTextureMode(luaState);
+		
 		glColor4f(color.r, color.g, color.b, color.a);
+		
 		glBegin(GL_QUADS);
 		// left bottom:
 		glTexCoord2f(topLeftUV.x, bottomRightUV.y);
@@ -225,6 +229,15 @@ void SceneRender::SetUpView(lua_State* luaState)
 	glLoadIdentity();
 	glOrtho(0.0, sceneViewWidth, 0.0, sceneViewHeight, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
+}
+
+/**
+Set up the texture mode of the drawable. Expected a drawable table in the top of the stack.
+*/
+void SceneRender::SetUpTextureMode(lua_State* luaState)
+{
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GetTextureMode(luaState, "texturemodeu"));
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GetTextureMode(luaState, "texturemodev"));
 }
 
 /**
@@ -323,4 +336,22 @@ GLuint SceneRender::GetTextureId(lua_State* luaState)
 	}
 	lua_pop(luaState, 1);
 	return id;
+}
+
+/**
+Returns the OpenGL value to be used to wrap the texture, according the field of the table
+in the top of the stack.
+*/
+GLint SceneRender::GetTextureMode(lua_State* luaState, std::string fieldName)
+{
+	GLint textureMode = GL_CLAMP;
+	lua_getfield(luaState, -1, fieldName.c_str());
+	if (!lua_isnil(luaState, -1))
+	{
+		string textureModeUStr = lua_tostring(luaState, -1);
+		if (textureModeUStr == "repeat")
+			textureMode = GL_REPEAT;
+	}
+	lua_pop(luaState, 1);
+	return textureMode;
 }

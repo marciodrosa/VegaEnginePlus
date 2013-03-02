@@ -24,6 +24,10 @@ require "Vector2"
 -- @field texture a texture to be used to draw this object, loaded from the ContentManager. If not defined, no texture is used.
 -- @field topleftuv a Vector2 UV coordinate used to map the texture to the top left corner. If not defined, (0, 0) is assumed.
 -- @field bottomrightuv a Vector2 UV coordinate used to map the texture to the bottom right corner. If not defined, (1, 1) is assumed.
+-- @field texturemodeu the horizontal texture mode, can be "clamp" (used if not defined) or "repeat", to repeat the texture pattern when outside
+-- the range (0, 0) and (1, 1).
+-- @field texturemodev the vertical texture mode, can be "clamp" (used if not defined) or "repeat", to repeat the texture pattern when outside
+-- the range (0, 0) and (1, 1).
 vega.Drawable = {}
 local _Drawable = {}
 
