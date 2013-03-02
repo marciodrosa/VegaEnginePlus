@@ -4,6 +4,7 @@ require "vega"
 require "lunatest"
 
 lunatest.suite("ColorTest")
+lunatest.suite("ContentManagerTest")
 lunatest.suite("ContextTest")
 lunatest.suite("DrawableTest")
 lunatest.suite("SceneTest")

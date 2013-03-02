@@ -13,7 +13,7 @@ function contentmanager:gettexture(name)
 end
 
 --- Releases all current resources.
-function contentmanager:releaseresources(name)
+function contentmanager:releaseresources()
 	vega.capi.releasetextures()
 	self.textures = {}
 end
