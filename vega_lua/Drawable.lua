@@ -22,6 +22,8 @@ require "Vector2"
 -- @field background the background Drawable. To set, use the setbackground function, so the drawable is also added as child.
 -- @field color the Color table to be used to draw this object. If not defined, it will be full transparent.
 -- @field texture a texture to be used to draw this object, loaded from the ContentManager. If not defined, no texture is used.
+-- @field topleftuv a Vector2 UV coordinate used to map the texture to the top left corner. If not defined, (0, 0) is assumed.
+-- @field bottomrightuv a Vector2 UV coordinate used to map the texture to the bottom right corner. If not defined, (1, 1) is assumed.
 vega.Drawable = {}
 local _Drawable = {}
 

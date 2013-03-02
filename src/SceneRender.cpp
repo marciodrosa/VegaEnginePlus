@@ -157,21 +157,25 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState)
 	GLuint textureId = GetTextureId(luaState);
 	if (isColorDefined || textureId != 0)
 	{
-		glBindTexture(GL_TEXTURE_2D, textureId);
 		Vector2 size = GetVector2FromTableFunction(luaState, "getabsolutesize");
+		Vector2 topLeftUV = { 0.f, 0.f };
+		Vector2 bottomRightUV = { 1.f, 1.f };
+		ReadVector2FromTableField(luaState, "topleftuv", topLeftUV);
+		ReadVector2FromTableField(luaState, "bottomrightuv", bottomRightUV);
+		glBindTexture(GL_TEXTURE_2D, textureId);
 		glColor4f(color.r, color.g, color.b, color.a);
 		glBegin(GL_QUADS);
 		// left bottom:
-		glTexCoord2f(0.f, 1.f);
+		glTexCoord2f(topLeftUV.x, bottomRightUV.y);
 		glVertex2f(0.f, 0.f);
 		// right bottom:
-		glTexCoord2f(1.f, 1.f);
+		glTexCoord2f(bottomRightUV.x, bottomRightUV.y);
 		glVertex2f(size.x, 0.f);
 		// right top:
-		glTexCoord2f(1.f, 0.f);
+		glTexCoord2f(bottomRightUV.x, topLeftUV.y);
 		glVertex2f(size.x, size.y);
 		// left top:
-		glTexCoord2f(0.f, 0.f);
+		glTexCoord2f(topLeftUV.x, topLeftUV.y);
 		glVertex2f(0.f, size.y);
 		glEnd();
 	}
@@ -250,13 +254,21 @@ Creates a Vector2 struct from the given Lua state. Expected the Vector2 table in
 Vector2 SceneRender::GetVector2(lua_State* luaState)
 {
 	Vector2 vector2;
+	ReadVector2(luaState, vector2);
+	return vector2;
+}
+
+/**
+Reads the Vector2 data from the given Lua state. Expected the Vector2 table in the top of the stack.
+*/
+void SceneRender::ReadVector2(lua_State* luaState, Vector2& vector2)
+{
 	lua_getfield(luaState, -1, "x");
 	vector2.x = (float) lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
 	lua_getfield(luaState, -1, "y");
 	vector2.y = (float) lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
-	return vector2;
 }
 
 /**
@@ -282,6 +294,17 @@ Vector2 SceneRender::GetVector2FromTableFunction(lua_State* luaState, std::strin
 	Vector2 vector2 = GetVector2(luaState);
 	lua_pop(luaState, 1);
 	return vector2;
+}
+
+/**
+Reads the Vector2 data from the table in the top of the stack of the luaState. If nil, then it does nothing.
+*/
+void SceneRender::ReadVector2FromTableField(lua_State* luaState, std::string fieldName, Vector2& vector2)
+{
+	lua_getfield(luaState, -1, fieldName.c_str());
+	if (!lua_isnil(luaState, -1))
+		ReadVector2(luaState, vector2);
+	lua_pop(luaState, 1);
 }
 
 /**
