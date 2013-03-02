@@ -186,7 +186,7 @@ void SceneRender::ApplyTransform(lua_State* luaState)
 	Vector2 position = GetVector2FromTableFunction(luaState, "getabsoluteposition");
 	Vector2 scale = GetVector2FromTableField(luaState, "scale");
 	lua_getfield(luaState, -1, "rotation");
-	GLfloat rotation = lua_tonumber(luaState, -1);
+	GLfloat rotation = (GLfloat) lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
 
 	glTranslatef(position.x, position.y, 0.f);
@@ -230,16 +230,16 @@ Color SceneRender::GetColor(lua_State* luaState)
 {
 	Color color;
 	lua_getfield(luaState, -1, "r");
-	color.r = lua_tonumber(luaState, -1) / 255.f;
+	color.r = (float) lua_tonumber(luaState, -1) / 255.f;
 	lua_pop(luaState, 1);
 	lua_getfield(luaState, -1, "g");
-	color.g = lua_tonumber(luaState, -1) / 255.f;
+	color.g = (float) lua_tonumber(luaState, -1) / 255.f;
 	lua_pop(luaState, 1);
 	lua_getfield(luaState, -1, "b");
-	color.b = lua_tonumber(luaState, -1) / 255.f;
+	color.b = (float) lua_tonumber(luaState, -1) / 255.f;
 	lua_pop(luaState, 1);
 	lua_getfield(luaState, -1, "a");
-	color.a = lua_tonumber(luaState, -1) / 255.f;
+	color.a = (float) lua_tonumber(luaState, -1) / 255.f;
 	lua_pop(luaState, 1);
 	return color;
 }
@@ -251,10 +251,10 @@ Vector2 SceneRender::GetVector2(lua_State* luaState)
 {
 	Vector2 vector2;
 	lua_getfield(luaState, -1, "x");
-	vector2.x = lua_tonumber(luaState, -1);
+	vector2.x = (float) lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
 	lua_getfield(luaState, -1, "y");
-	vector2.y = lua_tonumber(luaState, -1);
+	vector2.y = (float) lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
 	return vector2;
 }

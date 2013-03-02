@@ -28,7 +28,7 @@ namespace vega
 	private:
 		static App* appInstance;
 		lua_State* luaState;
-		time_t startFrameTime;
+		long startFrameTime;
 		vega::SceneRender sceneRender;
 		std::list<Texture*> textures;
 

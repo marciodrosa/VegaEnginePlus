@@ -26,7 +26,7 @@ App::App()
 		return;
 	}
 	int imageFlags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF;
-	if (IMG_Init(imageFlags) & imageFlags != imageFlags)
+	if (IMG_Init(imageFlags) && imageFlags != imageFlags)
 		cerr << "Warning: failed to init image libraries: " << IMG_GetError() << endl;
 	int videoModeFlags = SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
 	SDL_SetVideoMode(800, 600, 32, videoModeFlags);
@@ -133,7 +133,7 @@ Called by the main loop Lua script, before update the frame.
 */
 int App::SyncBeginLuaFunction(lua_State* luaState)
 {
-	appInstance->startFrameTime = time(NULL);
+	appInstance->startFrameTime = (long) time(NULL);
 	return 0;
 }
 
@@ -144,8 +144,8 @@ On lua, call vegasyncend(framespersecond).
 int App::SyncEndLuaFunction(lua_State* luaState)
 {
 	lua_Number fps = luaL_checknumber(luaState, 1);
-	time_t synchTime = 1000 / fps;
-	long waitTime = synchTime - (time(NULL) - appInstance->startFrameTime);
+	long synchTime = 1000 / (long) fps;
+	long waitTime = synchTime - (((long) time(NULL)) - appInstance->startFrameTime);
 	if (waitTime > 0)
 		SDL_Delay(waitTime);
 	return 0;
