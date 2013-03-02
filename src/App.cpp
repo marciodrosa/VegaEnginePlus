@@ -32,7 +32,7 @@ App::App()
 	SDL_SetVideoMode(800, 600, 32, videoModeFlags);
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_ShowCursor(true);
-	SDL_WM_SetCaption("VegaEngine", NULL);
+	SDL_WM_SetCaption("Vega", NULL);
 	sceneRender.Init();
 	InitLua();
 }
@@ -49,22 +49,47 @@ void App::InitLua()
 {
 	luaState = luaL_newstate();
 	luaL_openlibs(luaState);
+	luaL_loadstring(luaState, "package.path = package.path..';vega_lua/?.lua;vega_lua/?'");
+	lua_pcall(luaState, 0, 0, 0);
+	luaL_loadstring(luaState, "require 'vega'");
+	lua_pcall(luaState, 0, 0, 0);
+
+	lua_getglobal(luaState, "vega");
+	lua_getfield(luaState, -1, "capi");
+	
+	lua_pushstring(luaState, "checkinput");
 	lua_pushcfunction(luaState, App::CheckInputLuaFunction);
-	lua_setglobal(luaState, "vegacheckinput");
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "syncend");
 	lua_pushcfunction(luaState, App::SyncEndLuaFunction);
-	lua_setglobal(luaState, "vegasyncend");
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "syncbegin");
 	lua_pushcfunction(luaState, App::SyncBeginLuaFunction);
-	lua_setglobal(luaState, "vegasyncbegin");
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "render");
 	lua_pushcfunction(luaState, App::RenderLuaFunction);
-	lua_setglobal(luaState, "vegarender");
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "clearscreen");
 	lua_pushcfunction(luaState, App::ClearScreenLuaFunction);
-	lua_setglobal(luaState, "vegaclearscreen");
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "screensize");
 	lua_pushcfunction(luaState, App::ScreenSizeLuaFunction);
-	lua_setglobal(luaState, "vegascreensize");
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "loadtexture");
 	lua_pushcfunction(luaState, App::LoadTextureLuaFunction);
-	lua_setglobal(luaState, "vegaloadtexture");
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "releasetextures");
 	lua_pushcfunction(luaState, App::ReleaseTexturesLuaFunction);
-	lua_setglobal(luaState, "vegareleasetextures");
+	lua_settable(luaState, -3);
+
+	lua_pop(luaState, 2);
 }
 
 /**
@@ -72,15 +97,11 @@ Executes the main loop.
 */
 void App::ExecuteMainLoop(string startModuleScriptName)
 {
-	if (luaL_loadstring(luaState, "package.path = package.path..';vega_lua/?.lua;vega_lua/?'") != 0)
-		OnLuaError(luaState);
-	else if (lua_pcall(luaState, 0, 0, 0) != 0)
-		OnLuaError(luaState);
 	if (luaL_loadfile(luaState, startModuleScriptName.c_str()) != 0)
 		OnLuaError(luaState);
 	else if (lua_pcall(luaState, 0, 0, 0) != 0)
 		OnLuaError(luaState);
-	if (luaL_loadfile(luaState, "vega_lua/VegaMainLoop.lua") != 0)
+	if (luaL_loadfile(luaState, "vega_lua/mainloop.lua") != 0)
 		OnLuaError(luaState);
 	else if (lua_pcall(luaState, 0, 0, 0) != 0)
 		OnLuaError(luaState);

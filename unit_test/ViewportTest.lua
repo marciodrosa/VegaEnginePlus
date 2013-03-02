@@ -3,7 +3,7 @@ local ViewportTest = {}
 local viewport = {}
 
 function ViewportTest.setup()
-	viewport = Viewport.new()
+	viewport = vega.Viewport.new()
 	assert_table(viewport, "Should create the Viewport table.")
 end
 
@@ -21,7 +21,7 @@ function ViewportTest.test_should_set_position_and_size_of_root_drawable_to_fit_
 	viewport:updatescreensize(1366, 768)
 	
 	-- then:
-	assert_equal(Vector2.zero, viewport.rootdrawable.position, "Should set the position of the root drawable to (0, 0).")
+	assert_equal(vega.Vector2.zero, viewport.rootdrawable.position, "Should set the position of the root drawable to (0, 0).")
 	assert_equal(853.75, viewport.rootdrawable.size.x, 0.01, "Should set the width of the root drawable to fit the proportions of the screen")
 	assert_equal(480, viewport.rootdrawable.size.y, 0.01, "Should set the heigth of the root drawable to fit the proportions of the screen")
 end

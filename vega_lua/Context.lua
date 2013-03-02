@@ -1,3 +1,4 @@
+require "vegatable"
 require "ContentManager"
 
 --- Context is the current state of the engine. Contains the variables that
@@ -13,12 +14,12 @@ require "ContentManager"
 -- field when the context is initialized. Change the value of this field to execute another component.
 -- @field contentmanager a ContentManager object. This field is renewed with a new object and releases
 -- the current resources each time a new component is executed.
-Context = {}
+vega.Context = {}
 
-function Context.new()
+function vega.Context.new()
 	return {
 		executing = true,
 		component = StartComponent,
-		contentmanager = ContentManager.new()
+		contentmanager = vega.ContentManager.new()
 	}
 end

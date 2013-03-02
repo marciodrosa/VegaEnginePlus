@@ -10,7 +10,7 @@ end
 
 function ContextTest.test_should_create_new_context()
 	-- when:
-	context = Context.new()
+	context = vega.Context.new()
 	
 	-- then:
 	assert_table(context)

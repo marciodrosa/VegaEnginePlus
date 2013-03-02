@@ -1,32 +1,34 @@
+require "vegatable"
 require "Context"
 require "ContentManager"
+require "capi"
 
-VegaMainLoop = {
+vega.mainloop = {
 	startframetime = 0,
 }
 
-function VegaMainLoop:refreshviewportsize(scene)
-	local screenwidth, screenheight = vegascreensize()
+function vega.mainloop:refreshviewportsize(scene)
+	local screenwidth, screenheight = vega.capi.screensize()
 	scene.viewport:updatescreensize(screenwidth, screenheight)
 end
 
-function VegaMainLoop:checkcomponent()
+function vega.mainloop:checkcomponent()
 	if currentcomponent ~= self.context.component then
 		currentcomponent = self.context.component;
 		self.context.contentmanager:releaseresources()
-		self.context.contentmanager = ContentManager.new()
+		self.context.contentmanager = vega.ContentManager.new()
 		currentcomponent:load(self.context)
 		currentcomponent:exec(self.context)
 	end
 end
 
-function VegaMainLoop:checkscene()
+function vega.mainloop:checkscene()
 	if self.context.scene ~= self.context.nextscene then
 		self.context.scene = self.context.nextscene;
 	end
 end
 
-function VegaMainLoop:update()
+function vega.mainloop:update()
 	self:checkcomponent()
 	self:checkscene()
 	if self.context.scene then
@@ -35,36 +37,35 @@ function VegaMainLoop:update()
 	end
 end
 
-function VegaMainLoop:draw()
+function vega.mainloop:draw()
 	if self.context.scene then
-		vegarender(self.context.scene)
+		vega.capi.render(self.context.scene)
 	else
-		vegaclearscreen()
+		vega.capi.clearscreen()
 	end
 end
 
-function VegaMainLoop:sync()
+function vega.mainloop:sync()
 	if (self.context.scene) then
-		vegasyncend(self.context.scene.framespersecond)
+		vega.capi.syncend(self.context.scene.framespersecond)
 	else
-		vegasyncend(30)
+		vega.capi.syncend(30)
 	end
 end
 
-function VegaMainLoop:executeloop()
+function vega.mainloop:executeloop()
 	while self.context.executing do
-		vegasyncbegin()
-		vegacheckinput(self.context)
+		vega.capi.syncbegin()
+		vega.capi.checkinput(self.context)
 		self:update()
 		self:draw()
 		self:sync()
 	end
 end
 
-function VegaMainLoop:start()
-	-- creates the context and sets the StartComponent into it
-	self.context = Context.new()
+function vega.mainloop:start()
+	self.context = vega.Context.new()
 	self:executeloop()
 end
 
-VegaMainLoop:start()
+vega.mainloop:start()

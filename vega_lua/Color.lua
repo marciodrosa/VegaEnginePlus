@@ -1,9 +1,11 @@
+require "vegatable"
+
 --- A color representation.
 -- @field r the red component, from 0 to 255.
 -- @field g the green component, from 0 to 255.
 -- @field b the blue component, from 0 to 255.
 -- @field a the alpha component, from 0 to 255.
-Color = {}
+vega.Color = {}
 
 local ColorMT = {
 	__eq = function(a, b)
@@ -20,7 +22,7 @@ local ColorMT = {
 -- @param green the green component.
 -- @param blue the blue component.
 -- @param alpha the alpha component. If not defined, the default value is 255.
-function Color.new(red, green, blue, alpha)
+function vega.Color.new(red, green, blue, alpha)
 	local c = {
 		r = red or 0,
 		g = green or 0,

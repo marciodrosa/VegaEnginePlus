@@ -1,3 +1,4 @@
+require "vegatable"
 require "Viewport"
 require "Color"
 
@@ -12,7 +13,7 @@ require "Color"
 -- If the table defines a function called "update", then this function is called at each frame
 -- of the main loop, with self and the Context table as arguments. Define a field called "finished"
 -- with true value to finish the controller and automatically remove it from the scene.
-Scene = {}
+vega.Scene = {}
 local _Scene = {}
 
 --- Update all controllers attached to this scene. This function is automatically called by the
@@ -33,10 +34,10 @@ function _Scene:updatecontrollers(context)
 end
 
 --- Create a new Scene table.
-function Scene.new()
+function vega.Scene.new()
 	return {
-		viewport = Viewport.new(),
-		backgroundcolor = Color.new(25, 70, 255),
+		viewport = vega.Viewport.new(),
+		backgroundcolor = vega.Color.new(25, 70, 255),
 		framespersecond = 30,
 		controllers = {},
 		updatecontrollers = _Scene.updatecontrollers

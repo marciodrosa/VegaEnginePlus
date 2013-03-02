@@ -1,3 +1,4 @@
+require "vegatable"
 require "Drawable"
 
 --- A scene viewport. This is a simple table that contains a root Drawable. The root
@@ -11,21 +12,21 @@ require "Drawable"
 -- calculate (given the proportion of the device screen).
 -- @field rootdrawable the root drawable. All children are rendered when the scene is drawn.
 -- A new Drawable table is created when the viewport is created.
-Viewport = {}
+vega.Viewport = {}
 
 local _Viewport = {}
 
 --- Internal function called to update the viewport with the screen size.
 function _Viewport:updatescreensize(screenwidth, screenheight)
-	self.rootdrawable.position = Vector2.zero
-	self.rootdrawable.size = Vector2.new(self.sceneviewheight * screenwidth / screenheight, self.sceneviewheight)
+	self.rootdrawable.position = vega.Vector2.zero
+	self.rootdrawable.size = vega.Vector2.new(self.sceneviewheight * screenwidth / screenheight, self.sceneviewheight)
 end
 
 --- Creates a new Viewport.
-function Viewport.new()
+function vega.Viewport.new()
 	return {
 		sceneviewheight = 1,
-		rootdrawable = Drawable.new(),
+		rootdrawable = vega.Drawable.new(),
 		updatescreensize = _Viewport.updatescreensize
 	}
 end

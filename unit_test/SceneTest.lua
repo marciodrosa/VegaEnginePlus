@@ -13,20 +13,20 @@ local function createMockController()
 end
 
 function SceneTest.setup()
-	scene = Scene.new()
+	scene = vega.Scene.new()
 	assert_table(scene, "Should create the Scene table.")
 end
 
 function SceneTest.test_should_initialize_scene_table()
 	assert_table(scene.viewport, "Should create a viewport table.")
 	assert_not_nil(scene.viewport.rootdrawable, "Should create an instance of the Viewport table, but the rootdrawable is not defined.")
-	assert_equal(Color.new(25, 70, 255), scene.backgroundcolor, "backgroundcolor is not the expected.")
+	assert_equal(vega.Color.new(25, 70, 255), scene.backgroundcolor, "backgroundcolor is not the expected.")
 	assert_equal(30, scene.framespersecond, "framespersecond is not the expected.")
 end
 
 function SceneTest.test_should_update_all_controllers()
 	-- given:
-	local context = Context:new()
+	local context = vega.Context:new()
 	local controller1 = createMockController()
 	local controller2 = createMockController()
 	scene.controllers = { controller1, controller2 }
@@ -43,7 +43,7 @@ end
 
 function SceneTest.test_should_not_update_controller_if_update_function_is_not_defined()
 	-- given:
-	local context = Context.new()
+	local context = vega.Context.new()
 	local controllerwithoutupdatefunction = {}
 	local controllerwithupdatefunction = createMockController()
 	scene.controllers = { controllerwithoutupdatefunction, controllerwithupdatefunction }
@@ -57,7 +57,7 @@ end
 
 function SceneTest.test_should_not_update_controller_if_it_is_finished()
 	-- given:
-	local context = Context:new()
+	local context = vega.Context:new()
 	local controller1 = createMockController()
 	controller1.finished = true
 	local controller2 = createMockController()
@@ -75,7 +75,7 @@ end
 
 function SceneTest.test_should_remove_controller_if_it_is_finished_after_update()
 	-- given:
-	local context = Context:new()
+	local context = vega.Context:new()
 	local controller1 = {
 		update = function(self)
 			self.wasupdated = true

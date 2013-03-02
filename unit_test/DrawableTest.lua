@@ -3,17 +3,17 @@ local drawable = {}
 local parent = {}
 
 function DrawableTest.setup()
-	drawable = Drawable.new()
-	parent = Drawable.new()
+	drawable = vega.Drawable.new()
+	parent = vega.Drawable.new()
 	assert_table(drawable, "Should create a table for the drawable.")
 end
 
 function DrawableTest.test_drawable_fields()
-	assert_equal(Vector2.zero, drawable.position, "position is not the expected.")
-	assert_equal(Vector2.one, drawable.size, "size is not the expected.")
-	assert_equal(Vector2.zero, drawable.origin, "origin is not the expected.")
-	assert_equal(Vector2.one, drawable.scale, "scale is not the expected.")
-	assert_equal(Vector2.zero, drawable.childrenorigin, "childrenorigin is not the expected.")
+	assert_equal(vega.Vector2.zero, drawable.position, "position is not the expected.")
+	assert_equal(vega.Vector2.one, drawable.size, "size is not the expected.")
+	assert_equal(vega.Vector2.zero, drawable.origin, "origin is not the expected.")
+	assert_equal(vega.Vector2.one, drawable.scale, "scale is not the expected.")
+	assert_equal(vega.Vector2.zero, drawable.childrenorigin, "childrenorigin is not the expected.")
 	assert_equal(0, drawable.rotation, "rotation is not the expected.")
 	assert_equal(1, drawable.visibility, "visibility is not the expected.")
 	assert_equal(false, drawable.isrelativex, "isrelativex is not the expected.")
@@ -33,68 +33,68 @@ end
 function DrawableTest.test_should_return_position_relative_to_parent_size()
 	-- given:
 	parent:addchild(drawable)
-	parent.size = Vector2.new(50, 200)
-	drawable.position = Vector2.new(5, 100)
+	parent.size = vega.Vector2.new(50, 200)
+	drawable.position = vega.Vector2.new(5, 100)
 	
 	-- when:
 	local relativeposition = drawable:getrelativeposition()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 0.5), relativeposition, "The relative position is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 0.5), relativeposition, "The relative position is not the expected.")
 end
 
 function DrawableTest.test_should_relative_position_be_equal_to_position_when_there_is_no_parent()
 	-- given:
-	drawable.position = Vector2.new(5, 100)
+	drawable.position = vega.Vector2.new(5, 100)
 	
 	-- when:
 	local relativeposition = drawable:getrelativeposition()
 	
 	-- then:
-	assert_equal(Vector2.new(5, 100), relativeposition, "The relative position is not the expected.")
+	assert_equal(vega.Vector2.new(5, 100), relativeposition, "The relative position is not the expected.")
 end
 
 function DrawableTest.test_should_return_size_relative_to_parent_size()
 	-- given:
 	parent:addchild(drawable)
-	parent.size = Vector2.new(50, 200)
-	drawable.size = Vector2.new(5, 100)
+	parent.size = vega.Vector2.new(50, 200)
+	drawable.size = vega.Vector2.new(5, 100)
 	
 	-- when:
 	local relativesize = drawable:getrelativesize()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 0.5), relativesize, "The relative size is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 0.5), relativesize, "The relative size is not the expected.")
 end
 
 function DrawableTest.test_should_relative_size_be_equal_to_size_when_there_is_no_parent()
 	-- given:
-	drawable.size = Vector2.new(5, 100)
+	drawable.size = vega.Vector2.new(5, 100)
 	
 	-- when:
 	local relativesize = drawable:getrelativesize()
 	
 	-- then:
-	assert_equal(Vector2.new(5, 100), relativesize, "The relative size is not the expected.")
+	assert_equal(vega.Vector2.new(5, 100), relativesize, "The relative size is not the expected.")
 end
 
 function DrawableTest.test_should_return_origin_relative_to_size()
 	-- given:
-	drawable.size = Vector2.new(50, 200)
-	drawable.origin = Vector2.new(5, 100)
+	drawable.size = vega.Vector2.new(50, 200)
+	drawable.origin = vega.Vector2.new(5, 100)
 	
 	-- when:
 	local relativeorigin = drawable:getrelativeorigin()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 0.5), relativeorigin, "The relative origin is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 0.5), relativeorigin, "The relative origin is not the expected.")
 end
 
 function DrawableTest.test_should_calculate_absolute_position_when_x_is_relative()
 	-- given:
 	parent:addchild(drawable)
-	parent.size = Vector2.new(50, 200)
-	drawable.position = Vector2.new(0.1, 0.5)
+	parent.size = vega.Vector2.new(50, 200)
+	drawable.position = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativex = true
 	drawable.isrelativey = false
 	
@@ -102,14 +102,14 @@ function DrawableTest.test_should_calculate_absolute_position_when_x_is_relative
 	local absoluteposition = drawable:getabsoluteposition()
 	
 	-- then:
-	assert_equal(Vector2.new(5, 0.5), absoluteposition, "The absolute position is not the expected.")
+	assert_equal(vega.Vector2.new(5, 0.5), absoluteposition, "The absolute position is not the expected.")
 end
 
 function DrawableTest.test_should_calculate_absolute_position_when_y_is_relative()
 	-- given:
 	parent:addchild(drawable)
-	parent.size = Vector2.new(50, 200)
-	drawable.position = Vector2.new(0.1, 0.5)
+	parent.size = vega.Vector2.new(50, 200)
+	drawable.position = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativex = false
 	drawable.isrelativey = true
 	
@@ -117,12 +117,12 @@ function DrawableTest.test_should_calculate_absolute_position_when_y_is_relative
 	local absoluteposition = drawable:getabsoluteposition()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 100), absoluteposition, "The absolute position is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 100), absoluteposition, "The absolute position is not the expected.")
 end
 
 function DrawableTest.test_should_absolute_position_be_equal_to_position_when_there_is_no_parent()
 	-- given:
-	drawable.position = Vector2.new(0.1, 0.5)
+	drawable.position = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativex = true
 	drawable.isrelativey = true
 	
@@ -130,14 +130,14 @@ function DrawableTest.test_should_absolute_position_be_equal_to_position_when_th
 	local absoluteposition = drawable:getabsoluteposition()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 0.5), absoluteposition, "The absolute position is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 0.5), absoluteposition, "The absolute position is not the expected.")
 end
 
 function DrawableTest.test_should_calculate_absolute_size_when_width_is_relative()
 	-- given:
 	parent:addchild(drawable)
-	parent.size = Vector2.new(50, 200)
-	drawable.size = Vector2.new(0.1, 0.5)
+	parent.size = vega.Vector2.new(50, 200)
+	drawable.size = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativewidth = true
 	drawable.isrelativeheigth = false
 	
@@ -145,14 +145,14 @@ function DrawableTest.test_should_calculate_absolute_size_when_width_is_relative
 	local absolutesize = drawable:getabsolutesize()
 	
 	-- then:
-	assert_equal(Vector2.new(5, 0.5), absolutesize, "The absolute size is not the expected.")
+	assert_equal(vega.Vector2.new(5, 0.5), absolutesize, "The absolute size is not the expected.")
 end
 
 function DrawableTest.test_should_calculate_absolute_size_when_heigth_is_relative()
 	-- given:
 	parent:addchild(drawable)
-	parent.size = Vector2.new(50, 200)
-	drawable.size = Vector2.new(0.1, 0.5)
+	parent.size = vega.Vector2.new(50, 200)
+	drawable.size = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativewidth = false
 	drawable.isrelativeheigth = true
 	
@@ -160,12 +160,12 @@ function DrawableTest.test_should_calculate_absolute_size_when_heigth_is_relativ
 	local absolutesize = drawable:getabsolutesize()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 100), absolutesize, "The absolute size is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 100), absolutesize, "The absolute size is not the expected.")
 end
 
 function DrawableTest.test_should_absolute_size_be_equal_to_size_when_there_is_no_parent()
 	-- given:
-	drawable.size = Vector2.new(0.1, 0.5)
+	drawable.size = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativewidth = true
 	drawable.isrelativeheigth = true
 	
@@ -173,13 +173,13 @@ function DrawableTest.test_should_absolute_size_be_equal_to_size_when_there_is_n
 	local absolutesize = drawable:getabsolutesize()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 0.5), absolutesize, "The absolute size is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 0.5), absolutesize, "The absolute size is not the expected.")
 end
 
 function DrawableTest.test_should_calculate_absolute_origin_when_originx_is_relative()
 	-- given:
-	drawable.size = Vector2.new(50, 100)
-	drawable.origin = Vector2.new(0.1, 0.5)
+	drawable.size = vega.Vector2.new(50, 100)
+	drawable.origin = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativeoriginx = true
 	drawable.isrelativeoriginy = false
 	
@@ -187,13 +187,13 @@ function DrawableTest.test_should_calculate_absolute_origin_when_originx_is_rela
 	local absoluteorigin	= drawable:getabsoluteorigin()
 	
 	-- then:
-	assert_equal(Vector2.new(5, 0.5), absoluteorigin, "The absolute origin is not the expected.")
+	assert_equal(vega.Vector2.new(5, 0.5), absoluteorigin, "The absolute origin is not the expected.")
 end
 
 function DrawableTest.test_should_calculate_absolute_origin_when_originy_is_relative()
 	-- given:
-	drawable.size = Vector2.new(50, 100)
-	drawable.origin = Vector2.new(0.1, 0.5)
+	drawable.size = vega.Vector2.new(50, 100)
+	drawable.origin = vega.Vector2.new(0.1, 0.5)
 	drawable.isrelativeoriginx = false
 	drawable.isrelativeoriginy = true
 	
@@ -201,14 +201,14 @@ function DrawableTest.test_should_calculate_absolute_origin_when_originy_is_rela
 	local absoluteorigin = drawable:getabsoluteorigin()
 	
 	-- then:
-	assert_equal(Vector2.new(0.1, 50), absoluteorigin, "The absolute origin is not the expected.")
+	assert_equal(vega.Vector2.new(0.1, 50), absoluteorigin, "The absolute origin is not the expected.")
 end
 
 function DrawableTest.test_should_add_child()
 	-- given:
-	local child1 = Drawable.new()
-	local child2 = Drawable.new()
-	local child3 = Drawable.new()
+	local child1 = vega.Drawable.new()
+	local child2 = vega.Drawable.new()
+	local child3 = vega.Drawable.new()
 	
 	-- when:
 	drawable:addchild(child1)
@@ -227,9 +227,9 @@ end
 
 function DrawableTest.test_should_add_child_at_index()
 	-- given:
-	local child1 = Drawable.new()
-	local child2 = Drawable.new()
-	local child3 = Drawable.new()
+	local child1 = vega.Drawable.new()
+	local child2 = vega.Drawable.new()
+	local child3 = vega.Drawable.new()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	
@@ -245,7 +245,7 @@ end
 
 function DrawableTest.test_should_not_add_child_if_it_is_already_a_child_of_the_drawable()
 	-- given:
-	local child = Drawable.new()
+	local child = vega.Drawable.new()
 	drawable:addchild(child)
 	
 	-- when:
@@ -258,9 +258,9 @@ end
 
 function DrawableTest.test_should_add_child_at_end_when_index_is_greater_than_children_count()
 	-- given:
-	local child1 = Drawable.new()
-	local child2 = Drawable.new()
-	local child3 = Drawable.new()
+	local child1 = vega.Drawable.new()
+	local child2 = vega.Drawable.new()
+	local child3 = vega.Drawable.new()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	
@@ -276,9 +276,9 @@ end
 
 function DrawableTest.test_should_add_child_at_begin_when_index_is_less_than_zero()
 	-- given:
-	local child1 = Drawable.new()
-	local child2 = Drawable.new()
-	local child3 = Drawable.new()
+	local child1 = vega.Drawable.new()
+	local child2 = vega.Drawable.new()
+	local child3 = vega.Drawable.new()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	
@@ -312,8 +312,8 @@ end
 
 function DrawableTest.test_should_remove_from_old_parent_when_add_child()
 	-- given:
-	local oldparent = Drawable.new()
-	local child = Drawable.new()
+	local oldparent = vega.Drawable.new()
+	local child = vega.Drawable.new()
 	oldparent:addchild(child)
 	
 	-- when:
@@ -328,9 +328,9 @@ end
 
 function DrawableTest.test_should_remove_child()
 	-- given:
-	local child1 = Drawable.new()
-	local child2 = Drawable.new()
-	local child3 = Drawable.new()
+	local child1 = vega.Drawable.new()
+	local child2 = vega.Drawable.new()
+	local child3 = vega.Drawable.new()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	drawable:addchild(child3)
@@ -349,9 +349,9 @@ end
 
 function DrawableTest.test_should_set_children_list()
 	-- given:
-	local child1 = Drawable.new()
-	local child2 = Drawable.new()
-	local child3 = Drawable.new()
+	local child1 = vega.Drawable.new()
+	local child2 = vega.Drawable.new()
+	local child3 = vega.Drawable.new()
 	local children = { child1, child2, child3 }
 
 	-- when:
@@ -369,14 +369,14 @@ end
 
 function DrawableTest.test_should_remove_from_old_parents_when_set_children_list()
 	-- given:
-	local oldchild1 = Drawable.new()
-	local oldchild2 = Drawable.new()
+	local oldchild1 = vega.Drawable.new()
+	local oldchild2 = vega.Drawable.new()
 	drawable:addchild(oldchild1)
 	drawable:addchild(oldchild2)
 	
-	local child1 = Drawable.new()
-	local child2 = Drawable.new()
-	local child3 = Drawable.new()
+	local child1 = vega.Drawable.new()
+	local child2 = vega.Drawable.new()
+	local child3 = vega.Drawable.new()
 	local children = { child1, child2, child3 }
 
 	-- when:
@@ -396,7 +396,7 @@ end
 
 function DrawableTest.test_should_set_background()
 	-- given:
-	local background = Drawable.new()
+	local background = vega.Drawable.new()
 	
 	-- when:
 	drawable:setbackground(background)

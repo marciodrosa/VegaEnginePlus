@@ -1,3 +1,4 @@
+require "vegatable"
 require "Vector2"
 
 --- A drawable node. Create your own instance with Drawable.new(myTable).
@@ -21,13 +22,13 @@ require "Vector2"
 -- @field background the background Drawable. To set, use the setbackground function, so the drawable is also added as child.
 -- @field color the Color table to be used to draw this object. If not defined, it will be full transparent.
 -- @field texture a texture to be used to draw this object, loaded from the ContentManager. If not defined, no texture is used.
-Drawable = {}
+vega.Drawable = {}
 local _Drawable = {}
 
 --- Returns the position, relative to the parent size.
 -- @return a Vector2 with the relative position.
 function _Drawable:getrelativeposition()
-	local rp = Vector2.new(self.position.x, self.position.y)
+	local rp = vega.Vector2.new(self.position.x, self.position.y)
 	if (self.parent) then
 		if not self.isrelativex then rp.x = self.position.x / self.parent:getabsolutesize().x end
 		if not self.isrelativey then rp.y = self.position.y / self.parent:getabsolutesize().y end
@@ -38,7 +39,7 @@ end
 --- Returns the size, relative to the parent size.
 -- @return a Vector2 with the relative size.
 function _Drawable:getrelativesize()
-	local rs = Vector2.new(self.size.x, self.size.y)
+	local rs = vega.Vector2.new(self.size.x, self.size.y)
 	if (self.parent) then
 		if not self.isrelativewidth then rs.x = self.size.x / self.parent:getabsolutesize().x end
 		if not self.isrelativeheigth then rs.y = self.size.y / self.parent:getabsolutesize().y end
@@ -49,7 +50,7 @@ end
 --- Returns the origin, relative to the size.
 -- @return a Vector2 with the relative origin.
 function _Drawable:getrelativeorigin()
-	local ro = Vector2.new(self.origin.x, self.origin.y)
+	local ro = vega.Vector2.new(self.origin.x, self.origin.y)
 	if not self.isrelativeoriginx then ro.x = self.origin.x / self:getabsolutesize().x end
 	if not self.isrelativeoriginy then ro.y = self.origin.y / self:getabsolutesize().y end
 	return ro
@@ -58,7 +59,7 @@ end
 --- Returns the absolute position (useful if isrelativepositionx or isrelativepositiony is true).
 -- @return a Vector2 with the absolute position.
 function _Drawable:getabsoluteposition()
-	local ap = Vector2.new(self.position.x, self.position.y)
+	local ap = vega.Vector2.new(self.position.x, self.position.y)
 	if (self.parent) then
 		if self.isrelativex then ap.x = self.position.x * self.parent:getabsolutesize().x end
 		if self.isrelativey then ap.y = self.position.y * self.parent:getabsolutesize().y end
@@ -69,7 +70,7 @@ end
 --- Returns the absolute size (useful if isrelativewidth or isrelativeheigth is true).
 -- @return a Vector2 with the absolute position.
 function _Drawable:getabsolutesize()
-	local as = Vector2.new(self.size.x, self.size.y)
+	local as = vega.Vector2.new(self.size.x, self.size.y)
 	if (self.parent) then
 		if self.isrelativewidth then as.x = self.size.x * self.parent:getabsolutesize().x end
 		if self.isrelativeheigth then as.y = self.size.y * self.parent:getabsolutesize().y end
@@ -80,7 +81,7 @@ end
 --- Returns the absolute origin (useful if isrelativeoriginx or isrelativeoriginy is true).
 -- @return a Vector2 with the absolute origin.
 function _Drawable:getabsoluteorigin()
-	local ao = Vector2.new(self.origin.x, self.origin.y)
+	local ao = vega.Vector2.new(self.origin.x, self.origin.y)
 	if self.isrelativeoriginx then ao.x = self.origin.x * self:getabsolutesize().x end
 	if self.isrelativeoriginy then ao.y = self.origin.y * self:getabsolutesize().y end
 	return ao
@@ -153,13 +154,13 @@ function _Drawable:setbackground(bg)
 end
 
 --- Creates a new instance of a drawable table.
-function Drawable.new()
+function vega.Drawable.new()
 	return {
-		position = Vector2.zero,
-		size = Vector2.one,
-		origin = Vector2.zero,
-		scale = Vector2.one,
-		childrenorigin = Vector2.zero,
+		position = vega.Vector2.zero,
+		size = vega.Vector2.one,
+		origin = vega.Vector2.zero,
+		scale = vega.Vector2.one,
+		childrenorigin = vega.Vector2.zero,
 		rotation = 0,
 		visibility = 1,
 		isrelativex = false,

@@ -1,9 +1,11 @@
+require "vegatable"
+
 --- A table with x and y coordinates.
 -- @field x the x coordinate.
 -- @field y the y coordinate.
 -- @field zero a Vector2 object with coordinates (0, 0).
 -- @field one a Vector2 object with coordinates (1, 1).
-Vector2 = {}
+vega.Vector2 = {}
 
 local Vector2MT = {
 	__eq = function(a, b)
@@ -17,7 +19,7 @@ local Vector2MT = {
 --- Creates a new Vector2.
 -- @param xvalue the x coordinate
 -- @param yvalue the y coordinate
-function Vector2.new(xvalue, yvalue)
+function vega.Vector2.new(xvalue, yvalue)
 	local v2 = {
 		x = xvalue or 0,
 		y = yvalue or xvalue or 0
@@ -26,6 +28,6 @@ function Vector2.new(xvalue, yvalue)
 	return v2
 end
 
-Vector2.zero = Vector2.new(0, 0)
+vega.Vector2.zero = vega.Vector2.new(0, 0)
 
-Vector2.one = Vector2.new(1, 1)
+vega.Vector2.one = vega.Vector2.new(1, 1)

@@ -1,6 +1,6 @@
 package.path = package.path..";../vega_lua/?.lua;lunatest/?;lunatest/?.lua"
 
-require "VegaEngine"
+require "vega"
 require "lunatest"
 
 lunatest.suite("ColorTest")
