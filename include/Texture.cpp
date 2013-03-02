@@ -2,6 +2,9 @@
 
 using namespace vega;
 
+/**
+Loads the image with the given file name, creates the texture and returns it.
+*/
 Texture* Texture::Load(std::string filename)
 {
 	Texture *texture = new Texture();
@@ -39,21 +42,33 @@ Texture::~Texture()
 		glDeleteTextures(1, &glTextureName);
 }
 
+/**
+Returns the OpenGL generated texture name.
+*/
 GLuint Texture::GetOpenGLTextureName()
 {
 	return glTextureName;
 }
 
+/**
+Returns the width of the texture image.
+*/
 int Texture::GetWidth()
 {
 	return surface == NULL ? 0 : surface->w;
 }
 
+/**
+Returns the height of the texture image.
+*/
 int Texture::GetHeight()
 {
 	return surface == NULL ? 0 : surface->h;
 }
 
+/**
+Returns the texture format to be used with OpenGL. Only RGB and RGBA are correctly accepted.
+*/
 GLenum Texture::GetOpenGLTextureFormat()
 {
     if (surface->format->BytesPerPixel==3)

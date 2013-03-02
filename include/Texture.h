@@ -8,7 +8,7 @@
 namespace vega
 {
 	/**
-	A texture object. Handles the image data and the openGL texture.
+	A texture object. Handles the image data and the openGL texture. Creates a texture with the Load static method.
 	*/
 	class Texture
 	{
