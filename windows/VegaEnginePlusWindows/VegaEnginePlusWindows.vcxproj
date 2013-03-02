@@ -101,16 +101,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\App.h" />
-    <ClInclude Include="..\..\include\Functions.h" />
     <ClInclude Include="..\..\include\Lua.h" />
+    <ClInclude Include="..\..\include\OpenGL.h" />
     <ClInclude Include="..\..\include\SceneRender.h" />
     <ClInclude Include="..\..\include\SDL.h" />
+    <ClInclude Include="..\..\include\Texture.h" />
     <ClInclude Include="..\..\include\VegaDefines.h" />
     <ClInclude Include="..\..\include\VegaEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\Texture.cpp" />
     <ClCompile Include="..\..\src\App.cpp" />
-    <ClCompile Include="..\..\src\Functions.cpp" />
     <ClCompile Include="..\..\src\SceneRender.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

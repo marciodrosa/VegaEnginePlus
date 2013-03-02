@@ -2,8 +2,9 @@
 #define VEGAENGINE_VEGAENGINE_H
 
 #include <iostream>
+#include "App.h"
 #include "VegaDefines.h"
-#include "Functions.h"
 #include "SceneRender.h"
+#include "Texture.h"
 
 #endif

@@ -1,4 +1,5 @@
 require "Context"
+require "ContentManager"
 
 VegaMainLoop = {
 	startframetime = 0,
@@ -12,6 +13,8 @@ end
 function VegaMainLoop:checkcomponent()
 	if currentcomponent ~= self.context.component then
 		currentcomponent = self.context.component;
+		self.context.contentmanager:releaseresources()
+		self.context.contentmanager = ContentManager.new()
 		currentcomponent:load(self.context)
 		currentcomponent:exec(self.context)
 	end

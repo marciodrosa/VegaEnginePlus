@@ -1,30 +1,28 @@
 #include "../include/SceneRender.h"
 #include "../include/SDL.h"
+#include "../include/OpenGL.h"
 
 #include <iostream>
-
-#include <windows.h>
-#include <GL/GL.h>
-#include <GL/glu.h>
 
 using namespace vega;
 using namespace std;
 
-vega::SceneRender::SceneRender()
+SceneRender::SceneRender()
 {
 }
 
-vega::SceneRender::~SceneRender()
+SceneRender::~SceneRender()
 {
 }
 
 /**
 Initializes the render engine. Call it after the video initialization and before SceneRender::Render.
 */
-void vega::SceneRender::Init()
+void SceneRender::Init()
 {
 	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -42,7 +40,7 @@ void vega::SceneRender::Init()
 /**
 Renders the current frame of the scene. Expected the Scene table in the top of the stack.
 */
-void vega::SceneRender::Render(lua_State* luaState)
+void SceneRender::Render(lua_State* luaState)
 {
 	if (luaState != NULL)
 	{
@@ -67,7 +65,7 @@ void vega::SceneRender::Render(lua_State* luaState)
 /**
 Renders the viewport. Expected the Viewport table in the top of the stack.
 */
-void vega::SceneRender::RenderViewport(lua_State* luaState)
+void SceneRender::RenderViewport(lua_State* luaState)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -80,7 +78,7 @@ void vega::SceneRender::RenderViewport(lua_State* luaState)
 /**
 Renders the drawable. Expected the Drawable table in the top of the stack.
 */
-void vega::SceneRender::RenderDrawable(lua_State* luaState)
+void SceneRender::RenderDrawable(lua_State* luaState)
 {
 	Vector2 position = GetVector2FromTableField(luaState, "position");
 	Vector2 scale = GetVector2FromTableField(luaState, "scale");
@@ -92,7 +90,7 @@ void vega::SceneRender::RenderDrawable(lua_State* luaState)
 	glPushMatrix();
 	ApplyTransform(luaState);
 	RenderBackground(luaState);
-	RenderRectangle(luaState);
+	RenderDrawableRectangle(luaState);
 	RenderChildren(luaState);
 	glPopMatrix();
 }
@@ -100,7 +98,7 @@ void vega::SceneRender::RenderDrawable(lua_State* luaState)
 /**
 Renders the drawable children. Expected the Drawable table in the top of the stack, where this Drawable is the parent of the children.
 */
-void vega::SceneRender::RenderChildren(lua_State* luaState)
+void SceneRender::RenderChildren(lua_State* luaState)
 {
 	glPushMatrix();
 	ApplyTransformForChildren(luaState);
@@ -124,7 +122,7 @@ void vega::SceneRender::RenderChildren(lua_State* luaState)
 Renders the drawable background child, if defined. Expected the Drawable table in the top of the stack,
 where this Drawable is the parent of the children.
 */
-void vega::SceneRender::RenderBackground(lua_State* luaState)
+void SceneRender::RenderBackground(lua_State* luaState)
 {
 	lua_getfield(luaState, -1, "background");
 	if (!lua_isnil(luaState, -1))
@@ -143,32 +141,46 @@ void vega::SceneRender::RenderBackground(lua_State* luaState)
 
 /**
 Renders the drawable rectangle. Expected the Drawable table in the top of the stack, but the rectangle is only drawn
-if it contains the RectangleDrawable table fields.
+if it contains the color or texture fields.
 */
-void vega::SceneRender::RenderRectangle(lua_State* luaState)
+void SceneRender::RenderDrawableRectangle(lua_State* luaState)
 {
+	Color color = { 1.f, 1.f, 1.f, 1.f };
+	bool isColorDefined = false;
 	lua_getfield(luaState, -1, "color");
 	if (!lua_isnil(luaState, -1))
 	{
-		Color color = GetColor(luaState);
-		lua_pop(luaState, 1);
+		color = GetColor(luaState);
+		isColorDefined = true;
+	}
+	lua_pop(luaState, 1);
+	GLuint textureId = GetTextureId(luaState);
+	if (isColorDefined || textureId != 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, textureId);
 		Vector2 size = GetVector2FromTableFunction(luaState, "getabsolutesize");
 		glColor4f(color.r, color.g, color.b, color.a);
 		glBegin(GL_QUADS);
+		// left bottom:
+		glTexCoord2f(0.f, 1.f);
 		glVertex2f(0.f, 0.f);
+		// right bottom:
+		glTexCoord2f(1.f, 1.f);
 		glVertex2f(size.x, 0.f);
+		// right top:
+		glTexCoord2f(1.f, 0.f);
 		glVertex2f(size.x, size.y);
+		// left top:
+		glTexCoord2f(0.f, 0.f);
 		glVertex2f(0.f, size.y);
 		glEnd();
 	}
-	else
-		lua_pop(luaState, 1);
 }
 
 /**
 Apply the transform on current matrix. Expected the Drawable table in the top of the stack.
 */
-void vega::SceneRender::ApplyTransform(lua_State* luaState)
+void SceneRender::ApplyTransform(lua_State* luaState)
 {
 	Vector2 origin = GetVector2FromTableFunction(luaState, "getabsoluteorigin");
 	Vector2 position = GetVector2FromTableFunction(luaState, "getabsoluteposition");
@@ -186,7 +198,7 @@ void vega::SceneRender::ApplyTransform(lua_State* luaState)
 /**
 Apply the transform of the children origin on current matrix. Expected the parent Drawable table in the top of the stack.
 */
-void vega::SceneRender::ApplyTransformForChildren(lua_State* luaState)
+void SceneRender::ApplyTransformForChildren(lua_State* luaState)
 {
 	Vector2 childrenorigin = GetVector2FromTableField(luaState, "childrenorigin");
 	glTranslatef(childrenorigin.x, childrenorigin.y, 0.f);
@@ -195,7 +207,7 @@ void vega::SceneRender::ApplyTransformForChildren(lua_State* luaState)
 /**
 Set up the view. Expected the Viewport table in the top of the stack.
 */
-void vega::SceneRender::SetUpView(lua_State* luaState)
+void SceneRender::SetUpView(lua_State* luaState)
 {
 	lua_getfield(luaState, -1, "sceneviewheight");
 	GLfloat sceneViewHeight = (GLfloat) lua_tonumber(luaState, -1);
@@ -214,7 +226,7 @@ void vega::SceneRender::SetUpView(lua_State* luaState)
 /**
 Creates a Color struct from the given Lua state. Expected the Color table in the top of the stack.
 */
-Color vega::SceneRender::GetColor(lua_State* luaState)
+Color SceneRender::GetColor(lua_State* luaState)
 {
 	Color color;
 	lua_getfield(luaState, -1, "r");
@@ -235,7 +247,7 @@ Color vega::SceneRender::GetColor(lua_State* luaState)
 /**
 Creates a Vector2 struct from the given Lua state. Expected the Vector2 table in the top of the stack.
 */
-Vector2 vega::SceneRender::GetVector2(lua_State* luaState)
+Vector2 SceneRender::GetVector2(lua_State* luaState)
 {
 	Vector2 vector2;
 	lua_getfield(luaState, -1, "x");
@@ -250,7 +262,7 @@ Vector2 vega::SceneRender::GetVector2(lua_State* luaState)
 /**
 Creates a Vector2 struct from the given Lua state. Expected the table owner of the Vector2 in the top of the stack.
 */
-Vector2 vega::SceneRender::GetVector2FromTableField(lua_State* luaState, std::string fieldName)
+Vector2 SceneRender::GetVector2FromTableField(lua_State* luaState, std::string fieldName)
 {
 	lua_getfield(luaState, -1, fieldName.c_str());
 	Vector2 vector2 = GetVector2(luaState);
@@ -262,7 +274,7 @@ Vector2 vega::SceneRender::GetVector2FromTableField(lua_State* luaState, std::st
 Creates a Vector2 struct from the given Lua state. Expected the table owner of the Vector2 in the top of the stack. The only
 arg sent to the function is the "self" table.
 */
-Vector2 vega::SceneRender::GetVector2FromTableFunction(lua_State* luaState, std::string functionName)
+Vector2 SceneRender::GetVector2FromTableFunction(lua_State* luaState, std::string functionName)
 {
 	lua_getfield(luaState, -1, functionName.c_str());
 	lua_pushvalue(luaState, -2);
@@ -270,4 +282,22 @@ Vector2 vega::SceneRender::GetVector2FromTableFunction(lua_State* luaState, std:
 	Vector2 vector2 = GetVector2(luaState);
 	lua_pop(luaState, 1);
 	return vector2;
+}
+
+/**
+Returns the OpenGL texture ID from the drawable table in the top of the stack. If the texture is not
+defined, returns 0.
+*/
+GLuint SceneRender::GetTextureId(lua_State* luaState)
+{
+	GLuint id = 0;
+	lua_getfield(luaState, -1, "texture");
+	if (!lua_isnil(luaState, -1))
+	{
+		lua_getfield(luaState, -1, "id");
+		id = (GLuint) lua_tonumber(luaState, -1);
+		lua_pop(luaState, 1);
+	}
+	lua_pop(luaState, 1);
+	return id;
 }

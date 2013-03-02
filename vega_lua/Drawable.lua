@@ -19,6 +19,8 @@ require "Vector2"
 -- @field children the children list. Please do not modify this list. Use the addchild, insertchild, setchildren or removechild functions instead.
 -- @field parent the parent Drawable. It is nil until this Drawable is added to another Drawable with the addchild function.
 -- @field background the background Drawable. To set, use the setbackground function, so the drawable is also added as child.
+-- @field color the Color table to be used to draw this object. If not defined, it will be full transparent.
+-- @field texture a texture to be used to draw this object, loaded from the ContentManager. If not defined, no texture is used.
 Drawable = {}
 local _Drawable = {}
 

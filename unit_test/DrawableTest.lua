@@ -26,6 +26,8 @@ function DrawableTest.test_drawable_fields()
 	assert_equal(0, #drawable.children, "children size is not the expected.")
 	assert_nil(drawable.parent, "parent should be nil.")
 	assert_nil(drawable.background, "background should be nil.")
+	assert_nil(drawable.color, "color should be nil.")
+	assert_nil(drawable.texture, "texture should be nil.")
 end
 
 function DrawableTest.test_should_return_position_relative_to_parent_size()

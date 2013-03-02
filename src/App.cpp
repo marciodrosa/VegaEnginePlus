@@ -25,8 +25,11 @@ App::App()
 		cerr << "Unable to init SDL: " << SDL_GetError() << "." << endl;
 		return;
 	}
-	int flags = (false ? SDL_FULLSCREEN : 0) | SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
-	SDL_SetVideoMode(800, 600, 32, flags);
+	int imageFlags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF;
+	if (IMG_Init(imageFlags) & imageFlags != imageFlags)
+		cerr << "Warning: failed to init image libraries: " << IMG_GetError() << endl;
+	int videoModeFlags = SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
+	SDL_SetVideoMode(800, 600, 32, videoModeFlags);
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_ShowCursor(true);
 	SDL_WM_SetCaption("VegaEngine", NULL);
@@ -37,6 +40,7 @@ App::App()
 App::~App()
 {
 	lua_close(luaState);
+	IMG_Quit();
 	SDL_Quit();
 	appInstance = NULL;
 }
@@ -57,6 +61,10 @@ void App::InitLua()
 	lua_setglobal(luaState, "vegaclearscreen");
 	lua_pushcfunction(luaState, App::ScreenSizeLuaFunction);
 	lua_setglobal(luaState, "vegascreensize");
+	lua_pushcfunction(luaState, App::LoadTextureLuaFunction);
+	lua_setglobal(luaState, "vegaloadtexture");
+	lua_pushcfunction(luaState, App::ReleaseTexturesLuaFunction);
+	lua_setglobal(luaState, "vegareleasetextures");
 }
 
 /**
@@ -149,3 +157,40 @@ int App::ScreenSizeLuaFunction(lua_State* luaState)
 	lua_pushnumber(luaState, SDL_GetVideoSurface()->h);
 	return 2;
 }
+
+/**
+Create a texture from an image file and returns a Texture object. Expected a string with the filename as input.
+*/
+int App::LoadTextureLuaFunction(lua_State *luaState)
+{
+	Texture* texture = Texture::Load(lua_tostring(luaState, -1));
+	if (texture == NULL)
+		return 0;
+	else
+	{
+		appInstance->textures.push_back(texture);
+		lua_newtable(luaState);
+		lua_pushstring(luaState, "id");
+		lua_pushnumber(luaState, (lua_Number) texture->GetOpenGLTextureName());
+		lua_settable(luaState, -3);
+		lua_pushstring(luaState, "width");
+		lua_pushnumber(luaState, (lua_Number) texture->GetWidth());
+		lua_settable(luaState, -3);
+		lua_pushstring(luaState, "height");
+		lua_pushnumber(luaState, (lua_Number) texture->GetHeight());
+		lua_settable(luaState, -3);
+		return 1;
+	}
+}
+
+/**
+Releases all textures previous loaded with the LoadTextureLuaFunction.
+*/
+int App::ReleaseTexturesLuaFunction(lua_State *luaState)
+{
+	for (list<Texture*>::iterator i = appInstance->textures.begin(); i != appInstance->textures.end(); ++i)
+		delete *i;
+	appInstance->textures.clear();
+	return 0;
+}
+

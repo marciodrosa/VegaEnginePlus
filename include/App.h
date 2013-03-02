@@ -4,10 +4,20 @@
 #include "Lua.h"
 #include "SDL.h"
 #include "SceneRender.h"
+#include "Texture.h"
 #include <string>
+#include <list>
 
 namespace vega
 {
+	/**
+	The Vega app. Initializes the LUA, video, window, resources, etc., and runs the main loop.
+	All the initializations occurs on constructor. The creation of an App instance is mandatory,
+	because it does the bridge between the C code and the Lua code, generating the Lua C API dinamically.
+	The ExecuteMainLoop method calls the MainLoop script. The destructor shuts down the resources
+	and libraries. The creation, main loop execution and destruction can be automatically called
+	with the INITAPP macro.
+	*/
 	class App
 	{
 	public:
@@ -20,6 +30,7 @@ namespace vega
 		lua_State* luaState;
 		time_t startFrameTime;
 		vega::SceneRender sceneRender;
+		std::list<Texture*> textures;
 
 		void InitLua();
 		static int CheckInputLuaFunction(lua_State *luaState);
@@ -28,6 +39,8 @@ namespace vega
 		static int RenderLuaFunction(lua_State *luaState);
 		static int ClearScreenLuaFunction(lua_State *luaState);
 		static int ScreenSizeLuaFunction(lua_State *luaState);
+		static int LoadTextureLuaFunction(lua_State *luaState);
+		static int ReleaseTexturesLuaFunction(lua_State *luaState);
 	};
 }
 

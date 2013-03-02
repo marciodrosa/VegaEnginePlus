@@ -1,3 +1,5 @@
+require "ContentManager"
+
 --- Context is the current state of the engine. Contains the variables that
 -- can be changed to modify the current context.
 -- @field executing true if the main loop is executing. Set to false to finish the execution.
@@ -9,11 +11,14 @@
 -- @field nextscene the scene to be setted as current scene for the next frame. See the "scene" field.
 -- @field component the last executed component. The StartComponent object is setted into this
 -- field when the context is initialized. Change the value of this field to execute another component.
+-- @field contentmanager a ContentManager object. This field is renewed with a new object and releases
+-- the current resources each time a new component is executed.
 Context = {}
 
 function Context.new()
 	return {
 		executing = true,
 		component = StartComponent,
+		contentmanager = ContentManager.new()
 	}
 end

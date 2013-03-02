@@ -6,7 +6,6 @@ require "lunatest"
 lunatest.suite("ColorTest")
 lunatest.suite("ContextTest")
 lunatest.suite("DrawableTest")
-lunatest.suite("RectangleDrawableTest")
 lunatest.suite("SceneTest")
 lunatest.suite("Vector2Test")
 lunatest.suite("ViewportTest")
