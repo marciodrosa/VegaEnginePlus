@@ -8,6 +8,7 @@ lunatest.suite("ContentManagerTest")
 lunatest.suite("ContextTest")
 lunatest.suite("DrawableTest")
 lunatest.suite("SceneTest")
+lunatest.suite("SpriteDrawableTest")
 lunatest.suite("Vector2Test")
 lunatest.suite("ViewportTest")
 

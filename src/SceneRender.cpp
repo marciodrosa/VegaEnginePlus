@@ -80,6 +80,7 @@ Renders the drawable. Expected the Drawable table in the top of the stack.
 */
 void SceneRender::RenderDrawable(lua_State* luaState, lua_Number globalVisibility)
 {
+	BeforeRenderDrawable(luaState);
 	Vector2 position = GetVector2FromTableField(luaState, "position");
 	Vector2 scale = GetVector2FromTableField(luaState, "scale");
 	Vector2 origin = GetVector2FromTableField(luaState, "origin");
@@ -96,6 +97,7 @@ void SceneRender::RenderDrawable(lua_State* luaState, lua_Number globalVisibilit
 	RenderDrawableRectangle(luaState, visibility);
 	RenderChildren(luaState, visibility);
 	glPopMatrix();
+	AfterRenderDrawable(luaState);
 }
 
 /**
@@ -185,6 +187,36 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibi
 		glTexCoord2f(topLeftUV.x, topLeftUV.y);
 		glVertex2f(0.f, size.y);
 		glEnd();
+	}
+}
+
+/**
+Calls the callback method of the drawable before the rendering. Expected the Drawable table in the top of the stack.
+*/
+void SceneRender::BeforeRenderDrawable(lua_State* luaState)
+{
+	lua_getfield(luaState, -1, "beforedraw");
+	if (lua_isnil(luaState, -1))
+		lua_pop(luaState, 1);
+	else
+	{
+		lua_pushvalue(luaState, -2); // push "self"
+		lua_call(luaState, 1, 0);
+	}
+}
+
+/**
+Calls the callback method of the drawable after the rendering. Expected the Drawable table in the top of the stack.
+*/
+void SceneRender::AfterRenderDrawable(lua_State* luaState)
+{
+	lua_getfield(luaState, -1, "afterdraw");
+	if (lua_isnil(luaState, -1))
+		lua_pop(luaState, 1);
+	else
+	{
+		lua_pushvalue(luaState, -2); // push "self"
+		lua_call(luaState, 1, 0);
 	}
 }
 

@@ -32,6 +32,8 @@ function DrawableTest.test_drawable_fields()
 	assert_nil(drawable.bottomrightuv, "bottomrightuv should be nil.")
 	assert_nil(drawable.texturemodeu, "texturemodeu should be nil.")
 	assert_nil(drawable.texturemodev, "texturemodev should be nil.")
+	assert_nil(drawable.beforedraw, "beforedraw should be nil.")
+	assert_nil(drawable.afterdraw, "afterdraw should be nil.")
 end
 
 function DrawableTest.test_should_return_position_relative_to_parent_size()

@@ -41,6 +41,14 @@ function StartComponent:exec(context)
 	texturedrectangle.isrelativepositionx, texturedrectangle.isrelativepositiony = true, true
 	scene.viewport.rootdrawable:addchild(texturedrectangle)
 	
+	local coin = vega.SpriteDrawable.new()
+	coin.size = vega.Vector2.new(0.2, 0.2)
+	coin.position = vega.Vector2.new(0.5, 0.5)
+	coin.rows = 2
+	coin.columns = 10
+	coin.texture = context.contentmanager:gettexture("coin.png")
+	scene.viewport.rootdrawable:addchild(coin)
+	
 	--[[
 	local transparentrectangle = vega.Drawable.new()
 	transparentrectangle.color = vega.Color.new(255, 0, 255)
@@ -61,6 +69,12 @@ function StartComponent:exec(context)
 		{
 			update = function(self, context)
 				child.rotation = child.rotation + 1
+			end
+		},
+		{
+			update = function(self, context)
+				coin.frame = coin.frame + 1
+				if coin.frame > coin:getframescount() then coin.frame = 1 end
 			end
 		}
 	}

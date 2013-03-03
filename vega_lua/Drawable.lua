@@ -28,6 +28,8 @@ require "Vector2"
 -- the range (0, 0) and (1, 1).
 -- @field texturemodev the vertical texture mode, can be "clamp" (used if not defined) or "repeat", to repeat the texture pattern when outside
 -- the range (0, 0) and (1, 1).
+-- @field beforedraw if defined, this function is called with self argument before the drawable is rendered.
+-- @field afterdraw if defined, this function is called with self argument after the drawable is rendered.
 vega.Drawable = {}
 local _Drawable = {}
 
