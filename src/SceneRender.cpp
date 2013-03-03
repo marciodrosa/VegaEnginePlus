@@ -71,14 +71,14 @@ void SceneRender::RenderViewport(lua_State* luaState)
 	glLoadIdentity();
 	SetUpView(luaState);
 	lua_getfield(luaState, -1, "rootdrawable");
-	RenderDrawable(luaState);
+	RenderDrawable(luaState, 1.f);
 	lua_pop(luaState, 1);
 }
 
 /**
 Renders the drawable. Expected the Drawable table in the top of the stack.
 */
-void SceneRender::RenderDrawable(lua_State* luaState)
+void SceneRender::RenderDrawable(lua_State* luaState, lua_Number globalVisibility)
 {
 	Vector2 position = GetVector2FromTableField(luaState, "position");
 	Vector2 scale = GetVector2FromTableField(luaState, "scale");
@@ -87,18 +87,21 @@ void SceneRender::RenderDrawable(lua_State* luaState)
 	lua_getfield(luaState, -1, "rotation");
 	lua_Number rotation = lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
+	lua_getfield(luaState, -1, "visibility");
+	lua_Number visibility = lua_tonumber(luaState, -1) * globalVisibility;
+	lua_pop(luaState, 1);
 	glPushMatrix();
 	ApplyTransform(luaState);
-	RenderBackground(luaState);
-	RenderDrawableRectangle(luaState);
-	RenderChildren(luaState);
+	RenderBackground(luaState, visibility);
+	RenderDrawableRectangle(luaState, visibility);
+	RenderChildren(luaState, visibility);
 	glPopMatrix();
 }
 
 /**
 Renders the drawable children. Expected the Drawable table in the top of the stack, where this Drawable is the parent of the children.
 */
-void SceneRender::RenderChildren(lua_State* luaState)
+void SceneRender::RenderChildren(lua_State* luaState, lua_Number globalVisibility)
 {
 	glPushMatrix();
 	ApplyTransformForChildren(luaState);
@@ -111,7 +114,7 @@ void SceneRender::RenderChildren(lua_State* luaState)
 	{
 		lua_rawgeti(luaState, -1, i);
 		if (!lua_rawequal(luaState, -1, -3)) // checks if the current child is the same object of the "background" field
-			RenderDrawable(luaState);
+			RenderDrawable(luaState, globalVisibility);
 		lua_pop(luaState, 1);
 	}
 	lua_pop(luaState, 2); // pops "background" and "children"
@@ -122,7 +125,7 @@ void SceneRender::RenderChildren(lua_State* luaState)
 Renders the drawable background child, if defined. Expected the Drawable table in the top of the stack,
 where this Drawable is the parent of the children.
 */
-void SceneRender::RenderBackground(lua_State* luaState)
+void SceneRender::RenderBackground(lua_State* luaState, lua_Number globalVisibility)
 {
 	lua_getfield(luaState, -1, "background");
 	if (!lua_isnil(luaState, -1))
@@ -131,7 +134,7 @@ void SceneRender::RenderBackground(lua_State* luaState)
 		lua_pop(luaState, 1);
 		ApplyTransformForChildren(luaState);
 		lua_getfield(luaState, -1, "background");
-		RenderDrawable(luaState);
+		RenderDrawable(luaState, globalVisibility);
 		lua_pop(luaState, 1);
 		glPopMatrix();
 	}
@@ -143,7 +146,7 @@ void SceneRender::RenderBackground(lua_State* luaState)
 Renders the drawable rectangle. Expected the Drawable table in the top of the stack, but the rectangle is only drawn
 if it contains the color or texture fields.
 */
-void SceneRender::RenderDrawableRectangle(lua_State* luaState)
+void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibility)
 {
 	Color color = { 1.f, 1.f, 1.f, 1.f };
 	bool isColorDefined = false;
@@ -166,7 +169,7 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState)
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		SetUpTextureMode(luaState);
 		
-		glColor4f(color.r, color.g, color.b, color.a);
+		glColor4f(color.r, color.g, color.b, color.a * (float) visibility);
 		
 		glBegin(GL_QUADS);
 		// left bottom:

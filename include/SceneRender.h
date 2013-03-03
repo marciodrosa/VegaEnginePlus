@@ -30,10 +30,10 @@ namespace vega
 		void Render(lua_State*);
 	private:
 		void RenderViewport(lua_State* luaState);
-		void RenderDrawable(lua_State* luaState);
-		void RenderChildren(lua_State* luaState);
-		void RenderBackground(lua_State* luaState);
-		void RenderDrawableRectangle(lua_State* luaState);
+		void RenderDrawable(lua_State* luaState, lua_Number globalVisibility);
+		void RenderChildren(lua_State* luaState, lua_Number globalVisibility);
+		void RenderBackground(lua_State* luaState, lua_Number globalVisibility);
+		void RenderDrawableRectangle(lua_State* luaState, lua_Number visibility);
 		void ApplyTransform(lua_State* luaState);
 		void ApplyTransformForChildren(lua_State* luaState);
 		void SetUpView(lua_State* luaState);

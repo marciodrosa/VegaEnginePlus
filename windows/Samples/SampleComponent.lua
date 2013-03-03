@@ -41,6 +41,22 @@ function StartComponent:exec(context)
 	texturedrectangle.isrelativepositionx, texturedrectangle.isrelativepositiony = true, true
 	scene.viewport.rootdrawable:addchild(texturedrectangle)
 	
+	--[[
+	local transparentrectangle = vega.Drawable.new()
+	transparentrectangle.color = vega.Color.new(255, 0, 255)
+	transparentrectangle.position = vega.Vector2.new(0.0, 0)
+	transparentrectangle.size = vega.Vector2.new(0.6, 0.6)
+	transparentrectangle.visibility = 0.5
+	scene.viewport.rootdrawable:addchild(transparentrectangle)
+	
+	local transparentrectangle2 = vega.Drawable.new()
+	transparentrectangle2.color = vega.Color.new(255, 0, 255)
+	transparentrectangle2.position = vega.Vector2.new(0.6, 0.6)
+	transparentrectangle2.size = vega.Vector2.new(0.2, 0.2)
+	transparentrectangle2.visibility = 1
+	transparentrectangle:addchild(transparentrectangle2)
+	]]
+	
 	scene.controllers = {
 		{
 			update = function(self, context)
