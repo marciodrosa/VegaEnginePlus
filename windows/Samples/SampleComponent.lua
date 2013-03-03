@@ -47,6 +47,18 @@ function StartComponent:exec(context)
 	coin.rows = 2
 	coin.columns = 10
 	coin.texture = context.contentmanager:gettexture("coin.png")
+	coin.extensions = {
+		{
+			texture = context.contentmanager:gettexture("coin_blue.png"),
+			rows = 2,
+			columns = 10
+		},
+		{
+			texture = context.contentmanager:gettexture("coin_red.png"),
+			rows = 2,
+			columns = 10
+		},
+	}
 	scene.viewport.rootdrawable:addchild(coin)
 	
 	--[[
