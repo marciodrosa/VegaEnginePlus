@@ -17,7 +17,7 @@ void OnLuaError(lua_State* luaState)
 
 App* App::appInstance = NULL;
 
-App::App()
+App::App() : mouseX(0), mouseY(0), wasMouseClicked(false)
 {
 	appInstance = this;
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -108,6 +108,80 @@ void App::ExecuteMainLoop(string startModuleScriptName)
 }
 
 /**
+Updates the "input" field of the "context" table (context must be on top of the stack).
+*/
+void App::UpdateContextWithInputState(lua_State* luaState)
+{
+	// creates a new Input object and set it into the context
+	lua_getglobal(luaState, "vega");
+	lua_getfield(luaState, -1, "Input");
+	lua_getfield(luaState, -1, "new");
+	lua_call(luaState, 0, 1); // pushes the new input instance in the top of the stack
+	lua_remove(luaState, -2); // removes the "Input"
+	lua_remove(luaState, -2); // removes "vega"
+	lua_pushstring(luaState, "input"); // stack now: context, the input instance, "input"
+	lua_pushvalue(luaState, -2);  // stack now: context, the input instance, "input", the input instance again
+	lua_settable(luaState, -4); // set context["input"] = the input instance; the stack now is context, then the input instance
+
+	int newMouseX, newMouseY;
+	Uint8 mouseState = SDL_GetMouseState(&newMouseX, &newMouseY);
+	newMouseY = SDL_GetVideoSurface()->h - newMouseY; // to invert the Y coordinate; for vega, 0 is the bottom of the screen.
+
+	bool isClicked = mouseState & SDL_BUTTON(1);
+	bool isNewClick = isClicked && !wasMouseClicked;
+	bool wasReleasedNow = !isClicked && wasMouseClicked;
+
+	if (!wasMouseClicked)
+	{
+		mouseX = newMouseX;
+		mouseY = newMouseY;
+	}
+	if (isClicked)
+		AddTouchPointToList(luaState, "touchpoints", newMouseX, newMouseY, mouseX, mouseY);
+	if (isNewClick)
+		AddTouchPointToList(luaState, "newtouchpoints", newMouseX, newMouseY, mouseX, mouseY);
+	if (wasReleasedNow)
+		AddTouchPointToList(luaState, "releasedtouchpoints", newMouseX, newMouseY, mouseX, mouseY);
+
+	mouseX = newMouseX;
+	mouseY = newMouseY;
+	wasMouseClicked = isClicked;
+
+	lua_pop(luaState, 1); // pops the input instance
+}
+
+/**
+Creates a TouchPoint Lua object with the given data and set it into the list with the given name.
+*/
+void App::AddTouchPointToList(lua_State* luaState, string listFieldName, int x, int y, int previousX, int previousY)
+{
+	lua_getfield(luaState, -1, listFieldName.c_str());
+	CreateTouchPointLuaObject(luaState, x, y, previousX, previousY);
+	lua_rawseti(luaState, -2, 1);
+	lua_pop(luaState, 1);
+}
+
+/**
+Calls vega.TouchPoint.new and push the result into the stack.
+*/
+void App::CreateTouchPointLuaObject(lua_State* luaState, int x, int y, int previousX, int previousY)
+{
+	lua_getglobal(luaState, "vega");
+	lua_getfield(luaState, -1, "TouchPoint");
+	lua_getfield(luaState, -1, "new");
+	lua_pushnumber(luaState, 1); // id, always 1 for the mouse
+	lua_pushnumber(luaState, x);
+	lua_pushnumber(luaState, y);
+	lua_pushnumber(luaState, previousX);
+	lua_pushnumber(luaState, previousY);
+	lua_pushnumber(luaState, SDL_GetVideoSurface()->w);
+	lua_pushnumber(luaState, SDL_GetVideoSurface()->h);
+	lua_call(luaState, 7, 1);
+	lua_remove(luaState, -2); // remove TouchPoint from the stack
+	lua_remove(luaState, -2); // remove vega from stack, noew the stack is back to initial state + the result of the function at top
+}
+
+/**
 Called by the main loop Lua script. Answer to the input events of the application.
 On lua, call vegacheckinput(context).
 */
@@ -123,8 +197,13 @@ int App::CheckInputLuaFunction(lua_State* luaState)
 			lua_pushboolean(luaState, 0);
 			lua_settable(luaState, 1); // "context" table arg
 			break;
+		case SDL_MOUSEBUTTONDOWN:
+			break;
+		case SDL_MOUSEBUTTONUP:
+			break;
 		}
 	}
+	appInstance->UpdateContextWithInputState(luaState);
 	return 0;
 }
 

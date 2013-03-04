@@ -88,7 +88,20 @@ function StartComponent:exec(context)
 				coin.frame = coin.frame + 1
 				if coin.frame > coin:getframescount() then coin.frame = 1 end
 			end
-		}
+		},
+		{
+			update = function(self, context)
+				if #context.input.newtouchpoints > 0 then
+					print("Started touching at "..tostring(context.input.newtouchpoints[1].position))
+				end
+				if #context.input.touchpoints > 0 then
+					print("Touching at "..tostring(context.input.touchpoints[1].position))
+				end
+				if #context.input.releasedtouchpoints > 0 then
+					print("Released touching at "..tostring(context.input.releasedtouchpoints[1].position))
+				end
+			end
+		},
 	}
 	
 	context.nextscene = scene

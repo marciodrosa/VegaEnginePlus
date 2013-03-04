@@ -31,8 +31,13 @@ namespace vega
 		long startFrameTime;
 		vega::SceneRender sceneRender;
 		std::list<Texture*> textures;
+		int mouseX, mouseY;
+		bool wasMouseClicked;
 
 		void InitLua();
+		void UpdateContextWithInputState(lua_State* luaState);
+		void AddTouchPointToList(lua_State* luaState, std::string listFieldName, int x, int y, int previousX, int previousY);
+		void CreateTouchPointLuaObject(lua_State* luaState, int x, int y, int previousX, int previousY);
 		static int CheckInputLuaFunction(lua_State *luaState);
 		static int SyncBeginLuaFunction(lua_State *luaState);
 		static int SyncEndLuaFunction(lua_State *luaState);
