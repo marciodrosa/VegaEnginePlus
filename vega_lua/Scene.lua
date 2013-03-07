@@ -1,6 +1,7 @@
 require "vegatable"
 require "Viewport"
 require "Color"
+require "Layer"
 
 --- Scene contains the elements to be drawn and the controllers that updates
 -- the state of the scene. Set a scene into the current context (the "nextscene"
@@ -36,6 +37,9 @@ end
 --- Create a new Scene table.
 function vega.Scene.new()
 	return {
+		--layers = {
+		--	vega.Layer.new()
+		--},
 		viewport = vega.Viewport.new(),
 		backgroundcolor = vega.Color.new(25, 70, 255),
 		framespersecond = 30,

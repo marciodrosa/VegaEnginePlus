@@ -5,11 +5,11 @@
 #include "SDL.h"
 #include "App.h"
 
-#define INITAPP(startComponentScriptName) \
+#define INITAPP(scriptName) \
 	int main(int argc, char** argv) \
 	{ \
 		vega::App app; \
-		app.ExecuteMainLoop(startComponentScriptName); \
+		app.LoadAndExecuteScript(scriptName); \
 		return 0; \
 	}
 

@@ -379,13 +379,13 @@ in the top of the stack.
 */
 GLint SceneRender::GetTextureMode(lua_State* luaState, std::string fieldName)
 {
-	GLint textureMode = GL_CLAMP;
+	GLint textureMode = GL_REPEAT;
 	lua_getfield(luaState, -1, fieldName.c_str());
 	if (!lua_isnil(luaState, -1))
 	{
-		string textureModeUStr = lua_tostring(luaState, -1);
-		if (textureModeUStr == "repeat")
-			textureMode = GL_REPEAT;
+		string textureModeStr = lua_tostring(luaState, -1);
+		if (textureModeStr == "clamp")
+			textureMode = GL_CLAMP;
 	}
 	lua_pop(luaState, 1);
 	return textureMode;

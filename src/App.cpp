@@ -93,15 +93,11 @@ void App::InitLua()
 }
 
 /**
-Executes the main loop.
+Loads the Lua script with the given name and executes.
 */
-void App::ExecuteMainLoop(string startModuleScriptName)
+void App::LoadAndExecuteScript(std::string scriptName)
 {
-	if (luaL_loadfile(luaState, startModuleScriptName.c_str()) != 0)
-		OnLuaError(luaState);
-	else if (lua_pcall(luaState, 0, 0, 0) != 0)
-		OnLuaError(luaState);
-	if (luaL_loadfile(luaState, "vega_lua/mainloop.lua") != 0)
+	if (luaL_loadfile(luaState, scriptName.c_str()) != 0)
 		OnLuaError(luaState);
 	else if (lua_pcall(luaState, 0, 0, 0) != 0)
 		OnLuaError(luaState);

@@ -72,10 +72,10 @@ function spritedrawable:afterdraw()
 end
 
 function vega.SpriteDrawable.new()
-	mt = {
+	local mt = {
 		__index = vega.Drawable.new()
 	}
-	obj = {
+	local obj = {
 		columns = 1,
 		rows = 1,
 		frame = 1,
