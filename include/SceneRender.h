@@ -1,5 +1,5 @@
-#ifndef VEGAENGINE_SCENERENDER_H
-#define VEGAENGINE_SCENERENDER_H
+#ifndef VEGA_SCENERENDER_H
+#define VEGA_SCENERENDER_H
 
 #include <string>
 

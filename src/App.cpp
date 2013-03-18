@@ -7,41 +7,32 @@
 using namespace std;
 using namespace vega;
 
-/**
-Default handler to lua errors.
-*/
-void OnLuaError(lua_State* luaState)
-{
-	cerr << "Lua error: " << lua_tostring(luaState, -1) << endl;
-}
-
 App* App::appInstance = NULL;
 
-App::App() : mouseX(0), mouseY(0), wasMouseClicked(false)
+#ifdef VEGA_WINDOWS
+App::App()
 {
+	InitSDLApp();
+#endif
+#ifdef VEGA_ANDROID
+App::App(android_app* androidApp)
+{
+	InitAndroidApp(androidApp);
+#endif
+	mouseX = 0;
+	mouseY = 0;
+	wasMouseClicked = false;
 	appInstance = this;
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-	{
-		cerr << "Unable to init SDL: " << SDL_GetError() << "." << endl;
-		return;
-	}
-	int imageFlags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF;
-	if (IMG_Init(imageFlags) && imageFlags != imageFlags)
-		cerr << "Warning: failed to init image libraries: " << IMG_GetError() << endl;
-	int videoModeFlags = SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
-	SDL_SetVideoMode(800, 600, 32, videoModeFlags);
-	SDL_WM_GrabInput(SDL_GRAB_OFF);
-	SDL_ShowCursor(true);
-	SDL_WM_SetCaption("Vega", NULL);
-	sceneRender.Init();
 	InitLua();
 }
 
 App::~App()
 {
 	lua_close(luaState);
+#ifdef VEGA_WINDOWS
 	IMG_Quit();
 	SDL_Quit();
+#endif
 	appInstance = NULL;
 }
 
@@ -98,9 +89,9 @@ Loads the Lua script with the given name and executes.
 void App::LoadAndExecuteScript(std::string scriptName)
 {
 	if (luaL_loadfile(luaState, scriptName.c_str()) != 0)
-		OnLuaError(luaState);
+		cerr << "Lua error: " << lua_tostring(luaState, -1) << endl;
 	else if (lua_pcall(luaState, 0, 0, 0) != 0)
-		OnLuaError(luaState);
+		cerr << "Lua error: " << lua_tostring(luaState, -1) << endl;
 }
 
 /**
@@ -119,6 +110,7 @@ void App::UpdateContextWithInputState(lua_State* luaState)
 	lua_pushvalue(luaState, -2);  // stack now: context, the input instance, "input", the input instance again
 	lua_settable(luaState, -4); // set context["input"] = the input instance; the stack now is context, then the input instance
 
+#ifdef VEGA_WINDOWS
 	int newMouseX, newMouseY;
 	Uint8 mouseState = SDL_GetMouseState(&newMouseX, &newMouseY);
 	newMouseY = SDL_GetVideoSurface()->h - newMouseY; // to invert the Y coordinate; for vega, 0 is the bottom of the screen.
@@ -142,6 +134,7 @@ void App::UpdateContextWithInputState(lua_State* luaState)
 	mouseX = newMouseX;
 	mouseY = newMouseY;
 	wasMouseClicked = isClicked;
+#endif
 
 	lua_pop(luaState, 1); // pops the input instance
 }
@@ -162,6 +155,8 @@ Calls vega.TouchPoint.new and push the result into the stack.
 */
 void App::CreateTouchPointLuaObject(lua_State* luaState, int x, int y, int previousX, int previousY)
 {
+	int screenWidth, screenHeight;
+	GetScreenSize(&screenWidth, &screenHeight);
 	lua_getglobal(luaState, "vega");
 	lua_getfield(luaState, -1, "TouchPoint");
 	lua_getfield(luaState, -1, "new");
@@ -170,8 +165,8 @@ void App::CreateTouchPointLuaObject(lua_State* luaState, int x, int y, int previ
 	lua_pushnumber(luaState, y);
 	lua_pushnumber(luaState, previousX);
 	lua_pushnumber(luaState, previousY);
-	lua_pushnumber(luaState, SDL_GetVideoSurface()->w);
-	lua_pushnumber(luaState, SDL_GetVideoSurface()->h);
+	lua_pushnumber(luaState, screenWidth);
+	lua_pushnumber(luaState, screenHeight);
 	lua_call(luaState, 7, 1);
 	lua_remove(luaState, -2); // remove TouchPoint from the stack
 	lua_remove(luaState, -2); // remove vega from stack, noew the stack is back to initial state + the result of the function at top
@@ -183,22 +178,12 @@ On lua, call vegacheckinput(context).
 */
 int App::CheckInputLuaFunction(lua_State* luaState)
 {
-	SDL_Event evt;
-	while (SDL_PollEvent(&evt))
-	{
-		switch (evt.type)
-		{
-		case SDL_QUIT:
-			lua_pushstring(luaState, "executing");
-			lua_pushboolean(luaState, 0);
-			lua_settable(luaState, 1); // "context" table arg
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			break;
-		case SDL_MOUSEBUTTONUP:
-			break;
-		}
-	}
+#ifdef VEGA_WINDOWS
+	CheckInputOnSDL(luaState);
+#endif
+#ifdef VEGA_ANDROID
+	CheckInputOnAndroid(luaState);
+#endif
 	appInstance->UpdateContextWithInputState(luaState);
 	return 0;
 }
@@ -222,7 +207,11 @@ int App::SyncEndLuaFunction(lua_State* luaState)
 	long synchTime = 1000 / (long) fps;
 	long waitTime = synchTime - (((long) time(NULL)) - appInstance->startFrameTime);
 	if (waitTime > 0)
+	{
+#ifdef VEGA_WINDOWS
 		SDL_Delay(waitTime);
+#endif
+	}
 	return 0;
 }
 
@@ -232,6 +221,7 @@ Called by the main loop Lua script. Renders the available scene.
 int App::RenderLuaFunction(lua_State* luaState)
 {
 	appInstance->sceneRender.Render(luaState);
+	appInstance->OnRenderFinished();
 	return 0;
 }
 
@@ -241,6 +231,7 @@ Called by the main loop Lua script. Clear the screen.
 int App::ClearScreenLuaFunction(lua_State* luaState)
 {
 	appInstance->sceneRender.Render(NULL);
+	appInstance->OnRenderFinished();
 	return 0;
 }
 
@@ -249,8 +240,10 @@ Return two values to the Lua call: the width and height of the screen.
 */
 int App::ScreenSizeLuaFunction(lua_State* luaState)
 {
-	lua_pushnumber(luaState, SDL_GetVideoSurface()->w);
-	lua_pushnumber(luaState, SDL_GetVideoSurface()->h);
+	int w, h;
+	appInstance->GetScreenSize(&w, &h);
+	lua_pushnumber(luaState, w);
+	lua_pushnumber(luaState, h);
 	return 2;
 }
 
@@ -290,3 +283,12 @@ int App::ReleaseTexturesLuaFunction(lua_State *luaState)
 	return 0;
 }
 
+/**
+Sets the "executing" field of the Context table to false. Expected the Context table in the top of the stack.
+*/
+void App::SetExecutingFieldToFalse(lua_State* luaState)
+{
+	lua_pushstring(luaState, "executing");
+	lua_pushboolean(luaState, 0);
+	lua_settable(luaState, 1);
+}

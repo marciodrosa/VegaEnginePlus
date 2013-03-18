@@ -1,6 +1,6 @@
 #include "../include/SceneRender.h"
-#include "../include/SDL.h"
 #include "../include/OpenGL.h"
+#include "../include/SDL.h"
 
 #include <iostream>
 
@@ -31,10 +31,12 @@ void SceneRender::Init()
 	glAlphaFunc(GL_LEQUAL, 1);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+#ifndef VEGA_OPENGL_ES
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+#endif
 }
 
 /**
@@ -58,8 +60,6 @@ void SceneRender::Render(lua_State* luaState)
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
-	SDL_GL_SwapBuffers();
-	SDL_Flip(SDL_GetVideoSurface());
 }
 
 /**
@@ -173,6 +173,8 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibi
 		
 		glColor4f(color.r, color.g, color.b, color.a * (float) visibility);
 		
+#ifdef VEGA_OPENGL_ES
+#else
 		glBegin(GL_QUADS);
 		// left bottom:
 		glTexCoord2f(topLeftUV.x, bottomRightUV.y);
@@ -187,6 +189,7 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibi
 		glTexCoord2f(topLeftUV.x, topLeftUV.y);
 		glVertex2f(0.f, size.y);
 		glEnd();
+#endif
 	}
 }
 
@@ -262,7 +265,11 @@ void SceneRender::SetUpView(lua_State* luaState)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+#ifdef VEGA_OPENGL_ES
+	glOrthof(0.0, sceneViewWidth, 0.0, sceneViewHeight, -1.0, 1.0);
+#else
 	glOrtho(0.0, sceneViewWidth, 0.0, sceneViewHeight, -1.0, 1.0);
+#endif
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -385,7 +392,13 @@ GLint SceneRender::GetTextureMode(lua_State* luaState, std::string fieldName)
 	{
 		string textureModeStr = lua_tostring(luaState, -1);
 		if (textureModeStr == "clamp")
+		{
+#ifdef VEGA_OPENGL_ES
+			textureMode = GL_CLAMP_TO_EDGE;
+#else
 			textureMode = GL_CLAMP;
+#endif
+		}
 	}
 	lua_pop(luaState, 1);
 	return textureMode;

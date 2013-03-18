@@ -10,3 +10,12 @@ windows/Samples/Debug
 windows/Samples/Release
 windows/VegaEnginePlusWindows/Debug
 windows/VegaEnginePlusWindows/Release
+
+# Android build local files:
+android/samples/mainsample/local.properties
+
+# Android build folders:
+android/libs
+android/obj
+android/samples/mainsample/bin
+android/samples/mainsample/jni

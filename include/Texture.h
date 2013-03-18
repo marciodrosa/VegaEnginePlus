@@ -1,8 +1,9 @@
-#ifndef VEGAENGINE_TEXTURE_H
-#define VEGAENGINE_TEXTURE_H
+#ifndef VEGA_TEXTURE_H
+#define VEGA_TEXTURE_H
 
 #include "SDL.h"
 #include "OpenGL.h"
+#include "VegaDefines.h"
 #include <string>
 
 namespace vega
@@ -20,9 +21,14 @@ namespace vega
 		int GetHeight();
 	private:
 		Texture();
+
+#ifdef VEGA_WINDOWS
 		SDL_Surface *surface;
+#endif
+
 		GLuint glTextureName;
 		GLenum GetOpenGLTextureFormat();
+		void* GetData();
 	};
 }
 

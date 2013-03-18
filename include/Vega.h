@@ -1,5 +1,5 @@
-#ifndef VEGAENGINE_VEGAENGINE_H
-#define VEGAENGINE_VEGAENGINE_H
+#ifndef VEGA_VEGA_H
+#define VEGA_VEGA_H
 
 #include <iostream>
 #include "App.h"

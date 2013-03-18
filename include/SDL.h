@@ -1,9 +1,13 @@
-#ifndef VEGAENGINE_SDL_H
-#define VEGAENGINE_SDL_H
+#ifndef VEGA_SDL_H
+#define VEGA_SDL_H
 
-// This header just includes the SDL headers.
+// This header includes the SDL headers.
 
+#include "VegaDefines.h"
+
+#ifdef VEGA_WINDOWS
 #include "SDL-1.2.15/SDL.h"
 #include "SDL-1.2.15/SDL_image.h"
+#endif
 
 #endif

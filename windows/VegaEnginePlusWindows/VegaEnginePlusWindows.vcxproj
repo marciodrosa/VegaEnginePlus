@@ -100,6 +100,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Android.h" />
     <ClInclude Include="..\..\include\App.h" />
     <ClInclude Include="..\..\include\Lua.h" />
     <ClInclude Include="..\..\include\OpenGL.h" />
@@ -107,12 +108,14 @@
     <ClInclude Include="..\..\include\SDL.h" />
     <ClInclude Include="..\..\include\Texture.h" />
     <ClInclude Include="..\..\include\VegaDefines.h" />
-    <ClInclude Include="..\..\include\VegaEngine.h" />
+    <ClInclude Include="..\..\include\Vega.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\Texture.cpp" />
     <ClCompile Include="..\..\src\App.cpp" />
+    <ClCompile Include="..\..\src\App_Windows.cpp" />
+    <ClCompile Include="..\..\src\App_Android.cpp" />
     <ClCompile Include="..\..\src\SceneRender.cpp" />
+    <ClCompile Include="..\..\src\Texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

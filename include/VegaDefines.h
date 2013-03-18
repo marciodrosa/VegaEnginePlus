@@ -1,16 +1,18 @@
-#ifndef VEGAENGINE_VEGADEFINES_H
-#define VEGAENGINE_VEGADEFINES_H
+#ifndef VEGA_VEGADEFINES_H
+#define VEGA_VEGADEFINES_H
 
 #include <iostream>
-#include "SDL.h"
-#include "App.h"
 
-#define INITAPP(scriptName) \
-	int main(int argc, char** argv) \
-	{ \
-		vega::App app; \
-		app.LoadAndExecuteScript(scriptName); \
-		return 0; \
-	}
+#ifdef WIN32
+#define VEGA_WINDOWS
+#elif defined ANDROID
+#define VEGA_ANDROID
+#else
+#error Undefined platform to build Vega. Define WIN32 or Android.
+#endif
+
+#ifdef VEGA_ANDROID
+#define VEGA_OPENGL_ES
+#endif
 
 #endif

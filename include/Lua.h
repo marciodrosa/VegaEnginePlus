@@ -1,5 +1,5 @@
-#ifndef VEGAENGINE_LUA_H
-#define VEGAENGINE_LUA_H
+#ifndef VEGA_LUA_H
+#define VEGA_LUA_H
 
 // This header just includes the Lua headers.
 
