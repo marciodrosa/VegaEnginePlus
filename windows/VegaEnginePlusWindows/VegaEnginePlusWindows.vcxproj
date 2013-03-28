@@ -102,6 +102,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\Android.h" />
     <ClInclude Include="..\..\include\App.h" />
+    <ClInclude Include="..\..\include\CApi.h" />
+    <ClInclude Include="..\..\include\Log.h" />
     <ClInclude Include="..\..\include\Lua.h" />
     <ClInclude Include="..\..\include\OpenGL.h" />
     <ClInclude Include="..\..\include\SceneRender.h" />
@@ -112,8 +114,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\App.cpp" />
-    <ClCompile Include="..\..\src\App_Windows.cpp" />
     <ClCompile Include="..\..\src\App_Android.cpp" />
+    <ClCompile Include="..\..\src\CApi.cpp" />
+    <ClCompile Include="..\..\src\CApi_Android.cpp" />
+    <ClCompile Include="..\..\src\CApi_Windows.cpp" />
+    <ClCompile Include="..\..\src\Log_Android.cpp" />
+    <ClCompile Include="..\..\src\Log_Windows.cpp" />
     <ClCompile Include="..\..\src\SceneRender.cpp" />
     <ClCompile Include="..\..\src\Texture.cpp" />
   </ItemGroup>

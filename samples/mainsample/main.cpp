@@ -1,3 +1,3 @@
 #include "../../include/Vega.h"
 
-INITAPP("samplemaincomponent.lua")
+EXECUTE_APP("samplemaincomponent")

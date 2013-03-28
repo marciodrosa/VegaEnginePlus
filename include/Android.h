@@ -11,6 +11,7 @@ extern "C"
 	#include <jni.h>
 	#include <errno.h>
 	#include <android/log.h>
+	#include <android/asset_manager.h>
 	#include <android_native_app_glue.h>
 	#include <EGL/egl.h>
 }

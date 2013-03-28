@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="VegaSamplePreBuild" default="copy-files">
+	
+	<target name="copy-files">
+		<!-- Copies the Vega lua scripts to the res folder of the Android project: -->
+		<copy todir="assets/vega_lua" overwrite="true">
+			<fileset dir="../../../vega_lua"/>
+		</copy>
+		<!-- Copies the sample project files to the res folder of the Android project: -->
+		<copy todir="assets" overwrite="true">
+			<fileset dir="../../../samples/mainsample" excludes="*.cpp"/>
+		</copy>
+	</target>
+
+</project>

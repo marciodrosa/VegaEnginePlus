@@ -1,0 +1,1 @@
+This project can be opened with eclipse to build and run. The build process executes the Ant file "pre-build.xml" to copy sample files and Vega scripts into the project before the actual build.

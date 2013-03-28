@@ -14,8 +14,12 @@ windows/VegaEnginePlusWindows/Release
 # Android build local files:
 android/samples/mainsample/local.properties
 
-# Android build folders:
+# Android build and auto-generated folders:
+android/gen
 android/libs
 android/obj
+android/bin
+android/samples/mainsample/gen
 android/samples/mainsample/bin
 android/samples/mainsample/jni
+android/samples/mainsample/assets
