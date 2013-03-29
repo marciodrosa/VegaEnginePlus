@@ -23,6 +23,7 @@ Requires the Lua script with the given name.
 void App::Execute(string scriptName)
 {
 	CApi* cApi = CApi::GetInstance();
+	cApi->Init();
 	stringstream ss;
 	ss << "require '" << scriptName << "'";
 	if (luaL_loadstring(cApi->GetLuaState(), ss.str().c_str()) != 0)

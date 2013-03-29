@@ -7,7 +7,7 @@
 namespace vega
 {
 	/**
-	The entry point class. Create an instance and execute with a Lua script calling the Execute function.
+	The entry point class. Create an instance and execute a Lua script with the Execute function.
 	*/
 	class App
 	{

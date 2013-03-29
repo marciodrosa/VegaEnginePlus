@@ -1,4 +1,5 @@
 #include "../include/CApi.h"
+#include "../include/Log.h"
 
 #include <ctime>
 
@@ -22,20 +23,53 @@ void CApi::ReleaseInstance()
 
 CApi::CApi()
 {
+	Log::Info("Creating the C api instance...");
 	mouseX = 0;
 	mouseY = 0;
 	wasMouseClicked = false;
-
+	
+#ifdef VEGA_WINDOWS
+	InitSDL();
+#endif
+	Log::Info("Creating a new Lua state...");
 	luaState = luaL_newstate();
+	Log::Info("Opening Lua libraries...");
 	luaL_openlibs(luaState);
+	Log::Info("Configuring Lua package path...");
 	luaL_loadstring(luaState, "package.path = package.path..';vega_lua/?.lua;vega_lua/?'");
 	lua_pcall(luaState, 0, 0, 0);
+}
+
+CApi::~CApi()
+{
+	Log::Info("CApi released.");
+#ifdef VEGA_WINDOWS
+	IMG_Quit();
+	SDL_Quit();
+#endif
+#ifdef VEGA_ANDROID
+	androidApp->onAppCmd = NULL;
+#endif
+}
+
+void CApi::Init()
+{
+	Log::Info("Initializing the C api instance...");
+	
+#ifdef VEGA_ANDROID
+	Log::Info("Configuring Android Lua searches...");
+	InitLuaSearches();
+#endif
+
+	Log::Info("Requiring 'vega' Lua script...");
 	luaL_loadstring(luaState, "require 'vega'");
 	lua_pcall(luaState, 0, 0, 0);
 
+	Log::Info("Creating the capi Lua table...");
 	lua_getglobal(luaState, "vega");
 	lua_getfield(luaState, -1, "capi");
 	
+	Log::Info("Creating the Lua functions into the capi table...");
 	lua_pushstring(luaState, "checkinput");
 	lua_pushcfunction(luaState, CheckInputLuaFunction);
 	lua_settable(luaState, -3);
@@ -69,24 +103,7 @@ CApi::CApi()
 	lua_settable(luaState, -3);
 
 	lua_pop(luaState, 2);
-
-#ifdef VEGA_WINDOWS
-	InitSDL();
-#endif
-#ifdef VEGA_ANDROID
-	InitLuaSearches();
-#endif
-}
-
-CApi::~CApi()
-{
-#ifdef VEGA_WINDOWS
-	IMG_Quit();
-	SDL_Quit();
-#endif
-#ifdef VEGA_ANDROID
-	androidApp->onAppCmd = NULL;
-#endif
+	Log::Info("capi Lua table created.");
 }
 
 /**

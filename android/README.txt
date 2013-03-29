@@ -1,0 +1,1 @@
+Executes ndk-build before use the Vega Java library to build the C++ libraries.

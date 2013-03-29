@@ -20,11 +20,11 @@ namespace vega
 		static CApi* GetInstance();
 		static void ReleaseInstance();
 		virtual ~CApi();
-
+		void Init();
 		lua_State* GetLuaState();
 
 #ifdef VEGA_ANDROID
-		void SetVegaApp(android_app* androidApp);
+		void SetAndroidApp(android_app* androidApp);
 #endif
 
 	private:
@@ -69,7 +69,11 @@ namespace vega
 		static int SearchModuleInAssetsLuaFunction(lua_State*);
 		static int LoadModuleFromAssetsLuaFunction(lua_State*);
 
+		// helper functions used by the Android Lua functions:
+		static std::string SearchAssetOnDir(std::string dirName, std::string assetName);
+
 		android_app* androidApp;
+		
 		EGLSurface eglSurface;
 		EGLDisplay eglDisplay;
 #endif
