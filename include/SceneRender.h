@@ -27,6 +27,7 @@ namespace vega
 		SceneRender();
 		virtual ~SceneRender();
 		void Init();
+		void SetScreenSize(int w, int h);
 		void Render(lua_State*);
 	private:
 		void RenderViewport(lua_State* luaState);
@@ -48,6 +49,9 @@ namespace vega
 		void ReadVector2FromTableField(lua_State* luaState, std::string fieldName, Vector2&);
 		GLuint GetTextureId(lua_State* luaState);
 		GLint GetTextureMode(lua_State* luaState, std::string fieldName);
+
+		bool isInitiated;
+		int screenWidth, screenHeight;
 	};
 }
 

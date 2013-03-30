@@ -44,7 +44,7 @@ void CApi::InitAndroidVideo()
             EGL_RED_SIZE, 8,
             EGL_NONE
     };
-    EGLint w, h, dummy, format;
+    EGLint format;
     EGLint numConfigs;
     EGLConfig config;
     EGLSurface surface;
@@ -61,13 +61,15 @@ void CApi::InitAndroidVideo()
     context = eglCreateContext(display, config, NULL, NULL);
 
     if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
-	{
         Log::Error("Unable to eglMakeCurrent");
-    }
 
 	eglSurface = surface;
 	eglDisplay = display;
+	isVideoInitialized = true;
 	sceneRender.Init();
+	int w, h;
+	GetScreenSize(&w, &h);
+	sceneRender.SetScreenSize(w, h);
 }
 
 /**
@@ -76,18 +78,18 @@ On lua, call vegacheckinput(context).
 */
 int CApi::CheckInputLuaFunction(lua_State* luaState)
 {
-	Log::Info("Checking input");
 	int eventId;
 	int events;
 	struct android_poll_source* source;
 	while ((eventId = ALooper_pollAll(0, NULL, &events, (void**)&source)) >= 0)
 	{
-		if (source != NULL) {
+		if (source != NULL)
 			source->process(CApi::GetInstance()->androidApp, source);
+		if (eventId == LOOPER_ID_USER)
+		{
 		}
-		if (eventId == LOOPER_ID_USER) {
-		}
-		if (CApi::GetInstance()->androidApp->destroyRequested != 0) {
+		if (CApi::GetInstance()->androidApp->destroyRequested != 0)
+		{
 			Log::Info("Destroy requested");
 			CApi::GetInstance()->SetExecutingFieldToFalse();
 			break;
@@ -109,13 +111,22 @@ void CApi::OnAndroidCommand(struct android_app* androidApp, int32_t cmd)
 
 void CApi::GetScreenSize(int *w, int *h)
 {
-	eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, w);
-    eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, h);
+	if (isVideoInitialized)
+	{
+		eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, w);
+		eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, h);
+	}
+	else
+	{
+		*w = 0;
+		*h = 0;
+	}
 }
 
 void CApi::OnRenderFinished()
 {
-	eglSwapBuffers(eglDisplay, eglSurface);
+	if (isVideoInitialized)
+		eglSwapBuffers(eglDisplay, eglSurface);
 }
 
 /**
@@ -143,12 +154,8 @@ int CApi::SearchModuleInAssetsLuaFunction(lua_State *luaState)
 	assetsNames.push_back(moduleNameWithLCExtension.str().c_str());
 	for (list<string>::iterator i = dirs.begin(); i != dirs.end(); ++i)
 	{
-		Log::Info("Search function is looking in directory:");
-		Log::Info(*i);
 		for (list<string>::iterator j = assetsNames.begin(); j != assetsNames.end(); ++j)
 		{
-			Log::Info("Search function is looking for the file:");
-			Log::Info(*j);
 			string fullAssetNameFound = SearchAssetOnDir(*i, *j);
 			if (fullAssetNameFound.length() > 0)
 			{
@@ -174,13 +181,11 @@ string CApi::SearchAssetOnDir(string dirName, string assetName)
 	bool found = false;
 	AAssetDir* dir = AAssetManager_openDir(CApi::GetInstance()->androidApp->activity->assetManager, dirName.c_str());
 	const char* dirAsset = NULL;
-	Log::Info("Scanning the asset directory...");
 	while ((dirAsset = AAssetDir_getNextFileName(dir)) != NULL)
 	{
 		string s = dirAsset;
 		if (s == assetName)
 		{
-			Log::Info("Target file found. Returning the full asset name...");
 			found = true;
 			if (dirName.length() > 0)
 			{
@@ -212,8 +217,6 @@ int CApi::LoadModuleFromAssetsLuaFunction(lua_State *luaState)
 	string moduleName = lua_tostring(luaState, -2);
 	Log::Info("Asset:");
 	Log::Info(extraValue);
-	Log::Info("Module name:");
-	Log::Info(moduleName);
 	AAsset* asset = AAssetManager_open(CApi::GetInstance()->androidApp->activity->assetManager, extraValue.c_str(), AASSET_MODE_BUFFER);
 	const void *data = AAsset_getBuffer(asset);
 	size_t dataSize = AAsset_getLength(asset);

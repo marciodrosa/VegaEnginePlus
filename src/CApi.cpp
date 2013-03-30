@@ -24,6 +24,7 @@ void CApi::ReleaseInstance()
 CApi::CApi()
 {
 	Log::Info("Creating the C api instance...");
+
 	mouseX = 0;
 	mouseY = 0;
 	wasMouseClicked = false;
@@ -31,6 +32,11 @@ CApi::CApi()
 #ifdef VEGA_WINDOWS
 	InitSDL();
 #endif
+
+#ifdef VEGA_ANDROID
+	isVideoInitialized = false;
+#endif
+
 	Log::Info("Creating a new Lua state...");
 	luaState = luaL_newstate();
 	Log::Info("Opening Lua libraries...");

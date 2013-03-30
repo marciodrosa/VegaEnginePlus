@@ -8,7 +8,7 @@
 #elif defined ANDROID
 #define VEGA_ANDROID
 #else
-#error Undefined platform to build Vega. Define WIN32 or Android.
+#error Undefined platform to build Vega. Define WIN32 or ANDROID.
 #endif
 
 #ifdef VEGA_ANDROID

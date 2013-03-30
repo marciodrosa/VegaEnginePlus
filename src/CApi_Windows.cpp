@@ -24,11 +24,14 @@ void CApi::InitSDL()
 		Log::Info(ss.str());
 	}
 	int videoModeFlags = SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
-	SDL_SetVideoMode(800, 600, 32, videoModeFlags);
+	int w = 800;
+	int h = 600;
+	SDL_SetVideoMode(w, h, 32, videoModeFlags);
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_ShowCursor(true);
 	SDL_WM_SetCaption("Vega", NULL);
 	sceneRender.Init();
+	sceneRender.SetScreenSize(w, h);
 }
 
 /**

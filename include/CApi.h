@@ -73,9 +73,9 @@ namespace vega
 		static std::string SearchAssetOnDir(std::string dirName, std::string assetName);
 
 		android_app* androidApp;
-		
 		EGLSurface eglSurface;
 		EGLDisplay eglDisplay;
+		bool isVideoInitialized;
 #endif
 	};
 }

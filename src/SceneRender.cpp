@@ -1,13 +1,14 @@
 #include "../include/SceneRender.h"
 #include "../include/OpenGL.h"
 #include "../include/SDL.h"
+#include "../include/Log.h"
 
 #include <iostream>
 
 using namespace vega;
 using namespace std;
 
-SceneRender::SceneRender()
+SceneRender::SceneRender() : isInitiated(false), screenWidth(1), screenHeight(1)
 {
 }
 
@@ -20,11 +21,11 @@ Initializes the render engine. Call it after the video initialization and before
 */
 void SceneRender::Init()
 {
+	Log::Info("Initializing render...");
 	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 
-	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -37,6 +38,14 @@ void SceneRender::Init()
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 #endif
+
+	isInitiated = true;
+}
+
+void SceneRender::SetScreenSize(int w, int h)
+{
+	screenWidth = w;
+	screenHeight = h;
 }
 
 /**
@@ -44,8 +53,11 @@ Renders the current frame of the scene. Expected the Scene table in the top of t
 */
 void SceneRender::Render(lua_State* luaState)
 {
+	if (!isInitiated)
+		return;
 	if (luaState != NULL)
 	{
+		glViewport(0, 0, screenWidth, screenHeight);
 		lua_getfield(luaState, 1, "backgroundcolor");
 		Color backgroundColor = GetColor(luaState);
 		glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
@@ -172,24 +184,12 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibi
 		SetUpTextureMode(luaState);
 		
 		glColor4f(color.r, color.g, color.b, color.a * (float) visibility);
-		
-#ifdef VEGA_OPENGL_ES
-#else
-		glBegin(GL_QUADS);
-		// left bottom:
-		glTexCoord2f(topLeftUV.x, bottomRightUV.y);
-		glVertex2f(0.f, 0.f);
-		// right bottom:
-		glTexCoord2f(bottomRightUV.x, bottomRightUV.y);
-		glVertex2f(size.x, 0.f);
-		// right top:
-		glTexCoord2f(bottomRightUV.x, topLeftUV.y);
-		glVertex2f(size.x, size.y);
-		// left top:
-		glTexCoord2f(topLeftUV.x, topLeftUV.y);
-		glVertex2f(0.f, size.y);
-		glEnd();
-#endif
+
+		GLfloat vertexes[] = {0.f, 0.f,  size.x, 0.f,  size.x, size.y,  0.f, size.y};
+		GLfloat uvCoordinates[] = {topLeftUV.x, bottomRightUV.y,  bottomRightUV.x, bottomRightUV.y,  bottomRightUV.x, topLeftUV.y,  topLeftUV.x, topLeftUV.y};
+		glVertexPointer(2, GL_FLOAT, 0, vertexes);
+		glTexCoordPointer(2, GL_FLOAT, 0, uvCoordinates);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 	}
 }
 
@@ -259,9 +259,7 @@ void SceneRender::SetUpView(lua_State* luaState)
 	GLfloat sceneViewHeight = (GLfloat) lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
 	
-	GLfloat  viewport[4];
-	glGetFloatv(GL_VIEWPORT, &viewport[0]);
-	GLfloat sceneViewWidth = sceneViewHeight * viewport[2] / viewport[3];
+	GLfloat sceneViewWidth = sceneViewHeight * (float)screenWidth / (screenHeight == 0 ? 1.f : (float)screenHeight);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

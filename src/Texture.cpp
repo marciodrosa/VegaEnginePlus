@@ -8,12 +8,12 @@ Loads the image with the given file name, creates the texture and returns it.
 Texture* Texture::Load(std::string filename)
 {
 	Texture *texture = new Texture();
-
+	bool loadImageFileOk = false;
 #ifdef VEGA_WINDOWS
 	texture->surface = IMG_Load(filename.c_str());
+	loadImageFileOk = texture->surface != NULL;
 #endif
-	
-	if (!texture)
+	if (!loadImageFileOk)
 	{
 		delete texture;
 		texture = NULL;
