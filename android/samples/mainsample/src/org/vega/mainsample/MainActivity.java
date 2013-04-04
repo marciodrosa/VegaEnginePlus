@@ -9,8 +9,8 @@ public class MainActivity extends VegaActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setScriptToLoadAndExecute("samplemaincomponent");
 		Log.i("vega", "Creating the activity.");
+		setScriptName("samplemaincomponent");
 		super.onCreate(savedInstanceState);
 	}
 

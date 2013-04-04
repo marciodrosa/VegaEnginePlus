@@ -20,12 +20,7 @@ namespace vega
 		static CApi* GetInstance();
 		static void ReleaseInstance();
 		virtual ~CApi();
-		void Init();
 		lua_State* GetLuaState();
-
-#ifdef VEGA_ANDROID
-		void SetAndroidApp(android_app* androidApp);
-#endif
 
 	private:
 		CApi();
@@ -60,10 +55,9 @@ namespace vega
 		int CheckInputOnWindows();
 #endif
 #ifdef VEGA_ANDROID
+		void InitAndroid();
 		void InitLuaSearches();
-		void InitAndroidVideo();
 		int CheckInputOnAndroid();
-		static void OnAndroidCommand(struct android_app* androidApp, int32_t cmd);
 
 		// functions used on Lua code to load scripts:
 		static int SearchModuleInAssetsLuaFunction(lua_State*);
@@ -72,10 +66,8 @@ namespace vega
 		// helper functions used by the Android Lua functions:
 		static std::string SearchAssetOnDir(std::string dirName, std::string assetName);
 
-		android_app* androidApp;
 		EGLSurface eglSurface;
 		EGLDisplay eglDisplay;
-		bool isVideoInitialized;
 #endif
 	};
 }

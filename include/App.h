@@ -2,6 +2,7 @@
 #define VEGA_APP_H
 
 #include "VegaDefines.h"
+#include "Android.h"
 #include <string>
 
 namespace vega
@@ -16,8 +17,21 @@ namespace vega
 		virtual ~App();
 		void Execute(std::string scriptName);
 
+#ifdef VEGA_ANDROID
+		static ANativeActivity* GetAndroidActivity();
+		static void SetAndroidActivity(ANativeActivity*);
+		
+		static ANativeWindow* GetAndroidWindow();
+		static void SetAndroidWindow(ANativeWindow*);
+
+		static JNIEnv* GetScriptThreadJavaEnv();
+		static void SetScriptThreadJavaEnv(JNIEnv*);
+
 	private:
-		void RequireScript(std::string scriptName);
+		static ANativeActivity* androidActivity;
+		static ANativeWindow* androidWindow;
+		static JNIEnv* scriptThreadJavaEnv;
+#endif
 	};
 }
 

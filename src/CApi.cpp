@@ -34,7 +34,7 @@ CApi::CApi()
 #endif
 
 #ifdef VEGA_ANDROID
-	isVideoInitialized = false;
+	InitAndroid();
 #endif
 
 	Log::Info("Creating a new Lua state...");
@@ -44,23 +44,6 @@ CApi::CApi()
 	Log::Info("Configuring Lua package path...");
 	luaL_loadstring(luaState, "package.path = package.path..';vega_lua/?.lua;vega_lua/?'");
 	lua_pcall(luaState, 0, 0, 0);
-}
-
-CApi::~CApi()
-{
-	Log::Info("CApi released.");
-#ifdef VEGA_WINDOWS
-	IMG_Quit();
-	SDL_Quit();
-#endif
-#ifdef VEGA_ANDROID
-	androidApp->onAppCmd = NULL;
-#endif
-}
-
-void CApi::Init()
-{
-	Log::Info("Initializing the C api instance...");
 	
 #ifdef VEGA_ANDROID
 	Log::Info("Configuring Android Lua searches...");
@@ -110,6 +93,15 @@ void CApi::Init()
 
 	lua_pop(luaState, 2);
 	Log::Info("capi Lua table created.");
+}
+
+CApi::~CApi()
+{
+	Log::Info("CApi released.");
+#ifdef VEGA_WINDOWS
+	IMG_Quit();
+	SDL_Quit();
+#endif
 }
 
 /**

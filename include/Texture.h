@@ -2,6 +2,7 @@
 #define VEGA_TEXTURE_H
 
 #include "SDL.h"
+#include "Android.h"
 #include "OpenGL.h"
 #include "VegaDefines.h"
 #include <string>
@@ -21,14 +22,24 @@ namespace vega
 		int GetHeight();
 	private:
 		Texture();
+		GLenum GetOpenGLTextureFormat();
+		void* GetData();
+		void Lock();
+		void Unlock();
+		bool LoadData(std::string filename);
 
 #ifdef VEGA_WINDOWS
 		SDL_Surface *surface;
 #endif
 
+#ifdef VEGA_ANDROID
+		JNIEnv* javaEnv;
+		jobject javaBitmap;
+		AndroidBitmapInfo bitmapInfo;
+		void* pixelData;
+#endif
+
 		GLuint glTextureName;
-		GLenum GetOpenGLTextureFormat();
-		void* GetData();
 	};
 }
 

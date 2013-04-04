@@ -4,6 +4,7 @@
 #include "../include/Log.h"
 
 #include <iostream>
+#include <sstream>
 
 using namespace vega;
 using namespace std;
@@ -72,6 +73,14 @@ void SceneRender::Render(lua_State* luaState)
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
+
+	/*GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		stringstream ss;
+		ss << "OpenGL Error: " << error;
+		Log::Error(ss.str());
+	}*/
 }
 
 /**

@@ -1,5 +1,6 @@
 #include "../include/CApi.h"
 #include "../include/Log.h"
+#include "../include/App.h"
 
 #ifdef VEGA_ANDROID
 
@@ -8,33 +9,7 @@
 using namespace std;
 using namespace vega;
 
-void CApi::SetAndroidApp(android_app* androidApp)
-{
-	this->androidApp = androidApp;
-	androidApp->onAppCmd = CApi::OnAndroidCommand;
-}
-
-/**
-Setup Lua to search the scripts (when the "require" function is used) in the assets folder.
-It adds a new function into the package.searches function.
-*/
-void CApi::InitLuaSearches()
-{
-	Log::Info("Adding the assets search function into the package.searches function...");
-	lua_getglobal(luaState, "package");
-	lua_getfield(luaState, -1, "searchers");
-	lua_len(luaState, -1);
-	int searchesLength = lua_tonumber(luaState, -1);
-	lua_pop(luaState, 1);
-	lua_pushcfunction(luaState, SearchModuleInAssetsLuaFunction);
-	lua_rawseti(luaState, -2, searchesLength + 1);
-	lua_pop(luaState, 2);
-}
-
-/**
-Configures the video for the activity window.
-*/
-void CApi::InitAndroidVideo()
+void CApi::InitAndroid()
 {
 	Log::Info("Initializing video...");
     const EGLint attribs[] = {
@@ -55,9 +30,9 @@ void CApi::InitAndroidVideo()
     eglChooseConfig(display, attribs, &config, 1, &numConfigs);
     eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
 
-    ANativeWindow_setBuffersGeometry(androidApp->window, 0, 0, format);
+    ANativeWindow_setBuffersGeometry(App::GetAndroidWindow(), 0, 0, format);
 
-    surface = eglCreateWindowSurface(display, config, androidApp->window, NULL);
+    surface = eglCreateWindowSurface(display, config, App::GetAndroidWindow(), NULL);
     context = eglCreateContext(display, config, NULL, NULL);
 
     if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
@@ -65,11 +40,27 @@ void CApi::InitAndroidVideo()
 
 	eglSurface = surface;
 	eglDisplay = display;
-	isVideoInitialized = true;
 	sceneRender.Init();
 	int w, h;
 	GetScreenSize(&w, &h);
 	sceneRender.SetScreenSize(w, h);
+}
+
+/**
+Setup Lua to search the scripts (when the "require" function is used) in the assets folder.
+It adds a new function into the package.searches function.
+*/
+void CApi::InitLuaSearches()
+{
+	Log::Info("Adding the assets search function into the package.searches function...");
+	lua_getglobal(luaState, "package");
+	lua_getfield(luaState, -1, "searchers");
+	lua_len(luaState, -1);
+	int searchesLength = lua_tonumber(luaState, -1);
+	lua_pop(luaState, 1);
+	lua_pushcfunction(luaState, SearchModuleInAssetsLuaFunction);
+	lua_rawseti(luaState, -2, searchesLength + 1);
+	lua_pop(luaState, 2);
 }
 
 /**
@@ -78,55 +69,38 @@ On lua, call vegacheckinput(context).
 */
 int CApi::CheckInputLuaFunction(lua_State* luaState)
 {
+	/*
+	//old code from app glue:
 	int eventId;
 	int events;
 	struct android_poll_source* source;
 	while ((eventId = ALooper_pollAll(0, NULL, &events, (void**)&source)) >= 0)
 	{
 		if (source != NULL)
-			source->process(CApi::GetInstance()->androidApp, source);
+			source->process(App::GetAndroidActivity(), source);
 		if (eventId == LOOPER_ID_USER)
 		{
 		}
-		if (CApi::GetInstance()->androidApp->destroyRequested != 0)
+		if (Context::GetAndroidApp()->destroyRequested != 0)
 		{
 			Log::Info("Destroy requested");
 			CApi::GetInstance()->SetExecutingFieldToFalse();
 			break;
 		}
 	}
+	*/
 	return 0;
-}
-
-void CApi::OnAndroidCommand(struct android_app* androidApp, int32_t cmd)
-{
-	switch (cmd)
-	{
-        case APP_CMD_INIT_WINDOW:
-            if (androidApp->window != NULL)
-				CApi::GetInstance()->InitAndroidVideo();
-            break;
-	}
 }
 
 void CApi::GetScreenSize(int *w, int *h)
 {
-	if (isVideoInitialized)
-	{
-		eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, w);
-		eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, h);
-	}
-	else
-	{
-		*w = 0;
-		*h = 0;
-	}
+	eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, w);
+	eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, h);
 }
 
 void CApi::OnRenderFinished()
 {
-	if (isVideoInitialized)
-		eglSwapBuffers(eglDisplay, eglSurface);
+	eglSwapBuffers(eglDisplay, eglSurface);
 }
 
 /**
@@ -136,10 +110,7 @@ the full asset name (directory and file name).
 */
 int CApi::SearchModuleInAssetsLuaFunction(lua_State *luaState)
 {
-	Log::Info("Searching for a required Lua module from the assets folder...");
 	string moduleName = lua_tostring(luaState, -1);
-	Log::Info("The module name is:");
-	Log::Info(moduleName);
 	stringstream moduleNameWithLuaExtension;
 	moduleNameWithLuaExtension << moduleName << ".lua";
 	stringstream moduleNameWithLCExtension;
@@ -159,9 +130,6 @@ int CApi::SearchModuleInAssetsLuaFunction(lua_State *luaState)
 			string fullAssetNameFound = SearchAssetOnDir(*i, *j);
 			if (fullAssetNameFound.length() > 0)
 			{
-				Log::Info("Module asset found, returning the load function...");
-				Log::Info("Asset name returned:");
-				Log::Info(fullAssetNameFound);
 				lua_pushcfunction(luaState, LoadModuleFromAssetsLuaFunction);
 				lua_pushstring(luaState, fullAssetNameFound.c_str());
 				return 2;
@@ -179,7 +147,7 @@ string CApi::SearchAssetOnDir(string dirName, string assetName)
 {
 	string foundAssetName;
 	bool found = false;
-	AAssetDir* dir = AAssetManager_openDir(CApi::GetInstance()->androidApp->activity->assetManager, dirName.c_str());
+	AAssetDir* dir = AAssetManager_openDir(App::GetAndroidActivity()->assetManager, dirName.c_str());
 	const char* dirAsset = NULL;
 	while ((dirAsset = AAssetDir_getNextFileName(dir)) != NULL)
 	{
@@ -212,12 +180,9 @@ for the Lua (the value returned after run the loaded asset).
 */
 int CApi::LoadModuleFromAssetsLuaFunction(lua_State *luaState)
 {
-	Log::Info("Loading the module from the assets folder...");
 	string extraValue = lua_tostring(luaState, -1);
 	string moduleName = lua_tostring(luaState, -2);
-	Log::Info("Asset:");
-	Log::Info(extraValue);
-	AAsset* asset = AAssetManager_open(CApi::GetInstance()->androidApp->activity->assetManager, extraValue.c_str(), AASSET_MODE_BUFFER);
+	AAsset* asset = AAssetManager_open(App::GetAndroidActivity()->assetManager, extraValue.c_str(), AASSET_MODE_BUFFER);
 	const void *data = AAsset_getBuffer(asset);
 	size_t dataSize = AAsset_getLength(asset);
 	if (luaL_loadbuffer(luaState, (const char*)data, dataSize, moduleName.c_str()))
