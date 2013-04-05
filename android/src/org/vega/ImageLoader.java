@@ -21,7 +21,7 @@ public class ImageLoader {
 	}
 
 	/**
-	 * Loads the bitmap from the assets folder.
+	 * Loads the bitmap from the assets folder. It also scales the image to the width and height be power of 2.
 	 * @param fileName the name of the image file
 	 * @return the loaded bitmap, of null if the image can't be loaded
 	 */
@@ -43,7 +43,30 @@ public class ImageLoader {
 				}
 			}
 		}
-		return Bitmap.createScaledBitmap(bitmap, 256, 256, true);
-//		return bitmap;
+		return createPowerOf2ScaledBitmap(bitmap);
+	}
+	
+	public Bitmap createPowerOf2ScaledBitmap(Bitmap bitmap) {
+		int newWidth = getNearestPowerOf2Value(bitmap.getWidth());
+		int newHeight = getNearestPowerOf2Value(bitmap.getHeight());
+		if (bitmap.getWidth() == newWidth && bitmap.getHeight() == newHeight)
+			return bitmap;
+		else
+			return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+	}
+	
+	public int getNearestPowerOf2Value(int value) {
+		int above = value - 1;
+		above |= above >> 1;
+		above |= above >> 2;
+		above |= above >> 4;
+		above |= above >> 8;
+		above |= above >> 16;
+		above++;
+		int below = above >> 1;
+		return (above - value) < (value - below) ? above : below;
 	}
 }
+
+
+
