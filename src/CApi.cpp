@@ -42,7 +42,7 @@ CApi::CApi()
 	Log::Info("Opening Lua libraries...");
 	luaL_openlibs(luaState);
 	Log::Info("Configuring Lua package path...");
-	luaL_loadstring(luaState, "package.path = package.path..';vega_lua/?.lua;vega_lua/?'");
+	luaL_loadstring(luaState, "package.path = package.path..';vega/?.lua;vega/?;script/vega/?.lua;script/vega/?'");
 	lua_pcall(luaState, 0, 0, 0);
 	
 #ifdef VEGA_ANDROID
@@ -51,48 +51,56 @@ CApi::CApi()
 #endif
 
 	Log::Info("Requiring 'vega' Lua script...");
-	luaL_loadstring(luaState, "require 'vega'");
-	lua_pcall(luaState, 0, 0, 0);
+	lua_getglobal(luaState, "require");
+	lua_pushstring(luaState, "vega");
+	if (lua_pcall(luaState, 1, 1, 0) != 0)
+	{
+		Log::Error("Error when require 'vega':");
+		Log::Error(lua_tostring(luaState, -1));
+		lua_pop(luaState, 1);
+	}
+	else
+	{
+		Log::Info("Creating the capi Lua table...");
+		lua_getglobal(luaState, "vega");
+		lua_getfield(luaState, -1, "capi");
+	
+		Log::Info("Creating the Lua functions into the capi table...");
+		lua_pushstring(luaState, "checkinput");
+		lua_pushcfunction(luaState, CheckInputLuaFunction);
+		lua_settable(luaState, -3);
+	
+		lua_pushstring(luaState, "syncend");
+		lua_pushcfunction(luaState, SyncEndLuaFunction);
+		lua_settable(luaState, -3);
+	
+		lua_pushstring(luaState, "syncbegin");
+		lua_pushcfunction(luaState, SyncBeginLuaFunction);
+		lua_settable(luaState, -3);
+	
+		lua_pushstring(luaState, "render");
+		lua_pushcfunction(luaState, RenderLuaFunction);
+		lua_settable(luaState, -3);
+	
+		lua_pushstring(luaState, "clearscreen");
+		lua_pushcfunction(luaState, ClearScreenLuaFunction);
+		lua_settable(luaState, -3);
+	
+		lua_pushstring(luaState, "screensize");
+		lua_pushcfunction(luaState, ScreenSizeLuaFunction);
+		lua_settable(luaState, -3);
+	
+		lua_pushstring(luaState, "loadtexture");
+		lua_pushcfunction(luaState, LoadTextureLuaFunction);
+		lua_settable(luaState, -3);
+	
+		lua_pushstring(luaState, "releasetextures");
+		lua_pushcfunction(luaState, ReleaseTexturesLuaFunction);
+		lua_settable(luaState, -3);
 
-	Log::Info("Creating the capi Lua table...");
-	lua_getglobal(luaState, "vega");
-	lua_getfield(luaState, -1, "capi");
-	
-	Log::Info("Creating the Lua functions into the capi table...");
-	lua_pushstring(luaState, "checkinput");
-	lua_pushcfunction(luaState, CheckInputLuaFunction);
-	lua_settable(luaState, -3);
-	
-	lua_pushstring(luaState, "syncend");
-	lua_pushcfunction(luaState, SyncEndLuaFunction);
-	lua_settable(luaState, -3);
-	
-	lua_pushstring(luaState, "syncbegin");
-	lua_pushcfunction(luaState, SyncBeginLuaFunction);
-	lua_settable(luaState, -3);
-	
-	lua_pushstring(luaState, "render");
-	lua_pushcfunction(luaState, RenderLuaFunction);
-	lua_settable(luaState, -3);
-	
-	lua_pushstring(luaState, "clearscreen");
-	lua_pushcfunction(luaState, ClearScreenLuaFunction);
-	lua_settable(luaState, -3);
-	
-	lua_pushstring(luaState, "screensize");
-	lua_pushcfunction(luaState, ScreenSizeLuaFunction);
-	lua_settable(luaState, -3);
-	
-	lua_pushstring(luaState, "loadtexture");
-	lua_pushcfunction(luaState, LoadTextureLuaFunction);
-	lua_settable(luaState, -3);
-	
-	lua_pushstring(luaState, "releasetextures");
-	lua_pushcfunction(luaState, ReleaseTexturesLuaFunction);
-	lua_settable(luaState, -3);
-
-	lua_pop(luaState, 2);
-	Log::Info("capi Lua table created.");
+		lua_pop(luaState, 2);
+		Log::Info("capi Lua table created.");
+	}
 }
 
 CApi::~CApi()

@@ -405,12 +405,28 @@ function DrawableTest.test_should_set_background()
 	local background = vega.drawable()
 	
 	-- when:
-	drawable:setbackground(background)
+	drawable.background = background
 	
 	-- then:
 	assert_equal(background, drawable.background, "The background is not the expected.")
 	assert_equal(1, #drawable.children, "Should have 1 child, because the background should be added as child.")
 	assert_equal(background, drawable.children[1], "The child should be the background.")
+end
+
+function DrawableTest.test_not_remove_old_background_from_children()
+	-- given:
+	local oldbackground = vega.drawable()
+	drawable.background = oldbackground
+	
+	-- when:
+	local newbackground = vega.drawable()
+	drawable.background = newbackground
+	
+	-- then:
+	assert_equal(newbackground, drawable.background, "The background is not the expected.")
+	assert_equal(2, #drawable.children, "Should have 2 children, because the background should be added as child and the old background should not be removed.")
+	assert_equal(oldbackground, drawable.children[1], "The first child should be the old background.")
+	assert_equal(newbackground, drawable.children[2], "The second child should be the new background.")
 end
 
 return DrawableTest

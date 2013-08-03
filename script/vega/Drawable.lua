@@ -1,36 +1,6 @@
 require "vegatable"
 require "vector2"
 
---- A drawable node. Create your own instance with Drawable.new(myTable).
--- The coordinates are from the top/left to the bottom/right. All transforms
--- are relative to the parent node.
--- @field position a Vector2 with the position of the Drawable.
--- @field size a Vector2 with the size of the Drawable, it is (1, 1) by default.
--- @field origin the origin pivot, it is (0, 0) by default.
--- @field scale the scale, it is (1, 1) by default.
--- @field childrenorigin the origin point of the children, relative to the origin pivot. It is (0, 0) by default.
--- @field rotation the rotation.
--- @field visibility the visibility, where 0 is full transparent and 1 is full opaque. It is 1 by default.
--- @field isrelativex set to true to make the x coordinate of the position relative to the size of the parent.
--- @field isrelativey set to true to make the y coordinate of the position relative to the size of the parent.
--- @field isrelativewidth set to true to make the x coordinate of the size relative to the size of the parent.
--- @field isrelativeheigth set to true to make the y coordinate of the size relative to the size of the parent.
--- @field isrelativeoriginx set to true to make the x coordinate of the origin relative to the size of the Drawable.
--- @field isrelativeoriginy set to true to make the y coordinate of the origin relative to the size of the Drawable.
--- @field children the children list. Please do not modify this list. Use the addchild, insertchild, setchildren or removechild functions instead.
--- @field parent the parent Drawable. It is nil until this Drawable is added to another Drawable with the addchild function.
--- @field background the background Drawable. To set, use the setbackground function, so the drawable is also added as child.
--- @field color the Color table to be used to draw this object. If not defined, it will be full transparent.
--- @field texture a texture to be used to draw this object, loaded from the ContentManager. If not defined, no texture is used.
--- @field topleftuv a Vector2 UV coordinate used to map the texture to the top left corner. If not defined, (0, 0) is assumed.
--- @field bottomrightuv a Vector2 UV coordinate used to map the texture to the bottom right corner. If not defined, (1, 1) is assumed.
--- @field texturemodeu the horizontal texture mode to use when the U coordinate is out of the range 0-1, can be "clamp" or "repeat"
--- (default value used if not defined)
--- @field texturemodev the vertical texture mode to use when the V coordinate is out of the range 0-1, can be "clamp" or "repeat"
--- (default value used if not defined)
--- the range (0, 0) and (1, 1).
--- @field beforedraw if defined, this function is called with self argument before the drawable is rendered.
--- @field afterdraw if defined, this function is called with self argument after the drawable is rendered.
 local drawable = {}
 
 --- Returns the position, relative to the parent size.
@@ -152,18 +122,64 @@ function drawable:removefromparent()
 end
 
 
---- Sets a child with one special feature: it is drawn before this drawable itself.
--- This function also added the background to the children list with the addchild
--- function. If this function is called again with another background the old background
--- is not removed from the children, so it must be done manually.
 function drawable:setbackground(bg)
 	self.background = bg
 	if bg ~= nil then self:addchild(bg) end
 end
 
---- Creates a new instance of a drawable table.
+--- Creates a drawable node. The coordinates are from the top/left to the bottom/right. All transforms
+-- are relative to the parent node.
+-- @field position a Vector2 with the position of the Drawable.
+-- @field size a Vector2 with the size of the Drawable, it is (1, 1) by default.
+-- @field origin the origin pivot, it is (0, 0) by default.
+-- @field scale the scale, it is (1, 1) by default.
+-- @field childrenorigin the origin point of the children, relative to the origin pivot. It is (0, 0) by default.
+-- @field rotation the rotation.
+-- @field visibility the visibility, where 0 is full transparent and 1 is full opaque. It is 1 by default.
+-- @field isrelativex set to true to make the x coordinate of the position relative to the size of the parent.
+-- @field isrelativey set to true to make the y coordinate of the position relative to the size of the parent.
+-- @field isrelativewidth set to true to make the x coordinate of the size relative to the size of the parent.
+-- @field isrelativeheigth set to true to make the y coordinate of the size relative to the size of the parent.
+-- @field isrelativeoriginx set to true to make the x coordinate of the origin relative to the size of the Drawable.
+-- @field isrelativeoriginy set to true to make the y coordinate of the origin relative to the size of the Drawable.
+-- @field children the children list. Please do not modify this list. Use the addchild, insertchild, setchildren or removechild functions instead.
+-- @field parent the parent Drawable. It is nil until this Drawable is added to another Drawable with the addchild function.
+-- @field background the background Drawable. To set, use the setbackground function, so the drawable is also added as child.
+-- @field color the Color table to be used to draw this object. If not defined, it will be full transparent.
+-- @field texture a texture to be used to draw this object, loaded from the ContentManager. If not defined, no texture is used.
+-- @field topleftuv a Vector2 UV coordinate used to map the texture to the top left corner. If not defined, (0, 0) is assumed.
+-- @field bottomrightuv a Vector2 UV coordinate used to map the texture to the bottom right corner. If not defined, (1, 1) is assumed.
+-- @field texturemodeu the horizontal texture mode to use when the U coordinate is out of the range 0-1, can be "clamp" or "repeat"
+-- (default value used if not defined)
+-- @field texturemodev the vertical texture mode to use when the V coordinate is out of the range 0-1, can be "clamp" or "repeat"
+-- (default value used if not defined)
+-- the range (0, 0) and (1, 1).
+-- @field beforedraw if defined, this function is called with self argument before the drawable is rendered.
+-- @field afterdraw if defined, this function is called with self argument after the drawable is rendered.
+-- @field background a child with one special feature: it is drawn before this drawable itself. It automatically calls the addchild
+-- function when a new background is setted. If a new background is setted, the old background is not removed from the children, so
+-- it must be done manually.
 function vega.drawable()
-	return {
+	local private = {}
+
+	local drawablemetatable = {
+		__index = function(table, key)
+			if key == "background" then
+				return private.background
+			end
+		end,
+
+		__newindex = function(table, key, value)
+			if key == "background" then
+				private.background = value
+				if value ~= nil then table:addchild(value) end
+			else
+				rawset(table, key, value)
+			end
+		end
+	}
+
+	local drawable = {
 		position = vega.Vector2.zero,
 		size = vega.Vector2.one,
 		origin = vega.Vector2.zero,
@@ -191,6 +207,7 @@ function vega.drawable()
 		removechild = drawable.removechild,
 		setchildren = drawable.setchildren,
 		removefromparent = drawable.removefromparent,
-		setbackground = drawable.setbackground
 	}
+	setmetatable(drawable, drawablemetatable)
+	return drawable
 end
