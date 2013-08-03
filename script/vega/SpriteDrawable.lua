@@ -1,6 +1,6 @@
 require "vegatable"
-require "Vector2"
-require "Drawable"
+require "vector2"
+require "drawable"
 
 --- A drawable that subdivide the texture in multiple frames. This division is calculated
 -- with the columns and rows fields. To define witch cell of that subdivision should be
@@ -12,8 +12,6 @@ require "Drawable"
 -- defined, the sprite can use many images to represent the frames. It can be used if you have
 -- so many frames that you extrapolates the max texture size allowed by the video hardware.
 -- @field texturebackup internal field
-vega.SpriteDrawable = {}
-
 local spritedrawable = {}
 
 --- Calculates and returns the total frames count, based on columns and rows count.
@@ -71,9 +69,9 @@ function spritedrawable:afterdraw()
 	self.texturebackup = nil
 end
 
-function vega.SpriteDrawable.new()
+function vega.spritedrawable()
 	local mt = {
-		__index = vega.Drawable.new()
+		__index = vega.drawable()
 	}
 	local obj = {
 		columns = 1,

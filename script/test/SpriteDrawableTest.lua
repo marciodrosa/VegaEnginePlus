@@ -3,7 +3,7 @@ local sprite = {}
 local parent = {}
 
 function SpriteDrawableTest.setup()
-	sprite = vega.SpriteDrawable.new()
+	sprite = vega.spritedrawable()
 	assert_table(sprite, "Should create a table for the sprite drawable.")
 end
 

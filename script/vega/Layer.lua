@@ -13,7 +13,7 @@ vega.Layer = {}
 --- Creates a new instance of the table.
 function vega.Layer.new()
 	return {
-		rootdrawable = vega.Drawable.new(),
+		rootdrawable = vega.drawable(),
 		camera = vega.Camera.new(),
 		stretchroot = true,
 	}

@@ -3,8 +3,8 @@ local drawable = {}
 local parent = {}
 
 function DrawableTest.setup()
-	drawable = vega.Drawable.new()
-	parent = vega.Drawable.new()
+	drawable = vega.drawable()
+	parent = vega.drawable()
 	assert_table(drawable, "Should create a table for the drawable.")
 end
 
@@ -212,9 +212,9 @@ end
 
 function DrawableTest.test_should_add_child()
 	-- given:
-	local child1 = vega.Drawable.new()
-	local child2 = vega.Drawable.new()
-	local child3 = vega.Drawable.new()
+	local child1 = vega.drawable()
+	local child2 = vega.drawable()
+	local child3 = vega.drawable()
 	
 	-- when:
 	drawable:addchild(child1)
@@ -233,9 +233,9 @@ end
 
 function DrawableTest.test_should_add_child_at_index()
 	-- given:
-	local child1 = vega.Drawable.new()
-	local child2 = vega.Drawable.new()
-	local child3 = vega.Drawable.new()
+	local child1 = vega.drawable()
+	local child2 = vega.drawable()
+	local child3 = vega.drawable()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	
@@ -251,7 +251,7 @@ end
 
 function DrawableTest.test_should_not_add_child_if_it_is_already_a_child_of_the_drawable()
 	-- given:
-	local child = vega.Drawable.new()
+	local child = vega.drawable()
 	drawable:addchild(child)
 	
 	-- when:
@@ -264,9 +264,9 @@ end
 
 function DrawableTest.test_should_add_child_at_end_when_index_is_greater_than_children_count()
 	-- given:
-	local child1 = vega.Drawable.new()
-	local child2 = vega.Drawable.new()
-	local child3 = vega.Drawable.new()
+	local child1 = vega.drawable()
+	local child2 = vega.drawable()
+	local child3 = vega.drawable()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	
@@ -282,9 +282,9 @@ end
 
 function DrawableTest.test_should_add_child_at_begin_when_index_is_less_than_zero()
 	-- given:
-	local child1 = vega.Drawable.new()
-	local child2 = vega.Drawable.new()
-	local child3 = vega.Drawable.new()
+	local child1 = vega.drawable()
+	local child2 = vega.drawable()
+	local child3 = vega.drawable()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	
@@ -318,8 +318,8 @@ end
 
 function DrawableTest.test_should_remove_from_old_parent_when_add_child()
 	-- given:
-	local oldparent = vega.Drawable.new()
-	local child = vega.Drawable.new()
+	local oldparent = vega.drawable()
+	local child = vega.drawable()
 	oldparent:addchild(child)
 	
 	-- when:
@@ -334,9 +334,9 @@ end
 
 function DrawableTest.test_should_remove_child()
 	-- given:
-	local child1 = vega.Drawable.new()
-	local child2 = vega.Drawable.new()
-	local child3 = vega.Drawable.new()
+	local child1 = vega.drawable()
+	local child2 = vega.drawable()
+	local child3 = vega.drawable()
 	drawable:addchild(child1)
 	drawable:addchild(child2)
 	drawable:addchild(child3)
@@ -355,9 +355,9 @@ end
 
 function DrawableTest.test_should_set_children_list()
 	-- given:
-	local child1 = vega.Drawable.new()
-	local child2 = vega.Drawable.new()
-	local child3 = vega.Drawable.new()
+	local child1 = vega.drawable()
+	local child2 = vega.drawable()
+	local child3 = vega.drawable()
 	local children = { child1, child2, child3 }
 
 	-- when:
@@ -375,14 +375,14 @@ end
 
 function DrawableTest.test_should_remove_from_old_parents_when_set_children_list()
 	-- given:
-	local oldchild1 = vega.Drawable.new()
-	local oldchild2 = vega.Drawable.new()
+	local oldchild1 = vega.drawable()
+	local oldchild2 = vega.drawable()
 	drawable:addchild(oldchild1)
 	drawable:addchild(oldchild2)
 	
-	local child1 = vega.Drawable.new()
-	local child2 = vega.Drawable.new()
-	local child3 = vega.Drawable.new()
+	local child1 = vega.drawable()
+	local child2 = vega.drawable()
+	local child3 = vega.drawable()
 	local children = { child1, child2, child3 }
 
 	-- when:
@@ -402,7 +402,7 @@ end
 
 function DrawableTest.test_should_set_background()
 	-- given:
-	local background = vega.Drawable.new()
+	local background = vega.drawable()
 	
 	-- when:
 	drawable:setbackground(background)

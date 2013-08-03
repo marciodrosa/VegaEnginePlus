@@ -14,7 +14,7 @@ vega.Camera = {}
 --- Creates a new instance of the table.
 function vega.Camera.new()
 	local mt = {
-		__index = vega.Drawable.new()
+		__index = vega.drawable()
 	}
 	local obj = {
 		autocalculatewidth = true,

@@ -26,7 +26,7 @@ end
 function vega.Viewport.new()
 	return {
 		sceneviewheight = 1,
-		rootdrawable = vega.Drawable.new(),
+		rootdrawable = vega.drawable(),
 		updatescreensize = _Viewport.updatescreensize
 	}
 end
