@@ -1,14 +1,11 @@
-VegaEnginePlus
+Vega SDK
 ==================
 
-2D game engine for mobile devices made with C++.
+2D game engine for mobile devices made with C++ and LUA.
+
+(Earlier, I had named it "Vega Engine Plus", so some files can appear with this name, but it is a deprecated alias.)
 
 -------------------------------
-
-The gols of the project:
-- be a 2D game engine, initially based on VegaEngine for XNA (XNA project available here: https://github.com/marciodrosa/VegaEngine.git)
-- use the Lua script for many of the features, using C++ as root platform.
-- compatibility with Windows Phone, Windows 8, iOS and Android.
 
 Folder structure explanation:
 
