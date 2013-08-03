@@ -1,4 +1,4 @@
-package.path = package.path..";../vega_lua/?.lua;lunatest/?;lunatest/?.lua"
+package.path = package.path..";../vega/?.lua;lunatest/?;lunatest/?.lua"
 
 require "vega"
 require "lunatest"

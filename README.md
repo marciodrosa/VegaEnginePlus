@@ -11,7 +11,8 @@ Folder structure explanation:
 
 - src: C++ source files
 - include: C++ header files
-- unit_test: unit tests for the Lua scripts
+- script: Lua scripts
+  - test: unit tests of Lua scripts
+  - vega: scripts of the Vega SDK
 - samples: C++ header and source files for samples
-- vega_lua: VegaEngine Lua scripts
 - android, ios, windows: projects, libraries and binaries for each platform (main project, unit tests and samples)
