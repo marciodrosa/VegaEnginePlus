@@ -527,4 +527,24 @@ function listtest.test_should_callback_when_replace()
 	assert_equal(v1, callbackmock.afterremovevalue, "The value passed to afterremove callback is not the expected.")
 end
 
+function listtest.test_content_field_should_have_the_content_of_the_list()
+	-- given:
+	local v1 = {}
+	local v2 = {}
+	local v3 = {}
+	list[1] = v1
+	list[2] = v2
+	list.insert(v3)
+
+	-- when:
+	local content = list.content
+
+	-- then:
+	assert_table(content, "Should return a table.")
+	assert_equal(3, #content, "The content length is not the expected.")
+	assert_equal(v1, rawget(content, 1), "The content[1] is not the expected.")
+	assert_equal(v2, rawget(content, 2), "The content[2] is not the expected.")
+	assert_equal(v3, rawget(content, 3), "The content[3] is not the expected.")
+end
+
 return listtest
