@@ -1,17 +1,18 @@
-package.path = package.path..";../vega/?.lua;lunatest/?;lunatest/?.lua"
+package.path = package.path..";../?;../?.lua;../vega/?.lua;lunatest/?;lunatest/?.lua"
 
 require "vega"
-require "lunatest"
+require "vegaunit"
 
-lunatest.suite("colortest")
-lunatest.suite("contentmanagertest")
-lunatest.suite("contexttest")
-lunatest.suite("drawabletest")
-lunatest.suite("inputtest")
-lunatest.suite("scenetest")
-lunatest.suite("spritedrawabletest")
-lunatest.suite("touchpointtest")
-lunatest.suite("vector2test")
-lunatest.suite("viewporttest")
+vegaunit.addsuite("colortest")
+vegaunit.addsuite("contentmanagertest")
+vegaunit.addsuite("contexttest")
+vegaunit.addsuite("drawabletest")
+vegaunit.addsuite("inputtest")
+vegaunit.addsuite("listtest")
+vegaunit.addsuite("scenetest")
+vegaunit.addsuite("spritedrawabletest")
+vegaunit.addsuite("touchpointtest")
+vegaunit.addsuite("vector2test")
+vegaunit.addsuite("viewporttest")
 
-lunatest.run()
+vegaunit.run()

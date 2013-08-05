@@ -22,12 +22,12 @@ function maincomponent:exec(context)
 	child.position = vega.Vector2.new(0.25, 0.25)
 	child.origin = vega.Vector2.new(0.5, 0.5)
 	child.isrelativeoriginx, child.isrelativeoriginy = true, true
-	rect:addchild(child)
+	rect.children.insert(child)
 	
 	local child2 = vega.drawable()
 	child2.color = vega.Color.new(255, 255, 255)
 	child2.size = vega.Vector2.new(0.1, 0.1)
-	rect:addchild(child2)
+	rect.children.insert(child2)
 	
 	local texturedrectangle = vega.drawable()
 	texturedrectangle.texture = context.contentmanager:gettexture("vegatexture.png")
@@ -37,7 +37,7 @@ function maincomponent:exec(context)
 	texturedrectangle.position = vega.Vector2.new(0.5, 0.5)
 	texturedrectangle.isrelativeoriginx, texturedrectangle.isrelativeoriginy = true, true
 	texturedrectangle.isrelativepositionx, texturedrectangle.isrelativepositiony = true, true
-	scene.viewport.rootdrawable:addchild(texturedrectangle)
+	scene.viewport.rootdrawable.children.insert(texturedrectangle)
 	
 	local coin = vega.spritedrawable()
 	coin.size = vega.Vector2.new(0.2, 0.2)
@@ -57,23 +57,7 @@ function maincomponent:exec(context)
 			columns = 10
 		},
 	}
-	scene.viewport.rootdrawable:addchild(coin)
-	
-	--[[
-	local transparentrectangle = vega.drawable()
-	transparentrectangle.color = vega.Color.new(255, 0, 255)
-	transparentrectangle.position = vega.Vector2.new(0.0, 0)
-	transparentrectangle.size = vega.Vector2.new(0.6, 0.6)
-	transparentrectangle.visibility = 0.5
-	scene.viewport.rootdrawable:addchild(transparentrectangle)
-	
-	local transparentrectangle2 = vega.drawable()
-	transparentrectangle2.color = vega.Color.new(255, 0, 255)
-	transparentrectangle2.position = vega.Vector2.new(0.6, 0.6)
-	transparentrectangle2.size = vega.Vector2.new(0.2, 0.2)
-	transparentrectangle2.visibility = 1
-	transparentrectangle:addchild(transparentrectangle2)
-	]]
+	scene.viewport.rootdrawable.children.insert(coin)
 	
 	scene.controllers = {
 		{
