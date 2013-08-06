@@ -1,5 +1,49 @@
 require "vegatable"
 
+local function listcontainsvalue(list, value)
+	for k, v in pairs(list.content) do
+		if v == value then return true end
+	end
+	return false
+end
+
+local function setat(value, index, list, callback, shift, singleoccurrence)
+	local oldvalue = list.content[index]
+	if value == nil then
+		callback.beforeremove(index, oldvalue)
+		if shift then 
+			table.remove(list.content, index)
+		else
+			list.content[index] = nil
+		end
+		callback.afterremove(index, oldvalue)
+	else
+		local canset = true
+		if singleoccurrence == true and listcontainsvalue(list, value) then
+			canset = false
+		end
+		if canset then
+			if shift then
+				callback.beforeset(index, value)
+				table.insert(list.content, index, value)
+				callback.afterset(index, value)
+			else
+				callback.beforeremove(index, oldvalue)
+				callback.beforeset(index, value)
+				list.content[index] = value
+				callback.afterremove(index, oldvalue)
+				callback.afterset(index, value)
+			end
+		end
+	end
+end
+
+local function insertvaluesatlist(values, list)
+	for k, v in pairs(values) do
+		list.insert(v)
+	end
+end
+
 --- Creates a list. This kind of list is used by most of the collections of Vega SDK. The values can be accessed
 -- by the index or by a text (if a value with a 'name' field equal to that text is found, than it is returned).
 --
@@ -22,70 +66,30 @@ require "vegatable"
 -- the new list).
 function vega.list(args)
 
+	local singleoccurrence = args and args.singleoccurrence == true
+
 	local list = {
 		content = {}
 	}
 
 	local listmetatable = {}
 
-	local function beforeset(index, value)
+	local callback = {}
+
+	function callback.beforeset(index, value)
 		if args and args.callback and args.callback.beforeset then args.callback.beforeset(index, value) end
 	end
 
-	local function afterset(index, value)
+	function callback.afterset(index, value)
 		if args and args.callback and args.callback.afterset then args.callback.afterset(index, value) end
 	end
 
-	local function beforeremove(index, value)
+	function callback.beforeremove(index, value)
 		if args and args.callback and args.callback.beforeremove and value ~= nil then args.callback.beforeremove(index, value) end
 	end
 
-	local function afterremove(index, value)
+	function callback.afterremove(index, value)
 		if args and args.callback and args.callback.afterremove and value ~= nil then args.callback.afterremove(index, value) end
-	end
-
-	local function insertvalues(values)
-		for k, v in pairs(values) do
-			list.insert(v)
-		end
-	end
-
-	local function contains(value)
-		for k, v in pairs(list.content) do
-			if v == value then return true end
-		end
-		return false
-	end
-
-	local function setat(value, index, shift)
-		local oldvalue = list.content[index]
-		if value == nil then
-			beforeremove(index, oldvalue)
-			if shift then 
-				table.remove(list.content, index)
-			else
-				list.content[index] = nil
-			end
-			afterremove(index, oldvalue)
-		else
-			local canset = true
-			if args and args.singleoccurrence == true and contains(value) then
-				canset = false
-			end
-			if canset then
-				if shift then
-					beforeset(index, value)
-					table.insert(list.content, index, value)
-					afterset(index, value)
-				else
-					beforeremove(index, oldvalue)
-					beforeset(index, value)
-					list.content[index] = value
-					afterremove(index, oldvalue)
-					afterset(index, value)
-				end
-			end
-		end
 	end
 
 	function listmetatable.__index(t, key)
@@ -100,11 +104,11 @@ function vega.list(args)
 
 	function listmetatable.__newindex(t, key, value)
 		if type(key) == "number" then
-			setat(value, key, false)
+			setat(value, key, list, callback, false, singleoccurrence)
 		elseif type(key) == "string" then
 			if type(value) == "table" then
 				value.name = key
-				setat(value, #list.content + 1, false)
+				setat(value, #list.content + 1, list, callback, false, singleoccurrence)
 			else
 				error("When set a value into the list using a name key, the value must be a table.")
 			end
@@ -122,13 +126,13 @@ function vega.list(args)
 	-- field equal to the id; otherwise, searches for the element equal to the id.
 	function list.remove(id)
 		if type(id) == "number" then
-			setat(nil, id, true)
+			setat(nil, id, list, callback, true)
 		elseif type(id) == "string" then
 			local i = 1
 			while i <= #list.content do
 				local v = list.content[i]
 				if type(v) == "table" and v.name == id then
-					setat(nil, i, true)
+					setat(nil, i, list, callback, true)
 				else
 					i = i + 1
 				end
@@ -138,7 +142,7 @@ function vega.list(args)
 			while i <= #list.content do
 				local v = list.content[i]
 				if v == id then
-					setat(nil, i, true)
+					setat(nil, i, list, callback, true)
 				else
 					i = i + 1
 				end
@@ -151,7 +155,7 @@ function vega.list(args)
 	-- @param index optional parameter. If nil, inserts the object in the end of the list.
 	function list.insert(value, index)
 		index = index or #list.content + 1
-		setat(value, index, true)
+		setat(value, index, list, callback, true, singleoccurrence)
 	end
 
 	--- Used to iterate through list elements.
@@ -160,6 +164,6 @@ function vega.list(args)
 	end
 
 	setmetatable(list, listmetatable)
-	if args and args.initialvalues then insertvalues(args.initialvalues) end
+	if args and args.initialvalues then insertvaluesatlist(args.initialvalues, list) end
 	return list
 end
