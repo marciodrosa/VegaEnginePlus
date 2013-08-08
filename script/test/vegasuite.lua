@@ -6,6 +6,7 @@ require "vegaunit"
 vegaunit.addsuite("colortest")
 vegaunit.addsuite("contentmanagertest")
 vegaunit.addsuite("contexttest")
+vegaunit.addsuite("coordinatestest")
 vegaunit.addsuite("drawabletest")
 vegaunit.addsuite("inputtest")
 vegaunit.addsuite("listtest")
