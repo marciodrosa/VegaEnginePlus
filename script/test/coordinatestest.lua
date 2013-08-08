@@ -205,8 +205,64 @@ function coordinatestest.test_set_absolute_value_when_parent_coordinates_are_zer
 	assert_equal(20, coordinates.relativey, "relativey is not the expected.")
 end
 
-function coordinatestest.test_should_initialize_with_values()
-	-- todo: not yet implemented on vega.coordinates
+function coordinatestest.test_should_initialize_with_absolute_values()
+	-- when:
+	local coordinates = vega.coordinates {
+		x = 10,
+		y = 20
+	}
+
+	-- then:
+	assert_equal(10, coordinates.x, "x is not the expected.")
+	assert_equal(20, coordinates.y, "y is not the expected.")
+	assert_false(coordinates.keeprelativex, "keeprelativex is not the expected.")
+	assert_false(coordinates.keeprelativey, "keeprelativey is not the expected.")
+end
+
+function coordinatestest.test_should_initialize_with_relative_values()
+	-- when:
+	local coordinates = vega.coordinates {
+		relativex = 10,
+		relativey = 20
+	}
+
+	-- then:
+	assert_equal(10, coordinates.relativex, "relativex is not the expected.")
+	assert_equal(20, coordinates.relativey, "relativey is not the expected.")
+	assert_true(coordinates.keeprelativex, "keeprelativex is not the expected.")
+	assert_true(coordinates.keeprelativey, "keeprelativey is not the expected.")
+end
+
+function coordinatestest.test_should_initialize_with_absolute_values_and_set_keep_relative_to_true()
+	-- when:
+	local coordinates = vega.coordinates {
+		x = 10,
+		y = 20,
+		keeprelativex = true,
+		keeprelativey = true
+	}
+
+	-- then:
+	assert_equal(10, coordinates.relativex, "x is not the expected.")
+	assert_equal(20, coordinates.relativey, "y is not the expected.")
+	assert_true(coordinates.keeprelativex, "keeprelativex is not the expected.")
+	assert_true(coordinates.keeprelativey, "keeprelativey is not the expected.")
+end
+
+function coordinatestest.test_should_initialize_with_relative_values_and_set_keep_relative_to_false()
+	-- when:
+	local coordinates = vega.coordinates {
+		relativex = 10,
+		relativey = 20,
+		keeprelativex = false,
+		keeprelativey = false
+	}
+
+	-- then:
+	assert_equal(10, coordinates.x, "x is not the expected.")
+	assert_equal(20, coordinates.y, "y is not the expected.")
+	assert_false(coordinates.keeprelativex, "keeprelativex is not the expected.")
+	assert_false(coordinates.keeprelativey, "keeprelativey is not the expected.")
 end
 
 return coordinatestest

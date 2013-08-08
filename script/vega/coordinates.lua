@@ -43,6 +43,15 @@ local function convertrelative(t, coordinate, converttorelative, relativeto)
 	end
 end
 
+local function setinitialvalues(t, initialvalues)
+	if initialvalues.x ~= nil then t.x = initialvalues.x end
+	if initialvalues.y ~= nil then t.y = initialvalues.y end
+	if initialvalues.relativex ~= nil then t.relativex = initialvalues.relativex end
+	if initialvalues.relativey ~= nil then t.relativey = initialvalues.relativey end
+	if initialvalues.keeprelativex ~= nil then t.keeprelativex = initialvalues.keeprelativex end
+	if initialvalues.keeprelativey ~= nil then t.keeprelativey = initialvalues.keeprelativey end
+end
+
 --- Creates a 2D coordinates system (X, Y). It is more used internally by the SDK with the drawables tables.
 -- To get or set the coordinates, use mytable.x and mytable.y. You an also set/get relative values with mytable.relativex
 -- and mytable.relativey. For example, when working with the size of a drawable, you can set drawable.size.relativex = 0.5.
@@ -63,9 +72,9 @@ end
 -- The returned table has dynamic indexes (they are automatically calculated). To get the values, call mytable.values. It
 -- has the x, y, relativex and relativey values, but some can be nil.
 --
--- @param args optional table with the following args: relativeto (a table that contains the coordinates used to calculate
--- the relative coordinates, with two fields: "table", the owner of these coordinates, and "field", a string with the field
--- name that contains the coordinates).
+-- @param args optional table with the initial value and one special field: relativeto (a table that contains the coordinates
+-- used to calculate the relative coordinates, with two fields: "table", the owner of these coordinates, and "field", a string
+-- with the field name that contains the coordinates).
 function vega.coordinates(args)
 
 	args = args or {}
@@ -100,5 +109,6 @@ function vega.coordinates(args)
 	end
 
 	setmetatable(coordinates, coordinatesmetatable)
+	setinitialvalues(coordinates, args)
 	return coordinates
 end
