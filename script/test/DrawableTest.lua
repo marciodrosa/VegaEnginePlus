@@ -9,19 +9,26 @@ function drawabletest.setup()
 end
 
 function drawabletest.test_drawable_fields()
-	assert_equal(vega.Vector2.zero, drawable.position, "position is not the expected.")
-	assert_equal(vega.Vector2.one, drawable.size, "size is not the expected.")
-	assert_equal(vega.Vector2.zero, drawable.origin, "origin is not the expected.")
-	assert_equal(vega.Vector2.one, drawable.scale, "scale is not the expected.")
-	assert_equal(vega.Vector2.zero, drawable.childrenorigin, "childrenorigin is not the expected.")
+	assert_equal(0, drawable.position.x, "position.x is not the expected.")
+	assert_equal(0, drawable.position.y, "position.y is not the expected.")
+	assert_equal(1, drawable.size.x, "size.x is not the expected.")
+	assert_equal(1, drawable.size.y, "size.y is not the expected.")
+	assert_equal(0, drawable.origin.x, "origin.x is not the expected.")
+	assert_equal(0, drawable.origin.y, "origin.y is not the expected.")
+	assert_equal(0, drawable.childrenorigin.x, "childrenorigin.x is not the expected.")
+	assert_equal(0, drawable.childrenorigin.y, "childrenorigin.y is not the expected.")
+	assert_equal(1, drawable.scale.x, "scale.x is not the expected.")
+	assert_equal(1, drawable.scale.y, "scale.y is not the expected.")
 	assert_equal(0, drawable.rotation, "rotation is not the expected.")
 	assert_equal(1, drawable.visibility, "visibility is not the expected.")
-	assert_equal(false, drawable.isrelativex, "isrelativex is not the expected.")
-	assert_equal(false, drawable.isrelativey, "isrelativey is not the expected.")
-	assert_equal(false, drawable.isrelativewidth, "isrelativewidth is not the expected.")
-	assert_equal(false, drawable.isrelativeheigth, "isrelativeheigth is not the expected.")
-	assert_equal(false, drawable.isrelativeoriginx, "isrelativeoriginx is not the expected.")
-	assert_equal(false, drawable.isrelativeoriginy, "isrelativeoriginy is not the expected.")
+	assert_equal(false, drawable.position.keeprelativex, "position.keeprelativex is not the expected.")
+	assert_equal(false, drawable.position.keeprelativey, "position.keeprelativey is not the expected.")
+	assert_equal(false, drawable.size.keeprelativex, "size.keeprelativex is not the expected.")
+	assert_equal(false, drawable.size.keeprelativey, "size.keeprelativey is not the expected.")
+	assert_equal(false, drawable.origin.keeprelativex, "origin.keeprelativex is not the expected.")
+	assert_equal(false, drawable.origin.keeprelativey, "origin.keeprelativey is not the expected.")
+	assert_equal(false, drawable.childrenorigin.keeprelativex, "childrenorigin.keeprelativex is not the expected.")
+	assert_equal(false, drawable.childrenorigin.keeprelativey, "childrenorigin.keeprelativey is not the expected.")
 	assert_table(drawable.children, "children should be a table.")
 	assert_equal(0, #drawable.children, "children size is not the expected.")
 	assert_nil(drawable.parent, "parent should be nil.")
@@ -36,178 +43,72 @@ function drawabletest.test_drawable_fields()
 	assert_nil(drawable.afterdraw, "afterdraw should be nil.")
 end
 
-function drawabletest.test_should_return_position_relative_to_parent_size()
+function drawabletest.test_relative_position_should_be_relative_to_parent_size()
 	-- given:
 	parent.children.insert(drawable)
-	parent.size = vega.Vector2.new(50, 200)
-	drawable.position = vega.Vector2.new(5, 100)
-	
+	parent.size = { x = 50, y = 200 }
+
 	-- when:
-	local relativeposition = drawable:getrelativeposition()
-	
+	drawable.position = { relativex = 0.1, relativey = 0.5 }
+
 	-- then:
-	assert_equal(vega.Vector2.new(0.1, 0.5), relativeposition, "The relative position is not the expected.")
+	assert_equal(5, drawable.position.x, "x is not the expected.")
+	assert_equal(100, drawable.position.y, "y is not the expected.")
 end
 
-function drawabletest.test_should_relative_position_be_equal_to_position_when_there_is_no_parent()
-	-- given:
-	drawable.position = vega.Vector2.new(5, 100)
-	
+function drawabletest.test_relative_position_should_be_equal_to_absolute_if_there_is_no_parent()
 	-- when:
-	local relativeposition = drawable:getrelativeposition()
-	
+	drawable.position = { relativex = 0.1, relativey = 0.5 }
+
 	-- then:
-	assert_equal(vega.Vector2.new(5, 100), relativeposition, "The relative position is not the expected.")
+	assert_equal(0.1, drawable.position.x, "x is not the expected.")
+	assert_equal(0.5, drawable.position.y, "y is not the expected.")
 end
 
-function drawabletest.test_should_return_size_relative_to_parent_size()
+function drawabletest.test_relative_size_should_be_relative_to_parent_size()
 	-- given:
 	parent.children.insert(drawable)
-	parent.size = vega.Vector2.new(50, 200)
-	drawable.size = vega.Vector2.new(5, 100)
-	
+	parent.size = { x = 50, y = 200 }
+
 	-- when:
-	local relativesize = drawable:getrelativesize()
-	
+	drawable.size = { relativex = 0.1, relativey = 0.5 }
+
 	-- then:
-	assert_equal(vega.Vector2.new(0.1, 0.5), relativesize, "The relative size is not the expected.")
+	assert_equal(5, drawable.size.x, "size.x is not the expected.")
+	assert_equal(100, drawable.size.y, "size.y is not the expected.")
 end
 
-function drawabletest.test_should_relative_size_be_equal_to_size_when_there_is_no_parent()
-	-- given:
-	drawable.size = vega.Vector2.new(5, 100)
-	
+function drawabletest.test_relative_size_should_be_equal_to_absolute_if_there_is_no_parent()
 	-- when:
-	local relativesize = drawable:getrelativesize()
-	
+	drawable.size = { relativex = 0.1, relativey = 0.5 }
+
 	-- then:
-	assert_equal(vega.Vector2.new(5, 100), relativesize, "The relative size is not the expected.")
+	assert_equal(0.1, drawable.size.x, "size.x is not the expected.")
+	assert_equal(0.5, drawable.size.y, "size.y is not the expected.")
 end
 
-function drawabletest.test_should_return_origin_relative_to_size()
+function drawabletest.test_relative_origin_should_be_relative_to_size()
 	-- given:
-	drawable.size = vega.Vector2.new(50, 200)
-	drawable.origin = vega.Vector2.new(5, 100)
-	
+	drawable.size = { x = 50, y = 200 }
+
 	-- when:
-	local relativeorigin = drawable:getrelativeorigin()
-	
+	drawable.origin = { relativex = 0.1, relativey = 0.5 }
+
 	-- then:
-	assert_equal(vega.Vector2.new(0.1, 0.5), relativeorigin, "The relative origin is not the expected.")
+	assert_equal(5, drawable.origin.x, "origin.x is not the expected.")
+	assert_equal(100, drawable.origin.y, "origin.y is not the expected.")
 end
 
-function drawabletest.test_should_calculate_absolute_position_when_x_is_relative()
+function drawabletest.test_relative_childrenorigin_should_be_relative_to_size()
 	-- given:
-	parent.children.insert(drawable)
-	parent.size = vega.Vector2.new(50, 200)
-	drawable.position = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativex = true
-	drawable.isrelativey = false
-	
-	-- when:
-	local absoluteposition = drawable:getabsoluteposition()
-	
-	-- then:
-	assert_equal(vega.Vector2.new(5, 0.5), absoluteposition, "The absolute position is not the expected.")
-end
+	drawable.size = { x = 50, y = 200 }
 
-function drawabletest.test_should_calculate_absolute_position_when_y_is_relative()
-	-- given:
-	parent.children.insert(drawable)
-	parent.size = vega.Vector2.new(50, 200)
-	drawable.position = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativex = false
-	drawable.isrelativey = true
-	
 	-- when:
-	local absoluteposition = drawable:getabsoluteposition()
-	
-	-- then:
-	assert_equal(vega.Vector2.new(0.1, 100), absoluteposition, "The absolute position is not the expected.")
-end
+	drawable.childrenorigin = { relativex = 0.1, relativey = 0.5 }
 
-function drawabletest.test_should_absolute_position_be_equal_to_position_when_there_is_no_parent()
-	-- given:
-	drawable.position = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativex = true
-	drawable.isrelativey = true
-	
-	-- when:
-	local absoluteposition = drawable:getabsoluteposition()
-	
 	-- then:
-	assert_equal(vega.Vector2.new(0.1, 0.5), absoluteposition, "The absolute position is not the expected.")
-end
-
-function drawabletest.test_should_calculate_absolute_size_when_width_is_relative()
-	-- given:
-	parent.children.insert(drawable)
-	parent.size = vega.Vector2.new(50, 200)
-	drawable.size = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativewidth = true
-	drawable.isrelativeheigth = false
-	
-	-- when:
-	local absolutesize = drawable:getabsolutesize()
-	
-	-- then:
-	assert_equal(vega.Vector2.new(5, 0.5), absolutesize, "The absolute size is not the expected.")
-end
-
-function drawabletest.test_should_calculate_absolute_size_when_heigth_is_relative()
-	-- given:
-	parent.children.insert(drawable)
-	parent.size = vega.Vector2.new(50, 200)
-	drawable.size = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativewidth = false
-	drawable.isrelativeheigth = true
-	
-	-- when:
-	local absolutesize = drawable:getabsolutesize()
-	
-	-- then:
-	assert_equal(vega.Vector2.new(0.1, 100), absolutesize, "The absolute size is not the expected.")
-end
-
-function drawabletest.test_should_absolute_size_be_equal_to_size_when_there_is_no_parent()
-	-- given:
-	drawable.size = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativewidth = true
-	drawable.isrelativeheigth = true
-	
-	-- when:
-	local absolutesize = drawable:getabsolutesize()
-	
-	-- then:
-	assert_equal(vega.Vector2.new(0.1, 0.5), absolutesize, "The absolute size is not the expected.")
-end
-
-function drawabletest.test_should_calculate_absolute_origin_when_originx_is_relative()
-	-- given:
-	drawable.size = vega.Vector2.new(50, 100)
-	drawable.origin = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativeoriginx = true
-	drawable.isrelativeoriginy = false
-	
-	-- when:
-	local absoluteorigin = drawable:getabsoluteorigin()
-	
-	-- then:
-	assert_equal(vega.Vector2.new(5, 0.5), absoluteorigin, "The absolute origin is not the expected.")
-end
-
-function drawabletest.test_should_calculate_absolute_origin_when_originy_is_relative()
-	-- given:
-	drawable.size = vega.Vector2.new(50, 100)
-	drawable.origin = vega.Vector2.new(0.1, 0.5)
-	drawable.isrelativeoriginx = false
-	drawable.isrelativeoriginy = true
-	
-	-- when:
-	local absoluteorigin = drawable:getabsoluteorigin()
-	
-	-- then:
-	assert_equal(vega.Vector2.new(0.1, 50), absoluteorigin, "The absolute origin is not the expected.")
+	assert_equal(5, drawable.childrenorigin.x, "childrenorigin.x is not the expected.")
+	assert_equal(100, drawable.childrenorigin.y, "childrenorigin.y is not the expected.")
 end
 
 function drawabletest.test_should_add_child()

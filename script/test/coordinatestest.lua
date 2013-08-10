@@ -1,13 +1,9 @@
 local coordinatestest = {}
 local coordinates = {}
 local parentcoordinates = {}
-local parentobject = {
-	coordinates = parentcoordinates
-}
-local relativeto = {
-	table = parentobject,
-	field = "coordinates"
-}
+local function relativetofunction()
+	return parentcoordinates
+end
 
 function coordinatestest.setup()
 	coordinates = vega.coordinates()
@@ -63,7 +59,7 @@ end
 
 function coordinatestest.test_should_set_absolute_and_get_relative()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 100
 	parentcoordinates.y = 200
 
@@ -78,7 +74,7 @@ end
 
 function coordinatestest.test_should_set_relative_and_get_absolute()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 100
 	parentcoordinates.y = 200
 
@@ -93,7 +89,7 @@ end
 
 function coordinatestest.test_should_update_when_set_relative_and_change_parent()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 100
 	parentcoordinates.y = 200
 	coordinates.relativex = 0.5
@@ -112,7 +108,7 @@ end
 
 function coordinatestest.test_should_not_update_when_set_relative_and_dont_keep_relative()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 100
 	parentcoordinates.y = 200
 	coordinates.relativex = 0.5
@@ -133,7 +129,7 @@ end
 
 function coordinatestest.test_should_not_update_when_set_absolute_and_change_parent()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 100
 	parentcoordinates.y = 200
 	coordinates.x = 50
@@ -152,7 +148,7 @@ end
 
 function coordinatestest.test_should_update_when_set_absolute_and_keep_relative()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 100
 	parentcoordinates.y = 200
 	coordinates.x = 50
@@ -173,7 +169,7 @@ end
 
 function coordinatestest.test_set_relative_value_when_parent_coordinates_are_zero()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 0
 	parentcoordinates.y = 0
 
@@ -190,7 +186,7 @@ end
 
 function coordinatestest.test_set_absolute_value_when_parent_coordinates_are_zero()
 	-- given:
-	coordinates = vega.coordinates { relativeto = relativeto }
+	coordinates = vega.coordinates(nil, relativetofunction)
 	parentcoordinates.x = 0
 	parentcoordinates.y = 0
 
@@ -263,6 +259,18 @@ function coordinatestest.test_should_initialize_with_relative_values_and_set_kee
 	assert_equal(20, coordinates.y, "y is not the expected.")
 	assert_false(coordinates.keeprelativex, "keeprelativex is not the expected.")
 	assert_false(coordinates.keeprelativey, "keeprelativey is not the expected.")
+end
+
+function coordinatestest.test_eq_operator()
+	assert_equal(vega.coordinates(), vega.coordinates(), "Default coordinates should be equal.")
+	assert_equal(vega.coordinates { x = 10, y = 20 }, vega.coordinates { x = 10, y = 20 }, "Coordinates (10, 20) should be equal.")
+	assert_equal(vega.coordinates { relativex = 10, relativey = 20 }, vega.coordinates { relativex = 10, relativey = 20 }, "Relative coordinates (10, 20) should be equal.")
+	assert_not_equal(vega.coordinates { x = 10, y = 20 }, vega.coordinates { x = 100, y = 20 }, "Coordinates should not be equal because the x is not equal.")
+	assert_not_equal(vega.coordinates { x = 10, y = 20 }, vega.coordinates { x = 10, y = 200 }, "Coordinates should not be equal because the y is not equal.")
+	assert_not_equal(vega.coordinates { relativex = 10, relativey = 20 }, vega.coordinates { relativex = 100, relativey = 20 }, "Coordinates should not be equal because the relative x is not equal.")
+	assert_not_equal(vega.coordinates { relativex = 10, relativey = 20 }, vega.coordinates { relativex = 10, relativey = 200 }, "Coordinates should not be equal because the relative y is not equal.")
+	assert_not_equal(vega.coordinates { x = 10, y = 20 }, vega.coordinates { relativex = 10, y = 20 }, "Coordinates should not be equal because on x is relative and other is absolute.")
+	assert_not_equal(vega.coordinates { x = 10, y = 20 }, vega.coordinates { x = 10, relativey = 20 }, "Coordinates should not be equal because on y is relative and other is absolute.")
 end
 
 return coordinatestest

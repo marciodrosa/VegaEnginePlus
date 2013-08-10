@@ -102,13 +102,6 @@ Renders the drawable. Expected the Drawable table in the top of the stack.
 void SceneRender::RenderDrawable(lua_State* luaState, lua_Number globalVisibility)
 {
 	BeforeRenderDrawable(luaState);
-	Vector2 position = GetVector2FromTableField(luaState, "position");
-	Vector2 scale = GetVector2FromTableField(luaState, "scale");
-	Vector2 origin = GetVector2FromTableField(luaState, "origin");
-	Vector2 childrenOrigin = GetVector2FromTableField(luaState, "childrenorigin");
-	lua_getfield(luaState, -1, "rotation");
-	lua_Number rotation = lua_tonumber(luaState, -1);
-	lua_pop(luaState, 1);
 	lua_getfield(luaState, -1, "visibility");
 	lua_Number visibility = lua_tonumber(luaState, -1) * globalVisibility;
 	lua_pop(luaState, 1);
@@ -135,10 +128,11 @@ void SceneRender::RenderChildren(lua_State* luaState, lua_Number globalVisibilit
 	lua_pop(luaState, 1); // pops the children length
 	for (int i = 1; i <= childrenCount; i++)
 	{
-		lua_rawgeti(luaState, -1, i);
+		lua_pushnumber(luaState, i);
+		lua_gettable(luaState, -2); // pushes the child
 		if (!lua_rawequal(luaState, -1, -3)) // checks if the current child is the same object of the "background" field
 			RenderDrawable(luaState, globalVisibility);
-		lua_pop(luaState, 1);
+		lua_pop(luaState, 1); // pops the child
 	}
 	lua_pop(luaState, 2); // pops "background" and "children"
 	glPopMatrix();
@@ -183,7 +177,7 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibi
 	GLuint textureId = GetTextureId(luaState);
 	if (isColorDefined || textureId != 0)
 	{
-		Vector2 size = GetVector2FromTableFunction(luaState, "getabsolutesize");
+		Vector2 size = GetVector2FromTableField(luaState, "size");
 		Vector2 topLeftUV = { 0.f, 0.f };
 		Vector2 bottomRightUV = { 1.f, 1.f };
 		ReadVector2FromTableField(luaState, "topleftuv", topLeftUV);
@@ -237,13 +231,12 @@ Apply the transform on current matrix. Expected the Drawable table in the top of
 */
 void SceneRender::ApplyTransform(lua_State* luaState)
 {
-	Vector2 origin = GetVector2FromTableFunction(luaState, "getabsoluteorigin");
-	Vector2 position = GetVector2FromTableFunction(luaState, "getabsoluteposition");
+	Vector2 position = GetVector2FromTableField(luaState, "position");
 	Vector2 scale = GetVector2FromTableField(luaState, "scale");
+	Vector2 origin = GetVector2FromTableField(luaState, "origin");
 	lua_getfield(luaState, -1, "rotation");
-	GLfloat rotation = (GLfloat) lua_tonumber(luaState, -1);
+	lua_Number rotation = lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
-
 	glTranslatef(position.x, position.y, 0.f);
 	glRotatef(rotation, 0.f, 0.f, 1.f);
 	glScalef(scale.x, scale.y, 1.f);

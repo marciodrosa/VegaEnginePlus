@@ -12,7 +12,7 @@ function SpriteDrawableTest.test_drawable_fields()
 	assert_equal(1, sprite.rows, "rows is not the expected.")
 	assert_equal(1, sprite.frame, "frame is not the expected.")
 	assert_nil(sprite.extensions, "extensions is not the expected.")
-	assert_equal(vega.Vector2.zero, sprite.position, "The sprite should be a drawable, but the drawable field 'position' is not the expected.")
+	assert_equal(vega.coordinates { x = 0, y = 0 }, sprite.position, "The sprite should be a drawable, but the drawable field 'position' is not the expected.")
 end
 
 function SpriteDrawableTest.test_should_calculate_frames_count()

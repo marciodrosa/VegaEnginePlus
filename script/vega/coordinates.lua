@@ -7,8 +7,9 @@ end
 
 local function getvaluetoberelative(relativeto, coordinate)
 	local result = 1
-	if relativeto ~= nil then
-		result = relativeto.table[relativeto.field][coordinate]
+	local relativetotable = relativeto()
+	if relativetotable ~= nil then
+		result = relativetotable[coordinate]
 	end
 	return result
 end
@@ -44,12 +45,18 @@ local function convertrelative(t, coordinate, converttorelative, relativeto)
 end
 
 local function setinitialvalues(t, initialvalues)
-	if initialvalues.x ~= nil then t.x = initialvalues.x end
-	if initialvalues.y ~= nil then t.y = initialvalues.y end
-	if initialvalues.relativex ~= nil then t.relativex = initialvalues.relativex end
-	if initialvalues.relativey ~= nil then t.relativey = initialvalues.relativey end
-	if initialvalues.keeprelativex ~= nil then t.keeprelativex = initialvalues.keeprelativex end
-	if initialvalues.keeprelativey ~= nil then t.keeprelativey = initialvalues.keeprelativey end
+	if initialvalues ~= nil then
+		if initialvalues.x ~= nil then t.x = initialvalues.x end
+		if initialvalues.y ~= nil then t.y = initialvalues.y end
+		if initialvalues.relativex ~= nil then t.relativex = initialvalues.relativex end
+		if initialvalues.relativey ~= nil then t.relativey = initialvalues.relativey end
+		if initialvalues.keeprelativex ~= nil then t.keeprelativex = initialvalues.keeprelativex end
+		if initialvalues.keeprelativey ~= nil then t.keeprelativey = initialvalues.keeprelativey end
+	end
+end
+
+local function areequal(coordinate1, coordinate2)
+	return coordinate1.values.x == coordinate2.values.x and coordinate1.values.y == coordinate2.values.y and coordinate1.values.relativex == coordinate2.values.relativex and coordinate1.values.relativey == coordinate2.values.relativey
 end
 
 --- Creates a 2D coordinates system (X, Y). It is more used internally by the SDK with the drawables tables.
@@ -72,12 +79,12 @@ end
 -- The returned table has dynamic indexes (they are automatically calculated). To get the values, call mytable.values. It
 -- has the x, y, relativex and relativey values, but some can be nil.
 --
--- @param args optional table with the initial value and one special field: relativeto (a table that contains the coordinates
--- used to calculate the relative coordinates, with two fields: "table", the owner of these coordinates, and "field", a string
--- with the field name that contains the coordinates).
-function vega.coordinates(args)
+-- @param initialvalues optional table with the initial values
+-- @param relativeto optional function that can return a table (with x and y fields). This table is used as absolute values
+-- when set relative values in the coordinates.
+function vega.coordinates(initialvalues, relativeto)
 
-	args = args or {}
+	relativeto = relativeto or function() end
 
 	local coordinates = {
 		values = {
@@ -93,22 +100,24 @@ function vega.coordinates(args)
 		elseif index == "y" then setcoordinatevalues(t, "y", value, nil, false)
 		elseif index == "relativex" then setcoordinatevalues(t, "x", nil, value, true)
 		elseif index == "relativey" then setcoordinatevalues(t, "y", nil, value, true)
-		elseif index == "keeprelativex" then convertrelative(t, "x", value, args.relativeto)
-		elseif index == "keeprelativey" then convertrelative(t, "y", value, args.relativeto)
+		elseif index == "keeprelativex" then convertrelative(t, "x", value, relativeto)
+		elseif index == "keeprelativey" then convertrelative(t, "y", value, relativeto)
 		else rawset(t, index, value) end
 	end
 
 	function coordinatesmetatable.__index(t, index)
-		if index == "x" then return getabsolute(t, "x", args.relativeto)
-		elseif index == "y" then return getabsolute(t, "y", args.relativeto)
-		elseif index == "relativex" then return getrelative(t, "x", args.relativeto)
-		elseif index == "relativey" then return getrelative(t, "y", args.relativeto)
+		if index == "x" then return getabsolute(t, "x", relativeto)
+		elseif index == "y" then return getabsolute(t, "y", relativeto)
+		elseif index == "relativex" then return getrelative(t, "x", relativeto)
+		elseif index == "relativey" then return getrelative(t, "y", relativeto)
 		elseif index == "keeprelativex" then return coordinates.values.relativex ~= nil and coordinates.values.x == nil
 		elseif index == "keeprelativey" then return coordinates.values.relativey ~= nil and coordinates.values.y == nil
 		else return rawget(t, index) end
 	end
 
+	coordinatesmetatable.__eq = areequal
+
 	setmetatable(coordinates, coordinatesmetatable)
-	setinitialvalues(coordinates, args)
+	setinitialvalues(coordinates, initialvalues)
 	return coordinates
 end

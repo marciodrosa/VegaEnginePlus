@@ -18,8 +18,8 @@ local _Viewport = {}
 
 --- Internal function called to update the viewport with the screen size.
 function _Viewport:updatescreensize(screenwidth, screenheight)
-	self.rootdrawable.position = vega.Vector2.zero
-	self.rootdrawable.size = vega.Vector2.new(self.sceneviewheight * screenwidth / screenheight, self.sceneviewheight)
+	self.rootdrawable.position = { x = 0, y = 0 }
+	self.rootdrawable.size = { x = self.sceneviewheight * screenwidth / screenheight, y = self.sceneviewheight }
 end
 
 --- Creates a new Viewport.
