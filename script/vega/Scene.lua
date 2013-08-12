@@ -41,7 +41,7 @@ function vega.Scene.new()
 		--	vega.Layer.new()
 		--},
 		viewport = vega.Viewport.new(),
-		backgroundcolor = vega.Color.new(25, 70, 255),
+		backgroundcolor = { r = 25, g = 70, b = 255 },
 		framespersecond = 30,
 		controllers = {},
 		updatecontrollers = _Scene.updatecontrollers

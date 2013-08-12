@@ -23,10 +23,12 @@ Requires the Lua script with the given name.
 void App::Execute(string scriptName)
 {
 	CApi* cApi = CApi::GetInstance();
-	stringstream ss;
-	ss << "require '" << scriptName << "'";
-	if (luaL_loadstring(cApi->GetLuaState(), ss.str().c_str()) != 0)
+	lua_getglobal(cApi->GetLuaState(), "require");
+	lua_pushstring(cApi->GetLuaState(), scriptName.c_str());
+	if (lua_pcall(cApi->GetLuaState(), 1, 1, 0) != 0)
+	{
+		Log::Error("Error when require script:");
 		Log::Error(lua_tostring(cApi->GetLuaState(), -1));
-	else if (lua_pcall(cApi->GetLuaState(), 0, 0, 0) != 0)
-		Log::Error(lua_tostring(cApi->GetLuaState(), -1));
+		lua_pop(cApi->GetLuaState(), 1);
+	}
 }

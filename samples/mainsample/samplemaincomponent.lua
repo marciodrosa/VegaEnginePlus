@@ -11,19 +11,19 @@ function maincomponent:exec(context)
 	local scene = vega.Scene.new()
 
 	local rect = vega.drawable()
-	rect.color = vega.Color.new(255, 0, 0)
+	rect.color = { r = 255, g = 0, b = 0 }
 	rect.size = { x = 0.3, y = 0.3 }
 	scene.viewport.rootdrawable.children.insert(rect)
 
 	local child = vega.drawable()
-	child.color = vega.Color.new(0, 200, 0)
+	child.color = { r = 0, g = 200, b = 0, a = 125 }
 	child.size = { x = 0.2, y = 0.2 }
 	child.position = { x = 0.25, y = 0.25 }
 	child.origin = { relativex = 0.5, relativey = 0.5 }
 	rect.children.insert(child)
 	
 	local child2 = vega.drawable()
-	child2.color = vega.Color.new(255, 255, 255)
+	child2.color = { r = 255, g = 255, b = 255 }
 	child2.size = { x = 0.1, y = 0.1 }
 	rect.children.insert(child2)
 	

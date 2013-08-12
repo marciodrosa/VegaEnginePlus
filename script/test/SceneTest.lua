@@ -20,7 +20,9 @@ end
 function SceneTest.test_should_initialize_scene_table()
 	assert_table(scene.viewport, "Should create a viewport table.")
 	assert_not_nil(scene.viewport.rootdrawable, "Should create an instance of the Viewport table, but the rootdrawable is not defined.")
-	assert_equal(vega.Color.new(25, 70, 255), scene.backgroundcolor, "backgroundcolor is not the expected.")
+	assert_equal(25, scene.backgroundcolor.r, "backgroundcolor.r is not the expected.")
+	assert_equal(70, scene.backgroundcolor.g, "backgroundcolor.g is not the expected.")
+	assert_equal(255, scene.backgroundcolor.b, "backgroundcolor.b is not the expected.")
 	assert_equal(30, scene.framespersecond, "framespersecond is not the expected.")
 end
 

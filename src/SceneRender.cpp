@@ -283,10 +283,18 @@ void SceneRender::SetUpTextureMode(lua_State* luaState)
 }
 
 /**
-Creates a Color struct from the given Lua state. Expected the Color table in the top of the stack.
+Creates a Color struct from the given Lua state. Expected the color (table or number) in the top of the stack
+(it is popped from the stack).
 */
 Color SceneRender::GetColor(lua_State* luaState)
 {
+	lua_getglobal(luaState, "vega"); // pushes vega table
+	lua_getfield(luaState, -1, "color"); // pushes vega.color table
+	lua_getfield(luaState, -1, "getcomponents"); // pushes vega.color.getcomponents function
+	lua_pushvalue(luaState, -4); // pushes the color in the top of the stack again
+	lua_call(luaState, 1, 1); // calls the function vega.color.getcomponents and pushes the one result (a table with a, r, g and b)
+
+	// parses the table with r, g, b and a values:
 	Color color;
 	lua_getfield(luaState, -1, "r");
 	color.r = (float) lua_tonumber(luaState, -1) / 255.f;
@@ -300,6 +308,8 @@ Color SceneRender::GetColor(lua_State* luaState)
 	lua_getfield(luaState, -1, "a");
 	color.a = (float) lua_tonumber(luaState, -1) / 255.f;
 	lua_pop(luaState, 1);
+
+	lua_pop(luaState, 3); // pops vega table, vega.color table and the color
 	return color;
 }
 

@@ -1,48 +1,118 @@
-local ColorTest = {}
+local colortest = {}
 
-function ColorTest.test_should_create_new_color_with_rgba()
-	-- when:
-	local c = vega.Color.new(10, 20, 30, 40)
-	
-	-- then:
-	assert_table(c)
-	assert_equal(10, c.r, "r is not the expected.")
-	assert_equal(20, c.g, "g is not the expected.")
-	assert_equal(30, c.b, "b is not the expected.")
-	assert_equal(40, c.a, "a is not the expected.")
-end
-
-function ColorTest.test_should_create_new_color_with_default_values()
-	-- when:
-	local c = vega.Color.new()
-	
-	-- then:
-	assert_table(c)
-	assert_equal(0, c.r, "r is not the expected.")
-	assert_equal(0, c.g, "g is not the expected.")
-	assert_equal(0, c.b, "b is not the expected.")
-	assert_equal(255, c.a, "a is not the expected.")
-end
-
-function ColorTest.test_tostring_metamethod()
+function colortest.test_should_return_components_from_number()
 	-- given:
-	assert_equal("Color(r:10 g:20 b:30 a:40)", tostring(vega.Color.new(10, 20, 30, 40)))
-end
+	local color = 0xd2648c3c
 
-function ColorTest.test_colors_should_be_equal()
-	-- given
-	local color1 = vega.Color.new(10, 20, 30, 40)
-	local color2 = vega.Color.new(10, 20, 30, 40)
-	
+	-- when:
+	local components = vega.color.getcomponents(color)
+
 	-- then:
-	assert_equal(color1, color2, "The colors should be equal")
+	assert_equal(210, components.a, "a is not the expected.")
+	assert_equal(100, components.r, "r is not the expected.")
+	assert_equal(140, components.g, "g is not the expected.")
+	assert_equal(60, components.b, "b is not the expected.")
 end
 
-function ColorTest.test_colors_should_not_be_equal()
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(11, 20, 30, 40), "Colors should not be equal, r is different.")
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(10, 21, 30, 40), "Colors should not be equal, g is different.")
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(10, 20, 31, 40), "Colors should not be equal, b is different.")
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(10, 20, 30, 41), "Colors should not be equal, a is different.")
+function colortest.test_should_return_components_from_table()
+	-- given:
+	local color = {
+		a = 1,
+		r = 2,
+		g = 3,
+		b = 4
+	}
+
+	-- when:
+	local components = vega.color.getcomponents(color)
+
+	-- then:
+	assert_equal(1, components.a, "a is not the expected.")
+	assert_equal(2, components.r, "r is not the expected.")
+	assert_equal(3, components.g, "g is not the expected.")
+	assert_equal(4, components.b, "b is not the expected.")
 end
 
-return ColorTest
+function colortest.test_should_return_components_from_table_using_default_values_for_nil_fields()
+	-- given:
+	local color = {
+	}
+
+	-- when:
+	local components = vega.color.getcomponents(color)
+
+	-- then:
+	assert_equal(255, components.a, "a is not the expected.")
+	assert_equal(0, components.r, "r is not the expected.")
+	assert_equal(0, components.g, "g is not the expected.")
+	assert_equal(0, components.b, "b is not the expected.")
+end
+
+function colortest.test_should_return_nil_components_when_color_is_nil()
+	-- when:
+	local components = vega.color.getcomponents(nil)
+
+	-- then:
+	assert_nil(components, "Should return nil.")
+end
+
+function colortest.test_should_throw_error_when_get_components_from_an_invalid_color_type()
+	assert_error("Can not get components from color, it should be a table or number, but was string.", function() vega.color.getcomponents("") end, "Should thrown a error when color is a string.")
+	assert_error("Can not get components from color, it should be a table or number, but was boolean.", function() vega.color.getcomponents(true) end, "Should thrown a error when color is a boolean.")
+	assert_error("Can not get components from color, it should be a table or number, but was function.", function() vega.color.getcomponents(function() end) end, "Should thrown a error when color is a function.")
+end
+
+function colortest.test_should_return_hexa_from_number()
+	-- given:
+	local color = 0xd2648c3c
+
+	-- when:
+	local hexa = vega.color.gethexa(color)
+
+	-- then:
+	assert_equal(0xd2648c3c, hexa, "The result is not the expected.")
+end
+
+function colortest.test_should_return_hexa_from_table()
+	-- given:
+	local color = {
+		a = 210,
+		r = 100,
+		g = 140,
+		b = 60
+	}
+
+	-- when:
+	local hexa = vega.color.gethexa(color)
+
+	-- then:
+	assert_equal(0xd2648c3c, hexa, "The result is not the expected.")
+end
+
+function colortest.test_should_return_hexa_from_table_using_default_values_for_nil_fields()
+	-- given:
+	local color = {
+	}
+
+	-- when:
+	local hexa = vega.color.gethexa(color)
+
+	-- then:
+	assert_equal(0xff000000, hexa, "The result is not the expected.")
+end
+
+function colortest.test_should_return_nil_hexa_when_color_is_nil()
+	-- when:
+	local hexa = vega.color.gethexa(nil)
+
+	-- then:
+	assert_nil(hexa, "Should return nil.")
+end
+
+function colortest.test_should_throw_error_when_get_hexa_from_an_invalid_color_type()
+	assert_error("Can not get hexadecimal value from color, it should be a table or number, but was string.", function() vega.color.gethexa("") end, "Should thrown a error when color is a string.")
+	assert_error("Can not get hexadecimal value from color, it should be a table or number, but was boolean.", function() vega.color.gethexa(true) end, "Should thrown a error when color is a boolean.")
+	assert_error("Can not get hexadecimal value from color, it should be a table or number, but was function.", function() vega.color.gethexa(function() end) end, "Should thrown a error when color is a function.")
+end
+
+return colortest
