@@ -24,6 +24,12 @@ local function getparentsize(drawable)
 	end
 end
 
+local function copyvaluesintodrawable(values, drawable)
+	for k, v in pairs(values) do
+		drawable[k] = v
+	end
+end
+
 --- Creates a drawable node. The coordinates are from the top/left to the bottom/right. All transforms
 -- are relative to the parent node. Some of the fields are dynamic (managed by the metatable).
 --
@@ -33,7 +39,8 @@ end
 -- you can use relative values, as you can read on vega.coordinates documentation (fields relativex/y and
 -- keeprelativex/y). Position and size can be relative to the drawable's parent size; origin and childrenorigin
 -- can be relative to the drawable size. 
---
+-- @param initialvalues optional table with the initial values of the drawable. The fields are copied into the
+-- new table, so the initialvalues table is discarded.
 -- @field position the position coordinates.
 -- @field size the size of the drawable.
 -- @field origin the origin pivot.
@@ -57,7 +64,7 @@ end
 -- @field background a child with one special feature: it is drawn before this drawable itself. It automatically adds the background
 -- into the children list when a new background is setted. If a new background is setted, the old background is not removed from the
 -- children, so it must be done manually.
-function vega.drawable()
+function vega.drawable(initialvalues)
 	local private = {}
 
 	local drawable = {}
@@ -122,9 +129,11 @@ function vega.drawable()
 	drawable.rotation = 0
 	drawable.visibility = 1
 	drawable.children = {}
+	drawable.removefromparent = drawablefunctions.removefromparent
 	--drawable.getmatrix = drawablefunctions.getmatrix
 	--drawable.getglobalmatrix = drawablefunctions.getglobalmatrix
-	drawable.removefromparent = drawablefunctions.removefromparent
+
+	copyvaluesintodrawable(initialvalues or {}, drawable)
 
 	return drawable
 end

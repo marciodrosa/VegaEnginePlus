@@ -283,4 +283,36 @@ function drawabletest.test_not_remove_old_background_from_children()
 	assert_equal(newbackground, drawable.children[2], "The second child should be the new background.")
 end
 
+function drawabletest.test_should_init_with_values()
+	-- when:
+	local drawable = {
+		position = { x = 10, y = 20 },
+		size = { x = 30, y = 40 },
+		origin = { x = 50, y = 60 },
+		childrenorigin = { x = 70, y = 80 },
+		scale = { x = 90, y = 100 },
+		rotation = 110,
+		visibility = 0.5,
+		children = {
+			vega.drawable(),
+			vega.drawable()
+		}
+	}
+
+	-- then:
+	assert_equal(10, drawable.position.x, "drawable.position.x is not the expected.")
+	assert_equal(20, drawable.position.y, "drawable.position.y is not the expected.")
+	assert_equal(30, drawable.size.x, "drawable.size.x is not the expected.")
+	assert_equal(40, drawable.size.y, "drawable.size.y is not the expected.")
+	assert_equal(50, drawable.origin.x, "drawable.origin.x is not the expected.")
+	assert_equal(60, drawable.origin.y, "drawable.origin.y is not the expected.")
+	assert_equal(70, drawable.childrenorigin.x, "drawable.childrenorigin.x is not the expected.")
+	assert_equal(80, drawable.childrenorigin.y, "drawable.childrenorigin.y is not the expected.")
+	assert_equal(90, drawable.scale.x, "drawable.scale.x is not the expected.")
+	assert_equal(100, drawable.scale.y, "drawable.scale.y is not the expected.")
+	assert_equal(110, drawable.rotation, "drawable.rotation is not the expected.")
+	assert_equal(0.5, drawable.visibility, "drawable.visibility is not the expected.")
+	assert_equal(2, #drawable.children, "drawable.children count is not the expected.")
+end
+
 return drawabletest
