@@ -69,14 +69,14 @@ function spritedrawable:afterdraw()
 	self.texturebackup = nil
 end
 
-function vega.spritedrawable()
+function vega.spritedrawable(initialvalues)
 	local mt = {
-		__index = vega.drawable()
+		__index = vega.drawable(initialvalues)
 	}
 	local obj = {
-		columns = 1,
-		rows = 1,
-		frame = 1,
+		columns = initialvalues.columns or 1,
+		rows = initialvalues.rows or 1,
+		frame = initialvalues.frame or 1,
 		getframescount = spritedrawable.getframescount,
 		beforedraw = spritedrawable.beforedraw,
 		afterdraw = spritedrawable.afterdraw,
