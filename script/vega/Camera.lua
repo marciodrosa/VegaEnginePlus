@@ -12,7 +12,7 @@ require "vegatable"
 vega.Camera = {}
 
 --- Creates a new instance of the table.
-function vega.Camera.new()
+function vega.camera(initialvalues)
 	local mt = {
 		__index = vega.drawable()
 	}

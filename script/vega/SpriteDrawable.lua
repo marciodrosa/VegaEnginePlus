@@ -1,21 +1,12 @@
 require "vegatable"
 require "vector2"
 require "drawable"
+require "util"
 
---- A drawable that subdivide the texture in multiple frames. This division is calculated
--- with the columns and rows fields. To define witch cell of that subdivision should be
--- rendered, set the frame field. The metatable has a drawable as __index.
--- @field columns the columns count, it is 1 by default.
--- @field rows the rows count, it is 1 by default.
--- @field frame the current frame of the sprite, it is 1 (first) by default.
--- @field extensions list of extensions (tables with fields columns, rows and texture). If
--- defined, the sprite can use many images to represent the frames. It can be used if you have
--- so many frames that you extrapolates the max texture size allowed by the video hardware.
--- @field texturebackup internal field
-local spritedrawable = {}
+local functions = {}
 
 --- Calculates and returns the total frames count, based on columns and rows count.
-function spritedrawable:getframescount()
+function functions:getframescount()
 	local count = self.rows * self.columns
 	if self.extensions ~= nil then
 		for i, v in ipairs(self.extensions) do
@@ -58,36 +49,39 @@ local function gettextureanduvsforcurrentframe(self)
 end
 
 --- Implements the beforedraw function to calculate the texture and uvs coordinates of the sprite.
-function spritedrawable:beforedraw()
+function functions:beforedraw()
 	self.texturebackup = self.texture
 	self.texture, self.topleftuv, self.bottomrightuv = gettextureanduvsforcurrentframe(self)
 end
 
 --- Implements the afterdraw function to reset some modifications made before the rendering.
-function spritedrawable:afterdraw()
+function functions:afterdraw()
 	self.texture = self.texturebackup
 	self.texturebackup = nil
 end
 
-local function copyvalues(t, values)
-	for k, v in pairs(values) do
-		t[k] = v
-	end
-end
-
+--- Creates a drawable that subdivide the texture in multiple frames. This division is calculated
+-- with the columns and rows fields. To define witch cell of that subdivision should be
+-- rendered, set the frame field. The metatable has a drawable as __index.
+-- @field columns the columns count, it is 1 by default.
+-- @field rows the rows count, it is 1 by default.
+-- @field frame the current frame of the sprite, it is 1 (first) by default.
+-- @field extensions list of extensions (tables with fields columns, rows and texture). If
+-- defined, the sprite can use many images to represent the frames. It can be used if you have
+-- so many frames that you extrapolates the max texture size allowed by the video hardware.
+-- @field texturebackup internal field
 function vega.spritedrawable(initialvalues)
 	local mt = {
-		__index = vega.drawable(initialvalues)
+		__index = vega.drawable()
 	}
 	local obj = {
 		columns = 1,
 		rows = 1,
 		frame = 1,
-		getframescount = spritedrawable.getframescount,
-		beforedraw = spritedrawable.beforedraw,
-		afterdraw = spritedrawable.afterdraw,
+		getframescount = functions.getframescount,
+		beforedraw = functions.beforedraw,
+		afterdraw = functions.afterdraw,
 	}
 	setmetatable(obj, mt)
-	copyvalues(obj, initialvalues or {})
-	return obj
+	return vega.util.copyvaluesintotable(initialvalues, obj)
 end

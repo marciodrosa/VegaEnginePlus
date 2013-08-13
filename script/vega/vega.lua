@@ -11,5 +11,6 @@ require "vega.mainloop"
 require "vega.scene"
 require "vega.spritedrawable"
 require "vega.touchpoint"
+require "vega.util"
 require "vega.vector2"
 

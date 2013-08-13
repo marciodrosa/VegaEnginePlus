@@ -2,6 +2,7 @@ require "vegatable"
 require "vector2"
 require "list"
 require "coordinates"
+require "util"
 
 local drawablefunctions = {}
 
@@ -30,7 +31,7 @@ local function copyvaluesintodrawable(values, drawable)
 	end
 end
 
---- Creates a drawable node. The coordinates are from the top/left to the bottom/right. All transforms
+--- Creates a drawable node. The coordinates are from the bottom/left to the top/right. All transforms
 -- are relative to the parent node. Some of the fields are dynamic (managed by the metatable).
 --
 -- The coordinates fields (position, size, origin, childrenorigin, scale, topleftuv and bottomrightuv)
@@ -133,7 +134,5 @@ function vega.drawable(initialvalues)
 	--drawable.getmatrix = drawablefunctions.getmatrix
 	--drawable.getglobalmatrix = drawablefunctions.getglobalmatrix
 
-	copyvaluesintodrawable(initialvalues or {}, drawable)
-
-	return drawable
+	return vega.util.copyvaluesintotable(initialvalues, drawable)
 end
