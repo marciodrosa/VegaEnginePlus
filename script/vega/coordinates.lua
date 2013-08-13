@@ -1,8 +1,8 @@
 require "vegatable"
 
 local function setcoordinatevalues(t, coordinate, absolutevalue, relativevalue)
-	t.values[coordinate] = absolutevalue
-	t.values["relative"..coordinate] = relativevalue
+	rawset(t, coordinate, absolutevalue)
+	rawset(t, "relative"..coordinate, relativevalue)
 end
 
 local function getvaluetoberelative(relativeto, coordinate)
@@ -16,30 +16,30 @@ end
 
 local function getabsolute(t, coordinate, relativeto)
 	local relativetovalue = getvaluetoberelative(relativeto, coordinate)
-	if t.values[coordinate] == nil then
-		return t.values["relative"..coordinate] * relativetovalue
+	if rawget(t, coordinate) == nil then
+		return rawget(t, "relative"..coordinate) * relativetovalue
 	else
-		return t.values[coordinate]
+		return rawget(t, coordinate)
 	end
 end
 
 local function getrelative(t, coordinate, relativeto)
 	local relativetovalue = getvaluetoberelative(relativeto, coordinate)
-	if t.values["relative"..coordinate] == nil then
+	if rawget(t, "relative"..coordinate) == nil then
 		if relativetovalue == 0 then
-			return t.values[coordinate]
+			return rawget(t, coordinate)
 		else
-			return t.values[coordinate] / relativetovalue
+			return rawget(t, coordinate) / relativetovalue
 		end
 	else
-		return t.values["relative"..coordinate]
+		return rawget(t, "relative"..coordinate)
 	end
 end
 
 local function convertrelative(t, coordinate, converttorelative, relativeto)
-	if t.values["relative"..coordinate] == nil and converttorelative then
+	if rawget(t, "relative"..coordinate) == nil and converttorelative then
 		setcoordinatevalues(t, coordinate, nil, getrelative(t, coordinate, relativeto))
-	elseif t.values[coordinate] == nil and not converttorelative then
+	elseif rawget(t, coordinate) == nil and not converttorelative then
 		setcoordinatevalues(t, coordinate, getabsolute(t, coordinate, relativeto), nil)
 	end
 end
@@ -56,7 +56,7 @@ local function setinitialvalues(t, initialvalues)
 end
 
 local function areequal(coordinate1, coordinate2)
-	return coordinate1.values.x == coordinate2.values.x and coordinate1.values.y == coordinate2.values.y and coordinate1.values.relativex == coordinate2.values.relativex and coordinate1.values.relativey == coordinate2.values.relativey
+	return rawget(coordinate1, "x") == rawget(coordinate2, "x") and rawget(coordinate1, "y") == rawget(coordinate2, "y") and rawget(coordinate1, "relativex") == rawget(coordinate2, "relativex") and rawget(coordinate1, "relativey") == rawget(coordinate2, "relativey")
 end
 
 --- Creates a 2D coordinates system (X, Y). It is more used internally by the SDK with the drawables tables.
@@ -76,9 +76,6 @@ end
 -- Note that the relative coordinates depends of the context: a drawable size, for example, is relative to the drawable's
 -- parent size. The drawable origin is relative to the size of himself.
 --
--- The returned table has dynamic indexes (they are automatically calculated). To get the values, call mytable.values. It
--- has the x, y, relativex and relativey values, but some can be nil.
---
 -- @param initialvalues optional table with the initial values
 -- @param relativeto optional function that can return a table (with x and y fields). This table is used as absolute values
 -- when set relative values in the coordinates.
@@ -87,10 +84,8 @@ function vega.coordinates(initialvalues, relativeto)
 	relativeto = relativeto or function() end
 
 	local coordinates = {
-		values = {
-			x = 0,
-			y = 0
-		},
+		x = 0,
+		y = 0
 	}
 
 	local coordinatesmetatable = {}
@@ -110,8 +105,8 @@ function vega.coordinates(initialvalues, relativeto)
 		elseif index == "y" then return getabsolute(t, "y", relativeto)
 		elseif index == "relativex" then return getrelative(t, "x", relativeto)
 		elseif index == "relativey" then return getrelative(t, "y", relativeto)
-		elseif index == "keeprelativex" then return coordinates.values.relativex ~= nil and coordinates.values.x == nil
-		elseif index == "keeprelativey" then return coordinates.values.relativey ~= nil and coordinates.values.y == nil
+		elseif index == "keeprelativex" then return rawget(t, "relativex") ~= nil
+		elseif index == "keeprelativey" then return rawget(t, "relativey") ~= nil
 		else return rawget(t, index) end
 	end
 

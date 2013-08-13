@@ -69,17 +69,25 @@ function spritedrawable:afterdraw()
 	self.texturebackup = nil
 end
 
+local function copyvalues(t, values)
+	for k, v in pairs(values) do
+		t[k] = v
+	end
+end
+
 function vega.spritedrawable(initialvalues)
 	local mt = {
 		__index = vega.drawable(initialvalues)
 	}
 	local obj = {
-		columns = initialvalues.columns or 1,
-		rows = initialvalues.rows or 1,
-		frame = initialvalues.frame or 1,
+		columns = 1,
+		rows = 1,
+		frame = 1,
 		getframescount = spritedrawable.getframescount,
 		beforedraw = spritedrawable.beforedraw,
 		afterdraw = spritedrawable.afterdraw,
 	}
-	return setmetatable(obj, mt)
+	setmetatable(obj, mt)
+	copyvalues(obj, initialvalues or {})
+	return obj
 end

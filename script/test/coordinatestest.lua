@@ -14,11 +14,6 @@ function coordinatestest.setup()
 	assert_equal(0, coordinates.relativey, "Initial relativey should be 0.")
 	assert_false(coordinates.keeprelativex, "Initial keeprelativex should be false.")
 	assert_false(coordinates.keeprelativey, "Initial keeprelativey should be false.")
-	assert_table(coordinates.values, "Should return a table with the values.")
-	assert_equal(0, coordinates.values.x, "The values.x should be 0.")
-	assert_equal(0, coordinates.values.y, "The values.y should be 0.")
-	assert_nil(coordinates.values.relativex, "The values.relativex should be nil.")
-	assert_nil(coordinates.values.relativey, "The values.relativey should be nil.")
 end
 
 function coordinatestest.test_set_x_and_y()
@@ -33,10 +28,6 @@ function coordinatestest.test_set_x_and_y()
 	assert_equal(20, coordinates.relativey, "relativey is not the expected.")
 	assert_false(coordinates.keeprelativex, "Initial keeprelativex should be false.")
 	assert_false(coordinates.keeprelativey, "Initial keeprelativey should be false.")
-	assert_equal(10, coordinates.values.x, "values.x is not the expected.")
-	assert_equal(20, coordinates.values.y, "values.y is not the expected.")
-	assert_nil(coordinates.values.relativex, "values.relativex is not the expected.")
-	assert_nil(coordinates.values.relativey, "values.relativey is not the expected.")
 end
 
 function coordinatestest.test_set_relativex_and_relativey_without_relativeto_object()
@@ -51,10 +42,6 @@ function coordinatestest.test_set_relativex_and_relativey_without_relativeto_obj
 	assert_equal(20, coordinates.relativey, "relativey is not the expected.")
 	assert_true(coordinates.keeprelativex, "Initial keeprelativex should be true.")
 	assert_true(coordinates.keeprelativey, "Initial keeprelativey should be true.")
-	assert_equal(10, coordinates.values.relativex, "values.relativex is not the expected.")
-	assert_equal(20, coordinates.values.relativey, "values.relativey is not the expected.")
-	assert_nil(coordinates.values.x, "values.x is not the expected.")
-	assert_nil(coordinates.values.y, "values.y is not the expected.")
 end
 
 function coordinatestest.test_should_set_absolute_and_get_relative()
