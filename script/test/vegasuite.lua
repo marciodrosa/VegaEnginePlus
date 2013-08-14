@@ -3,6 +3,7 @@ package.path = package.path..";../?;../?.lua;../vega/?.lua;lunatest/?;lunatest/?
 require "vega"
 require "vegaunit"
 
+vegaunit.addsuite("cameratest")
 vegaunit.addsuite("colortest")
 vegaunit.addsuite("contentmanagertest")
 vegaunit.addsuite("contexttest")

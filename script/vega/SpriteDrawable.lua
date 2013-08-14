@@ -62,7 +62,8 @@ end
 
 --- Creates a drawable that subdivide the texture in multiple frames. This division is calculated
 -- with the columns and rows fields. To define witch cell of that subdivision should be
--- rendered, set the frame field. The metatable has a drawable as __index.
+-- rendered, set the frame field. The returned table is a drawable table with a few fields more and
+-- some values setted.
 -- @field columns the columns count, it is 1 by default.
 -- @field rows the rows count, it is 1 by default.
 -- @field frame the current frame of the sprite, it is 1 (first) by default.
@@ -71,17 +72,12 @@ end
 -- so many frames that you extrapolates the max texture size allowed by the video hardware.
 -- @field texturebackup internal field
 function vega.spritedrawable(initialvalues)
-	local mt = {
-		__index = vega.drawable()
-	}
-	local obj = {
-		columns = 1,
-		rows = 1,
-		frame = 1,
-		getframescount = functions.getframescount,
-		beforedraw = functions.beforedraw,
-		afterdraw = functions.afterdraw,
-	}
-	setmetatable(obj, mt)
-	return vega.util.copyvaluesintotable(initialvalues, obj)
+	local sprite = vega.drawable()
+	sprite.columns = 1
+	sprite.rows = 1
+	sprite.frame = 1
+	sprite.getframescount = functions.getframescount
+	sprite.beforedraw = functions.beforedraw
+	sprite.afterdraw = functions.afterdraw
+	return vega.util.copyvaluesintotable(initialvalues, sprite)
 end

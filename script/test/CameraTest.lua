@@ -1,48 +1,54 @@
-local ColorTest = {}
+local cameratest = {}
+local camera
 
-function ColorTest.test_should_create_new_color_with_rgba()
-	-- when:
-	local c = vega.Color.new(10, 20, 30, 40)
-	
-	-- then:
-	assert_table(c)
-	assert_equal(10, c.r, "r is not the expected.")
-	assert_equal(20, c.g, "g is not the expected.")
-	assert_equal(30, c.b, "b is not the expected.")
-	assert_equal(40, c.a, "a is not the expected.")
+function cameratest.setup()
+	camera = vega.camera()
+	assert_table(camera, "Should return a table.")
+	assert_true(camera.autocalculatewidth, "camera.autocalculatewidth should be true.")
+	assert_false(camera.autocalculateheight, "camera.autocalculateheight should be false.")
+	assert_not_nil(camera.position, "The camera should have the fields of the drawable, like the position.")
 end
 
-function ColorTest.test_should_create_new_color_with_default_values()
-	-- when:
-	local c = vega.Color.new()
-	
-	-- then:
-	assert_table(c)
-	assert_equal(0, c.r, "r is not the expected.")
-	assert_equal(0, c.g, "g is not the expected.")
-	assert_equal(0, c.b, "b is not the expected.")
-	assert_equal(255, c.a, "a is not the expected.")
-end
-
-function ColorTest.test_tostring_metamethod()
+function cameratest.test_should_refresh_size_when_autocalculate_width_and_height()
 	-- given:
-	assert_equal("Color(r:10 g:20 b:30 a:40)", tostring(vega.Color.new(10, 20, 30, 40)))
-end
+	camera.autocalculatewidth = true
+	camera.autocalculateheight = true
+	camera.size = { x = 10, y = 20 }
 
-function ColorTest.test_colors_should_be_equal()
-	-- given
-	local color1 = vega.Color.new(10, 20, 30, 40)
-	local color2 = vega.Color.new(10, 20, 30, 40)
-	
+	-- when:
+	camera:refreshsizebylayer(320, 240)
+
 	-- then:
-	assert_equal(color1, color2, "The colors should be equal")
+	assert_equal(320, camera.size.x, "camera.size.x is not the expected.")
+	assert_equal(240, camera.size.y, "camera.size.y is not the expected.")
 end
 
-function ColorTest.test_colors_should_not_be_equal()
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(11, 20, 30, 40), "Colors should not be equal, r is different.")
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(10, 21, 30, 40), "Colors should not be equal, g is different.")
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(10, 20, 31, 40), "Colors should not be equal, b is different.")
-	assert_not_equal(vega.Color.new(10, 20, 30, 40), vega.Color.new(10, 20, 30, 41), "Colors should not be equal, a is different.")
+function cameratest.test_should_refresh_size_when_autocalculate_width()
+	-- given:
+	camera.autocalculatewidth = true
+	camera.autocalculateheight = false
+	camera.size = { x = 50, y = 24 }
+
+	-- when:
+	camera:refreshsizebylayer(320, 240)
+
+	-- then:
+	assert_equal(32, camera.size.x, "camera.size.x is not the expected.")
+	assert_equal(24, camera.size.y, "camera.size.y is not the expected.")
 end
 
-return ColorTest
+function cameratest.test_should_refresh_size_when_autocalculate_width()
+	-- given:
+	camera.autocalculatewidth = false
+	camera.autocalculateheight = true
+	camera.size = { x = 32, y = 50 }
+
+	-- when:
+	camera:refreshsizebylayer(320, 240)
+
+	-- then:
+	assert_equal(32, camera.size.x, "camera.size.x is not the expected.")
+	assert_equal(24, camera.size.y, "camera.size.y is not the expected.")
+end
+
+return cameratest
