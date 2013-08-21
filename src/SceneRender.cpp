@@ -64,8 +64,8 @@ void SceneRender::Render(lua_State* luaState)
 		glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
 		glClear(GL_COLOR_BUFFER_BIT);
 		lua_pop(luaState, 1);
-		lua_getfield(luaState, 1, "viewport");
-		RenderViewport(luaState);
+		lua_getfield(luaState, 1, "layers");
+		RenderLayers(luaState);
 		lua_pop(luaState, 1);
 	}
 	else
@@ -73,7 +73,6 @@ void SceneRender::Render(lua_State* luaState)
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
-
 	/*GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 	{
@@ -84,14 +83,31 @@ void SceneRender::Render(lua_State* luaState)
 }
 
 /**
-Renders the viewport. Expected the Viewport table in the top of the stack.
+Renders the layers of the scene. Expected the layers list in the top of the stack.
 */
-void SceneRender::RenderViewport(lua_State* luaState)
+void SceneRender::RenderLayers(lua_State* luaState)
+{
+	lua_len(luaState, -1); // pushes the length of the list
+	int layersCount = lua_tointeger(luaState, -1);
+	lua_pop(luaState, 1); // pops the length of the list
+	for (int i = 1; i <= layersCount; i++)
+	{
+		lua_pushnumber(luaState, i);
+		lua_gettable(luaState, -2); // pushes the layer
+		RenderLayer(luaState);
+		lua_pop(luaState, 1); // pops the layer
+	}
+}
+
+/**
+Renders the layer. Expected the layer table in the top of the stack.
+*/
+void SceneRender::RenderLayer(lua_State* luaState)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	SetUpView(luaState);
-	lua_getfield(luaState, -1, "rootdrawable");
+	SetUpCamera(luaState);
+	lua_getfield(luaState, -1, "root");
 	RenderDrawable(luaState, 1.f);
 	lua_pop(luaState, 1);
 }
@@ -253,22 +269,21 @@ void SceneRender::ApplyTransformForChildren(lua_State* luaState)
 }
 
 /**
-Set up the view. Expected the Viewport table in the top of the stack.
+Set up the camera. Expected the layer table in the top of the stack.
 */
-void SceneRender::SetUpView(lua_State* luaState)
+void SceneRender::SetUpCamera(lua_State* luaState)
 {
-	lua_getfield(luaState, -1, "sceneviewheight");
-	GLfloat sceneViewHeight = (GLfloat) lua_tonumber(luaState, -1);
-	lua_pop(luaState, 1);
+	lua_getfield(luaState, -1, "camera"); // pushes the camera table
+	lua_getfield(luaState, -1, "size"); // pushes the size of the camera
+	Vector2 cameraSize = GetVector2(luaState);
+	lua_pop(luaState, 2); // pops size and camera tables
 	
-	GLfloat sceneViewWidth = sceneViewHeight * (float)screenWidth / (screenHeight == 0 ? 1.f : (float)screenHeight);
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 #ifdef VEGA_OPENGL_ES
-	glOrthof(0.0, sceneViewWidth, 0.0, sceneViewHeight, -1.0, 1.0);
+	glOrthof(0.0, cameraSize.x, 0.0, cameraSize.y, -1.0, 1.0);
 #else
-	glOrtho(0.0, sceneViewWidth, 0.0, sceneViewHeight, -1.0, 1.0);
+	glOrtho(0.0, cameraSize.x, 0.0, cameraSize.y, -1.0, 1.0);
 #endif
 	glMatrixMode(GL_MODELVIEW);
 }

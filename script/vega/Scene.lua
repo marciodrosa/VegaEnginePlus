@@ -1,11 +1,29 @@
 require "vegatable"
-require "Viewport"
-require "Color"
-require "Layer"
+require "color"
+require "layer"
+require "list"
+require "util"
 
---- Scene contains the elements to be drawn and the controllers that updates
--- the state of the scene. Set a scene into the current context (the "nextscene"
--- field of the Context table) to render and update the scene in the main loop.
+--- Update all controllers attached to this scene. This function is automatically called by the
+-- main loop.
+local function updatecontrollers(self, context)
+	local i = 1
+	while i <= #self.controllers do
+		local controller = self.controllers[i]
+		if not controller.finished and controller.update ~= nil then
+			controller:update(context)
+		end
+		if controller.finished == true then
+			self.controllers.remove(i)
+		else
+			i = i + 1
+		end
+	end
+end
+
+--- Creates and returns a new scene table. It contains the elements to be drawn and the
+-- controllers that updates the state of the scene. Set a scene into the current context
+-- (the "nextscene" field of the Context table) to render and update the scene in the main loop.
 -- @field viewport a Viewport table, a new instance is created by default.
 -- @field background color the color of the background, a blue color is created by default.
 -- @field framespersecond the frames per second used by the main loop to update and render
@@ -14,36 +32,46 @@ require "Layer"
 -- If the table defines a function called "update", then this function is called at each frame
 -- of the main loop, with self and the Context table as arguments. Define a field called "finished"
 -- with true value to finish the controller and automatically remove it from the scene.
-vega.Scene = {}
-local _Scene = {}
+function vega.scene(initialvalues)
 
---- Update all controllers attached to this scene. This function is automatically called by the
--- main loop.
-function _Scene:updatecontrollers(context)
-	local i = 1
-	while i <= #self.controllers do
-		local controller = self.controllers[i]
-		if not controller.finished and controller.update ~= nil then
-			controller:update(context)
-		end
-		if controller.finished == true then
-			table.remove(self.controllers, i)
+	local scene = {}
+
+	local private = {}
+
+	local scenemetatable = {
+	}
+
+	function scenemetatable.__newindex(t, index, value)
+		if index == "layers" then
+			private.layers = vega.list {
+				singleoccurrence = true,
+				initialvalues = value
+			}
+		elseif index == "controllers" then
+			private.controllers = vega.list {
+				singleoccurrence = true,
+				initialvalues = value
+			}
 		else
-			i = i + 1
+			rawset(t, index, value)
 		end
 	end
-end
 
---- Create a new Scene table.
-function vega.Scene.new()
-	return {
-		--layers = {
-		--	vega.Layer.new()
-		--},
-		viewport = vega.Viewport.new(),
-		backgroundcolor = { r = 25, g = 70, b = 255 },
-		framespersecond = 30,
-		controllers = {},
-		updatecontrollers = _Scene.updatecontrollers
+	function scenemetatable.__index(t, index)
+		if index == "layers" or index == "controllers" then
+			return private[index];
+		end
+	end
+
+	setmetatable(scene, scenemetatable)
+
+	scene.layers = {
+		vega.layer()
 	}
+	scene.backgroundcolor = { r = 25, g = 70, b = 255 }
+	scene.framespersecond = 30
+	scene.controllers = {}
+	scene.updatecontrollers = updatecontrollers
+
+	return vega.util.copyvaluesintotable(initialvalues, scene)
 end

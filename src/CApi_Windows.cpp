@@ -91,8 +91,8 @@ int CApi::CheckInputLuaFunction(lua_State* luaState)
 
 void CApi::GetScreenSize(int *w, int *h)
 {
-	w = &SDL_GetVideoSurface()->w;
-	h = &SDL_GetVideoSurface()->h;
+	*w = SDL_GetVideoSurface()->w;
+	*h = SDL_GetVideoSurface()->h;
 }
 
 void CApi::OnRenderFinished()

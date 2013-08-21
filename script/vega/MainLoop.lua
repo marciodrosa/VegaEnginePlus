@@ -22,7 +22,9 @@ function vega.MainLoop.new()
 	
 	local function refreshviewportsize(scene)
 		local screenwidth, screenheight = vega.capi.screensize()
-		scene.viewport:updatescreensize(screenwidth, screenheight)
+		for i, v in scene.layers.ipairs() do
+			v.camera:refreshsizebylayer(screenwidth, screenheight)
+		end
 	end
 	
 	local function checkcomponent(self)

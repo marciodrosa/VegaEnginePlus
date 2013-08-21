@@ -30,7 +30,8 @@ namespace vega
 		void SetScreenSize(int w, int h);
 		void Render(lua_State*);
 	private:
-		void RenderViewport(lua_State* luaState);
+		void RenderLayers(lua_State* luaState);
+		void RenderLayer(lua_State* luaState);
 		void RenderDrawable(lua_State* luaState, lua_Number globalVisibility);
 		void RenderChildren(lua_State* luaState, lua_Number globalVisibility);
 		void RenderBackground(lua_State* luaState, lua_Number globalVisibility);
@@ -39,7 +40,7 @@ namespace vega
 		void AfterRenderDrawable(lua_State* luaState);
 		void ApplyTransform(lua_State* luaState);
 		void ApplyTransformForChildren(lua_State* luaState);
-		void SetUpView(lua_State* luaState);
+		void SetUpCamera(lua_State* luaState);
 		void SetUpTextureMode(lua_State* luaState);
 		Color GetColor(lua_State* luaState);
 		Vector2 GetVector2(lua_State* luaState);

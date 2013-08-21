@@ -17,6 +17,5 @@ vegaunit.addsuite("spritedrawabletest")
 vegaunit.addsuite("touchpointtest")
 vegaunit.addsuite("utiltest")
 vegaunit.addsuite("vector2test")
-vegaunit.addsuite("viewporttest")
 
 vegaunit.run()

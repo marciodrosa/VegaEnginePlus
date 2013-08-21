@@ -8,9 +8,9 @@ end
 
 function maincomponent:exec(context)
 	print "Component executed."
-	local scene = vega.Scene.new()
+	local scene = vega.scene()
 
-	scene.viewport.rootdrawable.children = {
+	scene.layers[1].root.children = {
 		vega.drawable {
 			name = "firstrectangle",
 			color = { r = 255, g = 0, b = 0 },
@@ -61,13 +61,13 @@ function maincomponent:exec(context)
 	scene.controllers = {
 		{
 			update = function(self, context)
-				local rotatedrectangle = context.scene.viewport.rootdrawable.children.firstrectangle.children.rotatedrectangle
+				local rotatedrectangle = context.scene.layers[1].root.children.firstrectangle.children.rotatedrectangle
 				rotatedrectangle.rotation = rotatedrectangle.rotation + 1
 			end
 		},
 		{
 			update = function(self, context)
-				local coin = context.scene.viewport.rootdrawable.children.coin
+				local coin = context.scene.layers[1].root.children.coin
 				coin.frame = coin.frame + 1
 				if coin.frame > coin:getframescount() then coin.frame = 1 end
 			end

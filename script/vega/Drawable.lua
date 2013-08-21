@@ -131,8 +131,6 @@ function vega.drawable(initialvalues)
 	drawable.visibility = 1
 	drawable.children = {}
 	drawable.removefromparent = drawablefunctions.removefromparent
-	--drawable.getmatrix = drawablefunctions.getmatrix
-	--drawable.getglobalmatrix = drawablefunctions.getglobalmatrix
 
 	return vega.util.copyvaluesintotable(initialvalues, drawable)
 end
