@@ -190,7 +190,7 @@ end
 
 function coordinatestest.test_should_initialize_with_absolute_values()
 	-- when:
-	local coordinates = vega.coordinates {
+	coordinates = vega.coordinates {
 		x = 10,
 		y = 20
 	}
@@ -204,7 +204,7 @@ end
 
 function coordinatestest.test_should_initialize_with_relative_values()
 	-- when:
-	local coordinates = vega.coordinates {
+	coordinates = vega.coordinates {
 		relativex = 10,
 		relativey = 20
 	}
@@ -218,7 +218,7 @@ end
 
 function coordinatestest.test_should_initialize_with_absolute_values_and_set_keep_relative_to_true()
 	-- when:
-	local coordinates = vega.coordinates {
+	coordinates = vega.coordinates {
 		x = 10,
 		y = 20,
 		keeprelativex = true,
@@ -234,7 +234,7 @@ end
 
 function coordinatestest.test_should_initialize_with_relative_values_and_set_keep_relative_to_false()
 	-- when:
-	local coordinates = vega.coordinates {
+	coordinates = vega.coordinates {
 		relativex = 10,
 		relativey = 20,
 		keeprelativex = false,
@@ -258,6 +258,29 @@ function coordinatestest.test_eq_operator()
 	assert_not_equal(vega.coordinates { relativex = 10, relativey = 20 }, vega.coordinates { relativex = 10, relativey = 200 }, "Coordinates should not be equal because the relative y is not equal.")
 	assert_not_equal(vega.coordinates { x = 10, y = 20 }, vega.coordinates { relativex = 10, y = 20 }, "Coordinates should not be equal because on x is relative and other is absolute.")
 	assert_not_equal(vega.coordinates { x = 10, y = 20 }, vega.coordinates { x = 10, relativey = 20 }, "Coordinates should not be equal because on y is relative and other is absolute.")
+end
+
+function coordinatestest.test_pairs_iteration()
+	-- given:
+	coordinates = vega.coordinates()
+	coordinates.x = 10
+	coordinates.y = 20
+	coordinates.relativey = 30
+
+	-- when:
+	local t = {}
+	local keyscount = 0
+	for k, v in pairs(coordinates) do
+		t[k] = v
+		keyscount = keyscount + 1
+	end
+
+	-- then:
+	assert_equal(2, keyscount, "Should have iterate by two keys.")
+	assert_not_nil(t.x, "Should have iterate the key x.")
+	assert_not_nil(t.relativey, "Should have iterate the key relativey.")
+	assert_equal(10, t.x, "t.x is not the expected.")
+	assert_equal(30, t.relativey, "t.relativey is not the expected.")
 end
 
 return coordinatestest
