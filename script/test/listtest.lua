@@ -296,7 +296,7 @@ function listtest.test_should_return_list_length()
 	assert_equal(4, length)
 end
 
-function listtest.test_should_iterate_by_indexes()
+function listtest.test_should_iterate_by_indexes_using_ipairs_function()
 	-- given:
 	list[1] = {}
 	list[2] = {}
@@ -305,7 +305,7 @@ function listtest.test_should_iterate_by_indexes()
 
 	-- when:
 	local t = {}
-	for i, v in list.ipairs() do
+	for i, v in ipairs(list) do
 		t[i] = v
 	end
 
@@ -315,6 +315,29 @@ function listtest.test_should_iterate_by_indexes()
 	assert_equal(list[2], t[2], "The second element returned on iteration is not the expected.")
 	assert_equal(list[3], t[3], "The third element returned on iteration is not the expected.")
 	assert_equal(list[4], t[4], "The fourth element returned on iteration is not the expected.")
+end
+
+function listtest.test_should_iterate_by_keys_using_pairs_function()
+	-- given:
+	list[1] = {}
+	list[2] = {}
+	list[3] = {}
+	list["str"] = {}
+
+	-- when:
+	local t = {}
+	local keyscount = 0
+	for k, v in pairs(list) do
+		t[k] = v
+		keyscount = keyscount + 1
+	end
+
+	-- then:
+	assert_equal(4, keyscount, "The keys count is not the expected.")
+	assert_equal(list[1], t[1], "The value of key 1 returned on iteration is not the expected.")
+	assert_equal(list[2], t[2], "The value of key 2 returned on iteration is not the expected.")
+	assert_equal(list[3], t[3], "The value of key 3 returned on iteration is not the expected.")
+	assert_equal(list[4], t[4], "The value of key 4 returned on iteration is not the expected.")
 end
 
 function listtest.test_should_insert_same_element()
@@ -525,26 +548,6 @@ function listtest.test_should_callback_when_replace()
 	assert_equal(v1, callbackmock.beforeremovevalue, "The value passed to beforeremove callback is not the expected.")
 	assert_equal(1, callbackmock.afterremoveindex, "The index passed to afterremove callback is not the expected.")
 	assert_equal(v1, callbackmock.afterremovevalue, "The value passed to afterremove callback is not the expected.")
-end
-
-function listtest.test_content_field_should_have_the_content_of_the_list()
-	-- given:
-	local v1 = {}
-	local v2 = {}
-	local v3 = {}
-	list[1] = v1
-	list[2] = v2
-	list.insert(v3)
-
-	-- when:
-	local content = list.content
-
-	-- then:
-	assert_table(content, "Should return a table.")
-	assert_equal(3, #content, "The content length is not the expected.")
-	assert_equal(v1, rawget(content, 1), "The content[1] is not the expected.")
-	assert_equal(v2, rawget(content, 2), "The content[2] is not the expected.")
-	assert_equal(v3, rawget(content, 3), "The content[3] is not the expected.")
 end
 
 return listtest
