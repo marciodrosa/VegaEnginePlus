@@ -6,12 +6,6 @@ require "util"
 
 local drawablefunctions = {}
 
---function drawablefunctions:getmatrix()
---end
-
---function drawablefunctions:getglobalmatrix()
---end
-
 --- Removes this Drawable from its parent.
 function drawablefunctions:removefromparent()
 	if self.parent then self.parent.children.remove(self) end
@@ -73,9 +67,7 @@ function vega.drawable(initialvalues)
 	local drawablemetatable = {} 
 
 	function drawablemetatable.__index(t, key)
-		if key == "background" or key == "children" or key == "position" or key == "size" or key == "origin" or key == "childrenorigin" then
-			return private[key]
-		end
+		return private[key]
 	end
 
 	function drawablemetatable.__newindex(t, key, value)
@@ -120,6 +112,23 @@ function vega.drawable(initialvalues)
 			rawset(t, key, value)
 		end
 	end
+
+	function drawablemetatable.__pairs(t)
+		local function nextfunction(t, index)
+			local k, v
+			if index == nil or rawget(t, index) ~= nil then
+				k, v = next(t, index)
+				if k == nil then
+					k, v = next(private)
+				end
+			else
+				k, v = next(private, index)
+			end
+			return k, v
+		end
+		return nextfunction, t, nil
+	end
+
 	setmetatable(drawable, drawablemetatable)
 
 	drawable.position = { x = 0, y = 0 }

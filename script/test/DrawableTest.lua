@@ -285,7 +285,7 @@ end
 
 function drawabletest.test_should_init_with_values()
 	-- when:
-	local drawable = {
+	drawable = vega.drawable {
 		position = { x = 10, y = 20 },
 		size = { x = 30, y = 40 },
 		origin = { x = 50, y = 60 },
@@ -313,6 +313,30 @@ function drawabletest.test_should_init_with_values()
 	assert_equal(110, drawable.rotation, "drawable.rotation is not the expected.")
 	assert_equal(0.5, drawable.visibility, "drawable.visibility is not the expected.")
 	assert_equal(2, #drawable.children, "drawable.children count is not the expected.")
+end
+
+function drawabletest.test_should_iterate_using_pairs_function()
+	-- given:
+	drawable = vega.drawable {
+		position = { x = 10, y = 20 },
+		visibility = 0.5,
+		children = {},
+		color = { r = 255, g = 100, b = 0 },
+		beforedraw = function() end
+	}
+
+	-- when:
+	local t = {}
+	for k, v in pairs(drawable) do
+		t[k] = v
+	end
+
+	-- then:
+	assert_equal(t.position, drawable.position, "Should set the 'position' in the auxiliar table.")
+	assert_equal(t.visibility, drawable.visibility, "Should set the 'visibility' in the auxiliar table.")
+	assert_equal(t.children, drawable.children, "Should set the 'children' in the auxiliar table.")
+	assert_equal(t.color, drawable.color, "Should set the 'color' in the auxiliar table.")
+	assert_equal(t.beforedraw, drawable.beforedraw, "Should set the 'beforedraw' in the auxiliar table.")
 end
 
 return drawabletest
