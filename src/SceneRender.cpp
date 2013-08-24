@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <list>
 
 using namespace vega;
 using namespace std;
@@ -122,10 +123,11 @@ void SceneRender::RenderDrawable(lua_State* luaState, lua_Number globalVisibilit
 	lua_Number visibility = lua_tonumber(luaState, -1) * globalVisibility;
 	lua_pop(luaState, 1);
 	glPushMatrix();
-	ApplyTransform(luaState);
-	RenderBackground(luaState, visibility);
+	Transform transform = GetTransform(luaState);
+	ApplyTransform(transform);
+	RenderBackground(luaState, visibility, transform);
 	RenderDrawableRectangle(luaState, visibility);
-	RenderChildren(luaState, visibility);
+	RenderChildren(luaState, visibility, transform);
 	glPopMatrix();
 	AfterRenderDrawable(luaState);
 }
@@ -133,10 +135,10 @@ void SceneRender::RenderDrawable(lua_State* luaState, lua_Number globalVisibilit
 /**
 Renders the drawable children. Expected the Drawable table in the top of the stack, where this Drawable is the parent of the children.
 */
-void SceneRender::RenderChildren(lua_State* luaState, lua_Number globalVisibility)
+void SceneRender::RenderChildren(lua_State* luaState, lua_Number globalVisibility, Transform &transform)
 {
 	glPushMatrix();
-	ApplyTransformForChildren(luaState);
+	ApplyTransformForChildren(transform);
 	lua_getfield(luaState, -1, "background");
 	lua_getfield(luaState, -2, "children");
 	lua_len(luaState, -1);
@@ -158,14 +160,14 @@ void SceneRender::RenderChildren(lua_State* luaState, lua_Number globalVisibilit
 Renders the drawable background child, if defined. Expected the Drawable table in the top of the stack,
 where this Drawable is the parent of the children.
 */
-void SceneRender::RenderBackground(lua_State* luaState, lua_Number globalVisibility)
+void SceneRender::RenderBackground(lua_State* luaState, lua_Number globalVisibility, Transform &transform)
 {
 	lua_getfield(luaState, -1, "background");
 	if (!lua_isnil(luaState, -1))
 	{
 		glPushMatrix();
 		lua_pop(luaState, 1);
-		ApplyTransformForChildren(luaState);
+		ApplyTransformForChildren(transform);
 		lua_getfield(luaState, -1, "background");
 		RenderDrawable(luaState, globalVisibility);
 		lua_pop(luaState, 1);
@@ -243,29 +245,38 @@ void SceneRender::AfterRenderDrawable(lua_State* luaState)
 }
 
 /**
-Apply the transform on current matrix. Expected the Drawable table in the top of the stack.
+Apply the transform on current matrix.
 */
-void SceneRender::ApplyTransform(lua_State* luaState)
+void SceneRender::ApplyTransform(Transform &transform)
 {
-	Vector2 position = GetVector2FromTableField(luaState, "position");
-	Vector2 scale = GetVector2FromTableField(luaState, "scale");
-	Vector2 origin = GetVector2FromTableField(luaState, "origin");
-	lua_getfield(luaState, -1, "rotation");
-	lua_Number rotation = lua_tonumber(luaState, -1);
-	lua_pop(luaState, 1);
-	glTranslatef(position.x, position.y, 0.f);
-	glRotatef(rotation, 0.f, 0.f, 1.f);
-	glScalef(scale.x, scale.y, 1.f);
-	glTranslatef(-origin.x, -origin.y, 0.f);
+	glTranslatef(transform.position.x, transform.position.y, 0.f);
+	glRotatef(transform.rotation, 0.f, 0.f, 1.f);
+	glScalef(transform.scale.x, transform.scale.y, 1.f);
+	glTranslatef(-transform.origin.x, -transform.origin.y, 0.f);
 }
 
 /**
-Apply the transform of the children origin on current matrix. Expected the parent Drawable table in the top of the stack.
+Apply the transform of the children origin on current matrix.
 */
-void SceneRender::ApplyTransformForChildren(lua_State* luaState)
+void SceneRender::ApplyTransformForChildren(Transform &transform)
 {
-	Vector2 childrenorigin = GetVector2FromTableField(luaState, "childrenorigin");
-	glTranslatef(childrenorigin.x, childrenorigin.y, 0.f);
+	glTranslatef(transform.childrenOrigin.x, transform.childrenOrigin.y, 0.f);
+}
+
+/*
+Inverts the transform values, to be used in the view.
+*/
+void SceneRender::InvertTransformValues(Transform &transform)
+{
+	transform.position.x *= -1;
+	transform.position.y *= -1;
+	transform.scale.x = transform.scale.x > 0 ? 1 / transform.scale.x : 0;
+	transform.scale.y = transform.scale.y > 0 ? 1 / transform.scale.y : 0;
+	transform.origin.x *= -1;
+	transform.origin.y *= -1;
+	transform.childrenOrigin.x *= -1;
+	transform.childrenOrigin.y *= -1;
+	transform.rotation *= -1;
 }
 
 /**
@@ -276,8 +287,34 @@ void SceneRender::SetUpCamera(lua_State* luaState)
 	lua_getfield(luaState, -1, "camera"); // pushes the camera table
 	lua_getfield(luaState, -1, "size"); // pushes the size of the camera
 	Vector2 cameraSize = GetVector2(luaState);
-	lua_pop(luaState, 2); // pops size and camera tables
-	
+	lua_pop(luaState, 1); // pops size table
+
+	Transform cameraTransform = GetTransform(luaState);
+	InvertTransformValues(cameraTransform);
+	glTranslatef(-cameraTransform.origin.x, -cameraTransform.origin.y, 0.f);
+	glScalef(cameraTransform.scale.x, cameraTransform.scale.y, 1.f);
+	glRotatef(cameraTransform.rotation, 0.f, 0.f, 1.f);
+	glTranslatef(cameraTransform.position.x, cameraTransform.position.y, 0.f);
+
+	int tablesToPop = 0;
+	while(true)
+	{
+		tablesToPop++;
+		lua_getfield(luaState, -1, "parent"); // pushes the parent
+		if (lua_isnil(luaState, -1))
+			break;
+		else
+		{
+			Transform parentTransform = GetTransform(luaState);
+			InvertTransformValues(parentTransform);
+			glTranslatef(-parentTransform.origin.x, -parentTransform.origin.y, 0.f);
+			glScalef(parentTransform.scale.x, parentTransform.scale.y, 1.f);
+			glRotatef(parentTransform.rotation, 0.f, 0.f, 1.f);
+			glTranslatef(parentTransform.position.x, parentTransform.position.y, 0.f);
+		}
+	}
+	lua_pop(luaState, tablesToPop + 1); // pops the parents + the camera itself
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 #ifdef VEGA_OPENGL_ES
@@ -385,6 +422,22 @@ void SceneRender::ReadVector2FromTableField(lua_State* luaState, std::string fie
 	if (!lua_isnil(luaState, -1))
 		ReadVector2(luaState, vector2);
 	lua_pop(luaState, 1);
+}
+
+/**
+Reads the transform fields (position, scale, etc.) from the table in the top of the stack.
+*/
+Transform SceneRender::GetTransform(lua_State *luaState)
+{
+	Transform transform;
+	transform.position = GetVector2FromTableField(luaState, "position");
+	transform.scale = GetVector2FromTableField(luaState, "scale");
+	transform.origin = GetVector2FromTableField(luaState, "origin");
+	transform.childrenOrigin = GetVector2FromTableField(luaState, "childrenorigin");
+	lua_getfield(luaState, -1, "rotation");
+	transform.rotation = lua_tonumber(luaState, -1);
+	lua_pop(luaState, 1);
+	return transform;
 }
 
 /**

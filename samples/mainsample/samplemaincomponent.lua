@@ -10,7 +10,13 @@ function maincomponent:exec(context)
 	print "Component executed."
 	local scene = vega.scene()
 
+	scene.layers[1].camera.position = { x = 0.5, y = 0.5 }
+
 	scene.layers[1].root.children = {
+		vega.drawable {
+			size = { x = 1, y = 1 },
+			color = { r = 0, g = 0, b = 0 }
+		},
 		vega.drawable {
 			name = "firstrectangle",
 			color = { r = 255, g = 0, b = 0 },
@@ -26,7 +32,7 @@ function maincomponent:exec(context)
 				vega.drawable {
 					color = { r = 255, g = 255, b = 255 },
 					size = { x = 0.1, y = 0.1 }
-				}
+				},
 			}
 		},
 		vega.drawable {

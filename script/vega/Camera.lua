@@ -33,5 +33,9 @@ function vega.camera(initialvalues)
 	cam.autocalculatewidth = true
 	cam.autocalculateheight = false
 	cam.refreshsizebylayer = refreshsizebylayer
+	cam.origin = {
+		relativex = 0.5,
+		relativey = 0.5
+	}
 	return vega.util.copyvaluesintotable(initialvalues, cam)
 end

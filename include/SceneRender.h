@@ -18,6 +18,12 @@ namespace vega
 		float x, y;
 	};
 
+	struct Transform
+	{
+		Vector2 position, origin, childrenOrigin, scale;
+		float rotation;
+	};
+
 	/**
 	Renders a scene and the attached drawables.
 	*/
@@ -33,13 +39,14 @@ namespace vega
 		void RenderLayers(lua_State* luaState);
 		void RenderLayer(lua_State* luaState);
 		void RenderDrawable(lua_State* luaState, lua_Number globalVisibility);
-		void RenderChildren(lua_State* luaState, lua_Number globalVisibility);
-		void RenderBackground(lua_State* luaState, lua_Number globalVisibility);
+		void RenderChildren(lua_State* luaState, lua_Number globalVisibility, Transform &transform);
+		void RenderBackground(lua_State* luaState, lua_Number globalVisibility, Transform &transform);
 		void RenderDrawableRectangle(lua_State* luaState, lua_Number visibility);
 		void BeforeRenderDrawable(lua_State* luaState);
 		void AfterRenderDrawable(lua_State* luaState);
-		void ApplyTransform(lua_State* luaState);
-		void ApplyTransformForChildren(lua_State* luaState);
+		void ApplyTransform(Transform &transform);
+		void ApplyTransformForChildren(Transform &transform);
+		void InvertTransformValues(Transform &transform);
 		void SetUpCamera(lua_State* luaState);
 		void SetUpTextureMode(lua_State* luaState);
 		Color GetColor(lua_State* luaState);
@@ -48,6 +55,7 @@ namespace vega
 		Vector2 GetVector2FromTableField(lua_State* luaState, std::string fieldName);
 		Vector2 GetVector2FromTableFunction(lua_State* luaState, std::string functionName);
 		void ReadVector2FromTableField(lua_State* luaState, std::string fieldName, Vector2&);
+		Transform GetTransform(lua_State *luaState);
 		GLuint GetTextureId(lua_State* luaState);
 		GLint GetTextureMode(lua_State* luaState, std::string fieldName);
 
