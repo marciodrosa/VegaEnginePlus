@@ -14,10 +14,6 @@ function maincomponent:exec(context)
 
 	scene.layers[1].root.children = {
 		vega.drawable {
-			size = { x = 1, y = 1 },
-			color = { r = 0, g = 0, b = 0 }
-		},
-		vega.drawable {
 			name = "firstrectangle",
 			color = { r = 255, g = 0, b = 0 },
 			size = { x = 0.3, y = 0.3 },
@@ -59,6 +55,48 @@ function maincomponent:exec(context)
 					texture = context.contentmanager:gettexture("coin_red.png"),
 					rows = 2,
 					columns = 10
+				},
+			}
+		}
+	}
+
+	scene.layers[2] = vega.layer {
+		camera = vega.camera {
+			size = { x = 100, y = 100},
+			autocalculatewidth = false,
+			autocalculateheight = false
+		},
+		root = vega.drawable {
+			children = {
+				vega.drawable {
+					size = { x = 100, y = 100 },
+					origin = { x = 50, y = 50 },
+					children = {
+						vega.drawable {
+							size = { x = 5, y = 5 },
+							color = { r = 0, g = 0, b = 255},
+							position = { relativex = 0, relativey = 0 },
+							origin = { relativex = 0.5, relativey = 0.5 }
+						},
+						vega.drawable {
+							size = { x = 5, y = 5 },
+							color = { r = 0, g = 0, b = 255},
+							position = { relativex = 1, relativey = 0 },
+							origin = { relativex = 0.5, relativey = 0.5 }
+						},
+						vega.drawable {
+							size = { x = 5, y = 5 },
+							color = { r = 0, g = 0, b = 255},
+							position = { relativex = 1, relativey = 1 },
+							origin = { relativex = 0.5, relativey = 0.5 }
+						},
+						vega.drawable {
+							size = { x = 5, y = 5 },
+							color = { r = 0, g = 0, b = 255},
+							position = { relativex = 0, relativey = 1 },
+							origin = { relativex = 0.5, relativey = 0.5 }
+						}
+					}
 				},
 			}
 		}
