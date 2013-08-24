@@ -99,4 +99,71 @@ function scenetest.test_should_remove_controller_if_it_is_finished_after_update(
 	assert_equal(controller2, scene.controllers[1], "The only controller in the list should be the second controller.")
 end
 
+function scenetest.test_should_call_controller_init_before_first_update()
+	-- given:
+	local context = vega.Context:new()
+	local controller = {
+		functionscalled = {},
+
+		init = function(self, context)
+			self.contextoninit = context
+			table.insert(self.functionscalled, self.init)
+		end,
+
+		update = function(self)
+			table.insert(self.functionscalled, self.update)
+		end
+	}
+	scene.controllers = { controller }
+	
+	-- when:
+	scene:updatecontrollers(context)
+	scene:updatecontrollers(context)
+	scene:updatecontrollers(context)
+	
+	-- then:
+	assert_equal(context, controller.contextoninit, "The context passed to init function is not the expected.")
+	assert_equal(controller.init, controller.functionscalled[1], "The first called function is not the expected.")
+	assert_equal(controller.update, controller.functionscalled[2], "The second called function is not the expected.")
+	assert_equal(controller.update, controller.functionscalled[3], "The third called function is not the expected.")
+	assert_equal(controller.update, controller.functionscalled[4], "The fourth called function is not the expected.")
+	assert_true(controller.initiated, "Should set the 'initiated' field after init the controller.")
+end
+
+function scenetest.test_should_set_controller_as_initiated_event_if_without_init_function()
+	-- given:
+	local context = vega.Context:new()
+	local controller = {
+		update = function(self)
+		end
+	}
+	scene.controllers = { controller }
+	
+	-- when:
+	scene:updatecontrollers(context)
+	
+	-- then:
+	assert_true(controller.initiated, "Should set the 'initiated' field.")
+end
+
+function scenetest.test_should_not_init_controller_if_it_is_already_finished()
+	-- given:
+	local context = vega.Context:new()
+	local controller = {
+		finished = true,
+
+		init = function(self, context)
+			self.initcalled = true
+		end,
+	}
+	scene.controllers = { controller }
+	
+	-- when:
+	scene:updatecontrollers(context)
+	
+	-- then:
+	assert_nil(controller.initcalled, "Should not call the init function.")
+	assert_nil(controller.initiated, "Should not set the initiated field.")
+end
+
 return scenetest

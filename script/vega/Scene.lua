@@ -10,8 +10,16 @@ local function updatecontrollers(self, context)
 	local i = 1
 	while i <= #self.controllers do
 		local controller = self.controllers[i]
-		if not controller.finished and controller.update ~= nil then
-			controller:update(context)
+		if not controller.finished then
+			if not controller.initiated then
+				controller.initiated = true
+				if controller.init ~= nil then
+					controller:init(context)
+				end
+			end
+			if controller.update ~= nil then
+				controller:update(context)
+			end
 		end
 		if controller.finished == true then
 			self.controllers.remove(i)
@@ -31,7 +39,9 @@ end
 -- @field controllers list of controller tables. You can add or remove tables from this list.
 -- If the table defines a function called "update", then this function is called at each frame
 -- of the main loop, with self and the Context table as arguments. Define a field called "finished"
--- with true value to finish the controller and automatically remove it from the scene.
+-- with true value to finish the controller and automatically remove it from the scene. Before the
+-- first update, the scene calls the function :init(context) of the controller (if exists) and
+-- sets a field called "initiated" as true into the controller table.
 function vega.scene(initialvalues)
 
 	local scene = {}
