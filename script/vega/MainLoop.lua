@@ -69,7 +69,7 @@ function vega.MainLoop.new()
 	end
 	
 	local mainloop = {
-		context = vega.Context.new(),
+		context = vega.context(),
 	}
 	
 	--- Runs the loop. This function doesn't return until the loop is running. To finish the loop execution,

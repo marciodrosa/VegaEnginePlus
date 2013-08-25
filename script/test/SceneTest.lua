@@ -30,7 +30,7 @@ end
 
 function scenetest.test_should_update_all_controllers()
 	-- given:
-	local context = vega.Context:new()
+	local context = vega.context()
 	local controller1 = createmockcontroller()
 	local controller2 = createmockcontroller()
 	scene.controllers = { controller1, controller2 }
@@ -47,7 +47,7 @@ end
 
 function scenetest.test_should_not_update_controller_if_update_function_is_not_defined()
 	-- given:
-	local context = vega.Context.new()
+	local context = vega.context()
 	local controllerwithoutupdatefunction = {}
 	local controllerwithupdatefunction = createmockcontroller()
 	scene.controllers = { controllerwithoutupdatefunction, controllerwithupdatefunction }
@@ -61,7 +61,7 @@ end
 
 function scenetest.test_should_not_update_controller_if_it_is_finished()
 	-- given:
-	local context = vega.Context:new()
+	local context = vega.context()
 	local controller1 = createmockcontroller()
 	controller1.finished = true
 	local controller2 = createmockcontroller()
@@ -79,7 +79,7 @@ end
 
 function scenetest.test_should_remove_controller_if_it_is_finished_after_update()
 	-- given:
-	local context = vega.Context:new()
+	local context = vega.context()
 	local controller1 = {
 		update = function(self)
 			self.wasupdated = true
@@ -101,7 +101,7 @@ end
 
 function scenetest.test_should_call_controller_init_before_first_update()
 	-- given:
-	local context = vega.Context:new()
+	local context = vega.context()
 	local controller = {
 		functionscalled = {},
 
@@ -132,7 +132,7 @@ end
 
 function scenetest.test_should_set_controller_as_initiated_event_if_without_init_function()
 	-- given:
-	local context = vega.Context:new()
+	local context = vega.context()
 	local controller = {
 		update = function(self)
 		end
@@ -148,7 +148,7 @@ end
 
 function scenetest.test_should_not_init_controller_if_it_is_already_finished()
 	-- given:
-	local context = vega.Context:new()
+	local context = vega.context()
 	local controller = {
 		finished = true,
 

@@ -2,7 +2,7 @@ local mousetest = {}
 
 function mousetest.test_should_initialize()
 	-- given:
-	local screen = {
+	local display = {
 		size = {
 			x = 100,
 			y = 50,
@@ -10,7 +10,7 @@ function mousetest.test_should_initialize()
 	}
 
 	-- when:
-	local mouse = vega.mouse(screen)
+	local mouse = vega.mouse(display)
 
 	-- then:
 	assert_equal(0, mouse.position.x, "mouse.position.x is not the expected.")
@@ -34,14 +34,14 @@ end
 
 function mousetest.test_should_return_position_relative_to_screen()
 	-- given:
-	local screen = {
+	local display = {
 		size = {
 			x = 100,
 			y = 50,
 		}
 	}
 
-	local mouse = vega.mouse(screen)
+	local mouse = vega.mouse(display)
 	mouse.position.x = 50
 	mouse.position.y = 5
 
@@ -52,14 +52,14 @@ end
 
 function mousetest.test_should_return_motion_relative_to_screen()
 	-- given:
-	local screen = {
+	local display = {
 		size = {
 			x = 100,
 			y = 50,
 		}
 	}
 
-	local mouse = vega.mouse(screen)
+	local mouse = vega.mouse(display)
 	mouse.motion.x = 50
 	mouse.motion.y = 5
 

@@ -1,16 +1,16 @@
-local ContextTest = {}
+local contexttest = {}
 
-function ContextTest.setup()
+function contexttest.setup()
 	StartComponent = {}
 end
 
-function ContextTest.teardown()
+function contexttest.teardown()
 	StartComponent = nil
 end
 
-function ContextTest.test_should_create_new_context()
+function contexttest.test_should_create_new_context()
 	-- when:
-	context = vega.Context.new()
+	context = vega.context()
 	
 	-- then:
 	assert_table(context)
@@ -18,6 +18,8 @@ function ContextTest.test_should_create_new_context()
 	assert_equal(StartComponent, context.component, "component is not the expected.")
 	assert_table(context.contentmanager, "Should create a contentmanager table.")
 	assert_table(context.input, "Should create an input table.")
+	assert_table(context.output, "Should create an output table.")
+	assert_table(context.output.display, "Should create a display table into the output table.")
 end
 
-return ContextTest
+return contexttest

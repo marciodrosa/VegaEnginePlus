@@ -1,6 +1,6 @@
 require "vegatable"
-require "ContentManager"
-require "Input"
+require "contentmanager"
+require "input"
 
 --- Context is the current state of the engine. Contains the variables that
 -- can be changed to modify the current context.
@@ -16,13 +16,18 @@ require "Input"
 -- @field contentmanager a ContentManager object. This field is renewed with a new object and releases
 -- the current resources each time a new component is executed.
 -- @input the Input table, contains information about the input state.
-vega.Context = {}
 
-function vega.Context.new()
+function vega.context()
+	local display = {
+		size = { x = 0, y = 0 }
+	}
 	return {
 		executing = true,
 		component = StartComponent,
 		contentmanager = vega.ContentManager.new(),
-		input = vega.Input.new(),
+		input = vega.input(display),
+		output = {
+			display = display
+		}
 	}
 end

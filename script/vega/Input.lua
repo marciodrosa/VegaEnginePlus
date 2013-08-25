@@ -1,4 +1,5 @@
 require "vegatable"
+require "mouse"
 
 --- Contains informations about the input state, like the touch points.
 -- @field touchpoints array of TouchPoint objects with informations about the current touch points.
@@ -6,12 +7,11 @@ require "vegatable"
 -- (but only with new touch points: points touched on current frame).
 -- @field releasedtouchpoints array of TouchPoint objects with informations about the points that were
 -- released on current frame.
-vega.Input = {}
-
-function vega.Input.new()
+function vega.input(display)
 	return {
 		touchpoints = {},
 		newtouchpoints = {},
-		releasedtouchpoints = {}
+		releasedtouchpoints = {},
+		mouse = vega.mouse(display)
 	}
 end
