@@ -8,7 +8,6 @@ function vega.mouse(screen)
 		return {
 			pressed = false,
 			wasclicked = false,
-			wasdoubleclicked = false,
 			wasreleased = false,
 		}
 	end

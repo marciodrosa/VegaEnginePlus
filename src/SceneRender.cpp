@@ -196,8 +196,8 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibi
 	if (isColorDefined || textureId != 0)
 	{
 		Vector2 size = GetVector2FromTableField(luaState, "size");
-		Vector2 topLeftUV = { 0.f, 0.f };
-		Vector2 bottomRightUV = { 1.f, 1.f };
+		Vector2 topLeftUV(0.f, 0.f);
+		Vector2 bottomRightUV(1.f, 1.f);
 		ReadVector2FromTableField(luaState, "topleftuv", topLeftUV);
 		ReadVector2FromTableField(luaState, "bottomrightuv", bottomRightUV);
 		

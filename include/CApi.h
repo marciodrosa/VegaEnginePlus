@@ -6,6 +6,7 @@
 #include "Lua.h"
 #include "Texture.h"
 #include "SceneRender.h"
+#include "Mouse.h"
 
 #include <list>
 
@@ -47,12 +48,12 @@ namespace vega
 		vega::SceneRender sceneRender;
 		std::list<Texture*> textures;
 		long startFrameTime;
-		int mouseX, mouseY;
-		bool wasMouseClicked;
+		Mouse currentMouseState;
 
 #ifdef VEGA_WINDOWS
 		void InitSDL();
 		int CheckInputOnWindows();
+		static MouseButton GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState);
 #endif
 #ifdef VEGA_ANDROID
 		void InitAndroid();

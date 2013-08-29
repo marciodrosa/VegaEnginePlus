@@ -5,17 +5,13 @@
 
 #include "Lua.h"
 #include "OpenGL.h"
+#include "Vector2.h"
 
 namespace vega
 {
 	struct Color
 	{
 		float r, g, b, a;
-	};
-
-	struct Vector2
-	{
-		float x, y;
 	};
 
 	struct Transform

@@ -24,10 +24,6 @@ void CApi::ReleaseInstance()
 CApi::CApi()
 {
 	Log::Info("Creating the C api instance...");
-
-	mouseX = 0;
-	mouseY = 0;
-	wasMouseClicked = false;
 	
 #ifdef VEGA_WINDOWS
 	InitSDL();

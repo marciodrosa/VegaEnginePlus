@@ -105,10 +105,12 @@
     <ClInclude Include="..\..\include\CApi.h" />
     <ClInclude Include="..\..\include\Log.h" />
     <ClInclude Include="..\..\include\Lua.h" />
+    <ClInclude Include="..\..\include\Mouse.h" />
     <ClInclude Include="..\..\include\OpenGL.h" />
     <ClInclude Include="..\..\include\SceneRender.h" />
     <ClInclude Include="..\..\include\SDL.h" />
     <ClInclude Include="..\..\include\Texture.h" />
+    <ClInclude Include="..\..\include\Vector2.h" />
     <ClInclude Include="..\..\include\VegaDefines.h" />
     <ClInclude Include="..\..\include\Vega.h" />
   </ItemGroup>
@@ -120,6 +122,7 @@
     <ClCompile Include="..\..\src\CApi_Windows.cpp" />
     <ClCompile Include="..\..\src\Log_Android.cpp" />
     <ClCompile Include="..\..\src\Log_Windows.cpp" />
+    <ClCompile Include="..\..\src\Mouse.cpp" />
     <ClCompile Include="..\..\src\SceneRender.cpp" />
     <ClCompile Include="..\..\src\Texture.cpp" />
     <ClCompile Include="..\..\src\Texture_Android.cpp" />

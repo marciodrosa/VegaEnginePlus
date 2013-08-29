@@ -1,5 +1,6 @@
 #include "../include/CApi.h"
 #include "../include/Log.h"
+#include "../include/Mouse.h"
 
 #include <sstream>
 using namespace vega;
@@ -50,43 +51,33 @@ int CApi::CheckInputLuaFunction(lua_State* luaState)
 			break;
 		}
 	}
-	// creates a new Input object and set it into the context
-	lua_getglobal(luaState, "vega");
-	lua_getfield(luaState, -1, "Input");
-	lua_getfield(luaState, -1, "new");
-	lua_call(luaState, 0, 1); // pushes the new input instance in the top of the stack
-	lua_remove(luaState, -2); // removes the "Input"
-	lua_remove(luaState, -2); // removes "vega"
-	lua_pushstring(luaState, "input"); // stack now: context, the input instance, "input"
-	lua_pushvalue(luaState, -2);  // stack now: context, the input instance, "input", the input instance again
-	lua_settable(luaState, -4); // set context["input"] = the input instance; the stack now is context, then the input instance
 
 	int newMouseX, newMouseY;
 	Uint8 mouseState = SDL_GetMouseState(&newMouseX, &newMouseY);
 	newMouseY = SDL_GetVideoSurface()->h - newMouseY; // to invert the Y coordinate; for vega, 0 is the bottom of the screen.
-
-	bool isClicked = mouseState & SDL_BUTTON(1);
-	bool isNewClick = isClicked && !CApi::GetInstance()->wasMouseClicked;
-	bool wasReleasedNow = !isClicked && CApi::GetInstance()->wasMouseClicked;
-
-	if (!CApi::GetInstance()->wasMouseClicked)
-	{
-		CApi::GetInstance()->mouseX = newMouseX;
-		CApi::GetInstance()->mouseY = newMouseY;
-	}
-	if (isClicked)
-		CApi::GetInstance()->AddTouchPointToList("touchpoints", newMouseX, newMouseY, CApi::GetInstance()->mouseX, CApi::GetInstance()->mouseY);
-	if (isNewClick)
-		CApi::GetInstance()->AddTouchPointToList("newtouchpoints", newMouseX, newMouseY, CApi::GetInstance()->mouseX, CApi::GetInstance()->mouseY);
-	if (wasReleasedNow)
-		CApi::GetInstance()->AddTouchPointToList("releasedtouchpoints", newMouseX, newMouseY, CApi::GetInstance()->mouseX, CApi::GetInstance()->mouseY);
-
-	CApi::GetInstance()->mouseX = newMouseX;
-	CApi::GetInstance()->mouseY = newMouseY;
-	CApi::GetInstance()->wasMouseClicked = isClicked;
-
-	lua_pop(luaState, 1); // pops the input instance
+	Mouse lastMouseState = CApi::GetInstance()->currentMouseState;
+	Mouse newMouseState;
+	newMouseState.SetPosition(Vector2(newMouseX, newMouseY));
+	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), 0.f);
+	newMouseState.SetLeftMouseButton(GetMouseButtonState(1, mouseState, lastMouseState.GetLeftMouseButton()));
+	newMouseState.SetMiddleMouseButton(GetMouseButtonState(2, mouseState, lastMouseState.GetMiddleMouseButton()));
+	newMouseState.SetRightMouseButton(GetMouseButtonState(3, mouseState, lastMouseState.GetRightMouseButton()));
+	CApi::GetInstance()->currentMouseState = newMouseState;
+	
+	lua_getfield(luaState, -1, "input");
+	lua_getfield(luaState, -1, "mouse");
+	newMouseState.WriteOnLuaTable(luaState);
+	lua_pop(luaState, 2); // pops mouse and input
 	return 0;
+}
+
+MouseButton CApi::GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState)
+{
+	MouseButton newMouseButtonState;
+	newMouseButtonState.pressed = sdlMouseState & SDL_BUTTON(sdlMouseButtonId);
+	newMouseButtonState.wasClicked = newMouseButtonState.pressed && !lastMouseButtonState.pressed;
+	newMouseButtonState.wasReleased = !newMouseButtonState.pressed && lastMouseButtonState.pressed;
+	return newMouseButtonState;
 }
 
 void CApi::GetScreenSize(int *w, int *h)

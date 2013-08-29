@@ -118,14 +118,24 @@ function maincomponent:exec(context)
 		},
 		{
 			update = function(self, context)
-				if #context.input.newtouchpoints > 0 then
-					print("Started touching at "..tostring(context.input.newtouchpoints[1].position))
+				local mouse = context.input.mouse
+				if mouse.buttons.left.wasclicked then
+					print("Left mouse button clicked at "..mouse.position.x..", "..mouse.position.y)
 				end
-				if #context.input.touchpoints > 0 then
-					print("Touching at "..tostring(context.input.touchpoints[1].position))
+				if mouse.buttons.left.wasreleased then
+					print("Left mouse button released at "..mouse.position.x..", "..mouse.position.y)
 				end
-				if #context.input.releasedtouchpoints > 0 then
-					print("Released touching at "..tostring(context.input.releasedtouchpoints[1].position))
+				if mouse.buttons.right.wasclicked then
+					print("Right mouse button clicked at "..mouse.position.x..", "..mouse.position.y)
+				end
+				if mouse.buttons.right.wasreleased then
+					print("Right mouse button released at "..mouse.position.x..", "..mouse.position.y)
+				end
+				if mouse.buttons.middle.wasclicked then
+					print("Middle mouse button clicked at "..mouse.position.x..", "..mouse.position.y)
+				end
+				if mouse.buttons.middle.wasreleased then
+					print("Middle mouse button released at "..mouse.position.x..", "..mouse.position.y)
 				end
 			end
 		},
