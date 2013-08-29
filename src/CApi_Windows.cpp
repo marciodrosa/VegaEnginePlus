@@ -42,12 +42,19 @@ On lua, call vegacheckinput(context).
 int CApi::CheckInputLuaFunction(lua_State* luaState)
 {
 	SDL_Event evt;
+	float motionZ = 0.f;
 	while (SDL_PollEvent(&evt))
 	{
 		switch (evt.type)
 		{
 		case SDL_QUIT:
 			CApi::GetInstance()->SetExecutingFieldToFalse();
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			if (evt.button.button == SDL_BUTTON_WHEELUP)
+				motionZ = 1.f;
+			if (evt.button.button == SDL_BUTTON_WHEELDOWN)
+				motionZ = -1.f;
 			break;
 		}
 	}
@@ -58,7 +65,7 @@ int CApi::CheckInputLuaFunction(lua_State* luaState)
 	Mouse lastMouseState = CApi::GetInstance()->currentMouseState;
 	Mouse newMouseState;
 	newMouseState.SetPosition(Vector2(newMouseX, newMouseY));
-	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), 0.f);
+	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), motionZ);
 	newMouseState.SetLeftMouseButton(GetMouseButtonState(1, mouseState, lastMouseState.GetLeftMouseButton()));
 	newMouseState.SetMiddleMouseButton(GetMouseButtonState(2, mouseState, lastMouseState.GetMiddleMouseButton()));
 	newMouseState.SetRightMouseButton(GetMouseButtonState(3, mouseState, lastMouseState.GetRightMouseButton()));

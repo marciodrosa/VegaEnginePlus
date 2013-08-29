@@ -137,6 +137,9 @@ function maincomponent:exec(context)
 				if mouse.buttons.middle.wasreleased then
 					print("Middle mouse button released at "..mouse.position.x..", "..mouse.position.y)
 				end
+				if mouse.motion.z ~= 0 then
+					print(mouse.motion.z)
+				end
 			end
 		},
 	}
