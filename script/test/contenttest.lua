@@ -61,6 +61,24 @@ function contenttest.test_should_call_c_api_to_release_textures()
 	assert_true(textureswasreleasedbycapi, "Should call the c api to release the textures.")
 end
 
+function contenttest.test_should_clear_textures_table_after_release_resources()
+	-- given:
+	vega.capi = {
+		loadtexture = function(texturename)
+			return {}
+		end,
+		releasetextures = function()
+		end
+	}
+	mytext = content.textures["some texture"]
+
+	-- when:
+	content:releaseresources()
+	
+	-- then:
+	assert_nil(rawget(content.textures, "some texture"), "Should remove the previous loaded texture from the textures table.")
+end
+
 function contenttest.test_should_load_texture_again_after_release_resources()
 	-- given:
 	vega.capi = {
@@ -80,6 +98,39 @@ function contenttest.test_should_load_texture_again_after_release_resources()
 	
 	-- then:
 	assert_not_equal(texture, reloadedtexture, "The second texture should not be the same texture previous loaded, because it should be reloaded after release the resources.")
+end
+
+function contenttest.test_should_iterate_by_loaded_textures()
+	-- given:
+	local texture1 = {}
+	local texture2 = {}
+	local texture3 = {}
+	local texturestoload = {
+		apple = texture1,
+		cucumber = texture2,
+		orange = texture3
+	}
+
+	vega.capi = {
+		loadtexture = function(texturename)
+			return texturestoload[texturename]
+		end
+	}
+	
+	local loadedapple = content.textures["apple"]
+	local loadedcucumber = content.textures["cucumber"]
+	local loadedorange = content.textures["orange"]
+
+	-- when:
+	local temp = {}
+	for k, v in pairs(content.textures) do
+		temp[k] = v
+	end
+
+	-- then:
+	assert_equal(loadedapple, temp.apple, "Should return the apple texture when iterate by the textures.")
+	assert_equal(loadedcucumber, temp.cucumber, "Should return the cucumber texture when iterate by the textures.")
+	assert_equal(loadedorange, temp.orange, "Should return the orange texture when iterate by the textures.")
 end
 
 return contenttest
