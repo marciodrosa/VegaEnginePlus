@@ -42,6 +42,7 @@ namespace vega
 		long startFrameTime;
 		Mouse currentMouseState;
 
+		void ExecuteMainLoop();
 		void SetExecutingFieldToFalse();
 
 #ifdef VEGA_WINDOWS

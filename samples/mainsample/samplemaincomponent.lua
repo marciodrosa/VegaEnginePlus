@@ -1,12 +1,12 @@
 require "vega"
 
-local maincomponent = {}
+local mainmodule = {}
 
-function maincomponent:load(context)
+function mainmodule:load(context)
 	print "Component loaded."
 end
 
-function maincomponent:exec(context)
+function mainmodule:execute(context)
 	print "Component executed."
 	local scene = vega.scene()
 
@@ -147,4 +147,4 @@ function maincomponent:exec(context)
 	context.nextscene = scene
 end
 
-vega.MainLoop.exec(maincomponent)
+vega.mainloop.context.module = mainmodule

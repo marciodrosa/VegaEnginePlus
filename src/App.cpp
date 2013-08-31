@@ -87,7 +87,26 @@ void App::Execute(string scriptName)
 			Log::Error(lua_tostring(luaState, -1));
 			lua_pop(luaState, 1);
 		}
+		else
+			ExecuteMainLoop();
 	}
+}
+
+void App::ExecuteMainLoop()
+{
+	Log::Info("Starting the execution of the main loop.");
+	lua_getglobal(luaState, "vega");
+	lua_getfield(luaState, -1, "mainloop");
+	lua_getfield(luaState, -1, "execute");
+	lua_pushvalue(luaState, -2); // pushes the mainloop table to the top of the stack again, to pass as arg to the execute function
+	if (lua_pcall(luaState, 1, 0, 0) != 0)
+	{
+		Log::Error("Error on main loop execution:");
+		Log::Error(lua_tostring(luaState, -1));
+		lua_pop(luaState, 1);
+	}
+	lua_pop(luaState, 2); // pops vega and mainloop
+	Log::Info("Main loop finished.");
 }
 
 /**

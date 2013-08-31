@@ -66,7 +66,7 @@ void App::ProcessInput()
 	newMouseY = SDL_GetVideoSurface()->h - newMouseY; // to invert the Y coordinate; for vega, 0 is the bottom of the screen.
 	Mouse lastMouseState = currentMouseState;
 	Mouse newMouseState;
-	newMouseState.SetPosition(Vector2(newMouseX, newMouseY));
+	newMouseState.SetPosition(Vector2((float) newMouseX, (float) newMouseY));
 	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), motionZ);
 	newMouseState.SetLeftMouseButton(GetMouseButtonState(1, mouseState, lastMouseState.GetLeftMouseButton()));
 	newMouseState.SetMiddleMouseButton(GetMouseButtonState(2, mouseState, lastMouseState.GetMiddleMouseButton()));
@@ -82,7 +82,7 @@ void App::ProcessInput()
 MouseButton App::GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState)
 {
 	MouseButton newMouseButtonState;
-	newMouseButtonState.pressed = sdlMouseState & SDL_BUTTON(sdlMouseButtonId);
+	newMouseButtonState.pressed = (sdlMouseState & SDL_BUTTON(sdlMouseButtonId)) != 0;
 	newMouseButtonState.wasClicked = newMouseButtonState.pressed && !lastMouseButtonState.pressed;
 	newMouseButtonState.wasReleased = !newMouseButtonState.pressed && lastMouseButtonState.pressed;
 	return newMouseButtonState;

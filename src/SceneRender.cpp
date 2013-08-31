@@ -435,7 +435,7 @@ Transform SceneRender::GetTransform(lua_State *luaState)
 	transform.origin = GetVector2FromTableField(luaState, "origin");
 	transform.childrenOrigin = GetVector2FromTableField(luaState, "childrenorigin");
 	lua_getfield(luaState, -1, "rotation");
-	transform.rotation = lua_tonumber(luaState, -1);
+	transform.rotation = (float) lua_tonumber(luaState, -1);
 	lua_pop(luaState, 1);
 	return transform;
 }
