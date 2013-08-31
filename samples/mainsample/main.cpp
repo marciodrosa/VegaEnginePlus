@@ -1,3 +1,3 @@
 #include "../../include/Vega.h"
 
-EXECUTE_APP("samplemaincomponent")
+EXECUTE_APP("sample")

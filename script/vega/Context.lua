@@ -1,5 +1,5 @@
 require "vegatable"
-require "contentmanager"
+require "content"
 require "input"
 
 --- Context is the current state of the engine. Contains the variables that
@@ -13,10 +13,9 @@ require "input"
 -- made if isframeupdating is true.
 -- @field scene the current scene. The current scene is being drawn on the screen and updated
 -- each frame. See vega.scene.
--- @field module the last executed component.
--- field when the context is initialized. Change the value of this field to execute another component.
--- @field contentmanager a ContentManager object. This field is renewed with a new object and releases
--- the current resources each time a new component is executed.
+-- @field module the last executed module.
+-- @field content a content object. This field is renewed with a new object and releases
+-- the current resources each time a new module is executed. See vega.content.
 -- @field input the input table, contains information about the input state. See vega.input.
 -- @field nextmodule as you can't change the module field in the middle of a frame update, set the
 -- nextmodule field. So, the module field will be automatically be setted to the next frame.
@@ -31,7 +30,7 @@ function vega.context()
 	local context = {
 		executing = true,
 		isframeupdating = false,
-		contentmanager = vega.ContentManager.new(),
+		content = vega.content(),
 		input = vega.input(display),
 		output = {
 			display = display

@@ -1,6 +1,6 @@
 require "vegatable"
 require "context"
-require "ContentManager"
+require "content"
 require "capi"
 
 local currentmodule = nil
@@ -26,8 +26,7 @@ local function checkmodule(self)
 	end
 	if currentmodule ~= self.context.module then
 		currentmodule = self.context.module;
-		self.context.contentmanager:releaseresources()
-		self.context.contentmanager = vega.ContentManager.new()
+		self.context.content:releaseresources()
 		currentmodule:load(self.context)
 		currentmodule:execute(self.context)
 	end

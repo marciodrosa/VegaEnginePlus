@@ -1,12 +1,12 @@
-local ContentManagerTest = {}
+local contenttest = {}
 
-local contentmanager = {}
+local content = {}
 
-function ContentManagerTest.setup()
-	contentmanager = vega.ContentManager.new()
+function contenttest.setup()
+	content = vega.content()
 end
 
-function ContentManagerTest.test_should_load_texture_from_c_api()
+function contenttest.test_should_load_texture_from_c_api()
 	-- given:
 	local texturereturnedbycapi = {}
 	local texturenameloadedfromcapi = ""
@@ -19,14 +19,14 @@ function ContentManagerTest.test_should_load_texture_from_c_api()
 	}
 
 	-- when:
-	local texture = contentmanager:gettexture("some texture name")
+	local texture = content.textures["some texture name"]
 	
 	-- then:
-	assert_equal("some texture name", texturenameloadedfromcapi, "Should pass the texture name to the c api.")
+	assert_equal("content/textures/some texture name.png", texturenameloadedfromcapi, "Should pass the texture name to the c api.")
 	assert_equal(texturereturnedbycapi, texture, "Should return the texture loaded by the c api.")
 end
 
-function ContentManagerTest.test_should_return_previous_loaded_texture()
+function contenttest.test_should_return_previous_loaded_texture()
 	-- given:
 	vega.capi = {
 		loadtexture = function(texturename)
@@ -35,16 +35,16 @@ function ContentManagerTest.test_should_return_previous_loaded_texture()
 	}
 
 	-- when:
-	local texture = contentmanager:gettexture("some texture name")
-	local anothertexture = contentmanager:gettexture("another texture name")
-	local sametexture = contentmanager:gettexture("some texture name")
+	local texture = content.textures["some texture name"]
+	local anothertexture = content.textures["another texture name"]
+	local sametexture = content.textures["some texture name"]
 	
 	-- then:
 	assert_equal(texture, sametexture, "When get a texture with the same name, should return the same texture previous loaded by the c api.")
 	assert_not_equal(texture, anothertexture, "The second texture should not be the same object, it has another name so it should be loaded by the c api.")
 end
 
-function ContentManagerTest.test_should_call_c_api_to_release_textures()
+function contenttest.test_should_call_c_api_to_release_textures()
 	-- given:
 	local textureswasreleasedbycapi = false
 	
@@ -55,13 +55,13 @@ function ContentManagerTest.test_should_call_c_api_to_release_textures()
 	}
 
 	-- when:
-	contentmanager:releaseresources()
+	content:releaseresources()
 	
 	-- then:
 	assert_true(textureswasreleasedbycapi, "Should call the c api to release the textures.")
 end
 
-function ContentManagerTest.test_should_load_texture_again_after_release_resources()
+function contenttest.test_should_load_texture_again_after_release_resources()
 	-- given:
 	vega.capi = {
 		loadtexture = function(texturename)
@@ -71,15 +71,15 @@ function ContentManagerTest.test_should_load_texture_again_after_release_resourc
 		end
 	}
 	
-	local texture = contentmanager:gettexture("some texture name")
+	local texture = content.textures["some texture name"]
 	
-	contentmanager:releaseresources()
+	content:releaseresources()
 
 	-- when:
-	local reloadedtexture = contentmanager:gettexture("some texture name")
+	local reloadedtexture = content.textures["some texture name"]
 	
 	-- then:
 	assert_not_equal(texture, reloadedtexture, "The second texture should not be the same texture previous loaded, because it should be reloaded after release the resources.")
 end
 
-return ContentManagerTest
+return contenttest

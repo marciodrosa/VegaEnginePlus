@@ -1,6 +1,6 @@
 require "vega.camera"
 require "vega.color"
-require "vega.contentmanager"
+require "vega.content"
 require "vega.context"
 require "vega.coordinates"
 require "vega.drawable"

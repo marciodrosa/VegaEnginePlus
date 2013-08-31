@@ -64,7 +64,8 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>mkdir $(OutDir)\vega &amp; xcopy /y $(SolutionDir)\..\script\vega\*.lua $(OutDir)\vega &amp; xcopy /y $(SolutionDir)\..\samples\mainsample\*.lua $(OutDir) &amp; xcopy /y $(SolutionDir)\..\samples\mainsample\*.png $(OutDir)</Command>
+      <Command>mkdir $(OutDir)\vega &amp; mkdir $(OutDir)\content &amp; xcopy /y $(SolutionDir)\..\script\vega\*.lua $(OutDir)\vega &amp; xcopy /y $(SolutionDir)\..\samples\mainsample\*.lua $(OutDir) &amp; xcopy /y /e $(SolutionDir)\..\samples\mainsample\content $(OutDir)content</Command>
+      <Message>Copying the sample data to the output folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -87,7 +88,8 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>mkdir $(OutDir)\vega &amp; xcopy /y $(SolutionDir)\..\script\vega\*.lua $(OutDir)\vega &amp; xcopy /y $(SolutionDir)\..\samples\mainsample\*.lua $(OutDir) &amp; xcopy /y $(SolutionDir)\..\samples\mainsample\*.png $(OutDir)</Command>
+      <Command>mkdir $(OutDir)\vega &amp; mkdir $(OutDir)\content &amp; xcopy /y $(SolutionDir)\..\script\vega\*.lua $(OutDir)\vega &amp; xcopy /y $(SolutionDir)\..\samples\mainsample\*.lua $(OutDir) &amp; xcopy /y /e $(SolutionDir)\..\samples\mainsample\content $(OutDir)content</Command>
+      <Message>Copying the sample data to the output folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

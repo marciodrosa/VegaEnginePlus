@@ -32,7 +32,7 @@ function mainmodule:execute(context)
 			}
 		},
 		vega.drawable {
-			texture = context.contentmanager:gettexture("vegatexture.png"),
+			texture = context.content.textures.vegatexture,
 			bottomrightuv = { x = 3, y = 3 },
 			size = { x = 0.4, y = 0.4 },
 			origin = { relativex = 0.5, relativey = 0.5 },
@@ -44,15 +44,15 @@ function mainmodule:execute(context)
 			position = { x = 0.5, y = 0.5 },
 			rows = 2,
 			columns = 10,
-			texture = context.contentmanager:gettexture("coin.png"),
+			texture = context.content.textures.coin,
 			extensions = {
 				{
-					texture = context.contentmanager:gettexture("coin_blue.png"),
+					texture = context.content.textures.coinblue,
 					rows = 2,
 					columns = 10
 				},
 				{
-					texture = context.contentmanager:gettexture("coin_red.png"),
+					texture = context.content.textures.coinred,
 					rows = 2,
 					columns = 10
 				},
