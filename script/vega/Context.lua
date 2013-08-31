@@ -3,31 +3,69 @@ require "contentmanager"
 require "input"
 
 --- Context is the current state of the engine. Contains the variables that
--- can be changed to modify the current context.
+-- can be changed to modify the current context. Note: some fields, like scene and module, can't
+-- be changed while the frame of the main loop is being updated, to avoid break the data in unexpected
+-- ways. So, set the nextmodule or nextscene fields instead. This function is called internally to
+-- create a new context for the main loop.
 -- @field executing true if the main loop is executing. Set to false to finish the execution.
+-- @field isframeupdating a boolean value that indicates if the frame is in the middle of a update. It
+-- is setted automatically by the main loop. Some operations, like change the scene or module, can't be
+-- made if isframeupdating is true.
 -- @field scene the current scene. The current scene is being drawn on the screen and updated
--- each frame. WARNING: to change the scene, set the "nextscene" field. If you change the "scene" field
--- while the scene is actually being updated (while the main loop is running), you can have issues.
--- Set the "nextscene" will change the "scene" field only after the current frame finishes the update and
--- draw functions.
--- @field nextscene the scene to be setted as current scene for the next frame. See the "scene" field.
--- @field component the last executed component. The StartComponent object is setted into this
+-- each frame. See vega.scene.
+-- @field module the last executed component.
 -- field when the context is initialized. Change the value of this field to execute another component.
 -- @field contentmanager a ContentManager object. This field is renewed with a new object and releases
 -- the current resources each time a new component is executed.
--- @input the Input table, contains information about the input state.
-
+-- @field input the input table, contains information about the input state. See vega.input.
+-- @field nextmodule as you can't change the module field in the middle of a frame update, set the
+-- nextmodule field. So, the module field will be automatically be setted to the next frame.
+-- @field nextscene as you can't change the scene field in the middle of a frame update, set the
+-- nextscene field. So, the scene field will be automatically be setted to the next frame.
 function vega.context()
 	local display = {
 		size = { x = 0, y = 0 }
 	}
-	return {
+	local private = {
+	}
+	local context = {
 		executing = true,
-		component = StartComponent,
+		isframeupdating = false,
 		contentmanager = vega.ContentManager.new(),
 		input = vega.input(display),
 		output = {
 			display = display
 		}
 	}
+	local contextmetatable = {
+		__index = private,
+		__newindex = function(t, index, value)
+			if index == "scene" or index == "module" then
+				if t.isframeupdating then
+					error("Set the "..index.." field of the context while the frame is being updated is forbidden. Set next"..index.." field instead, so the changes will apply in the next frame.")
+				else
+					private[index] = value
+				end
+			else
+				rawset(t, index, value)
+			end
+		end,
+		__pairs = function(t)
+			local function nextfunction(t, index)
+				local k, v
+				if index == nil or rawget(t, index) ~= nil then
+					k, v = next(t, index)
+					if k == nil then
+						k, v = next(private)
+					end
+				else
+					k, v = next(private, index)
+				end
+				return k, v
+			end
+			return nextfunction, t, nil
+		end
+	}
+	setmetatable(context, contextmetatable)
+	return context
 end

@@ -3,14 +3,14 @@ require "context"
 require "ContentManager"
 require "capi"
 
+local currentmodule = nil
+
 --- The main loop of the application. It contains an "execute" functions that starts the loop. The
 -- app automatically calls this function. To set the entry point of the app, sets the field "module"
 -- using vega.mainloop.context.module = myentrypointmodule.
 vega.mainloop = {
 	context = vega.context()
 }
-
-local currentmodule = nil
 
 local function refreshviewportsize(scene)
 	local screenwidth, screenheight = vega.capi.screensize()
@@ -32,12 +32,11 @@ end
 local function checkscene(self)
 	if self.context.scene ~= self.context.nextscene then
 		self.context.scene = self.context.nextscene;
+		self.context.nextscene = nil
 	end
 end
 
 local function update(self)
-	checkmodule(self)
-	checkscene(self)
 	if self.context.scene then
 		refreshviewportsize(self.context.scene)
 		self.context.scene:updatecontrollers(self.context)
@@ -65,10 +64,14 @@ end
 -- called by the app after run the initial script.
 function vega.mainloop:execute()
 	while self.context.executing do
+		checkmodule(self)
+		checkscene(self)
+		self.context.isframeupdating = true
 		vega.capi.syncbegin()
 		vega.capi.checkinput(self.context)
 		update(self)
 		draw(self)
 		sync(self)
+		self.context.isframeupdating = false
 	end
 end
