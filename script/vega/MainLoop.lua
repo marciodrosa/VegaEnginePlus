@@ -20,6 +20,10 @@ local function refreshviewportsize(scene)
 end
 
 local function checkmodule(self)
+	if self.context.module ~= self.context.module and self.context.module ~= nil then
+		self.context.module = self.context.module;
+		self.context.module = nil
+	end
 	if currentmodule ~= self.context.module then
 		currentmodule = self.context.module;
 		self.context.contentmanager:releaseresources()
@@ -30,7 +34,7 @@ local function checkmodule(self)
 end
 
 local function checkscene(self)
-	if self.context.scene ~= self.context.nextscene then
+	if self.context.scene ~= self.context.nextscene and self.context.nextscene ~= nil then
 		self.context.scene = self.context.nextscene;
 		self.context.nextscene = nil
 	end
