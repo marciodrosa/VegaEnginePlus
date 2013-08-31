@@ -8,6 +8,7 @@
 #include "CApi.h"
 #include "Log.h"
 #include "Lua.h"
+#include "Mouse.h"
 #include "OpenGL.h"
 #include "SceneRender.h"
 #include "SDL.h"

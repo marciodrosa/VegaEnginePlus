@@ -117,9 +117,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\App.cpp" />
     <ClCompile Include="..\..\src\App_Android.cpp" />
+    <ClCompile Include="..\..\src\App_Windows.cpp" />
     <ClCompile Include="..\..\src\CApi.cpp" />
-    <ClCompile Include="..\..\src\CApi_Android.cpp" />
-    <ClCompile Include="..\..\src\CApi_Windows.cpp" />
     <ClCompile Include="..\..\src\Log_Android.cpp" />
     <ClCompile Include="..\..\src\Log_Windows.cpp" />
     <ClCompile Include="..\..\src\Mouse.cpp" />

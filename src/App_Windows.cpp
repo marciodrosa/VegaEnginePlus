@@ -1,4 +1,5 @@
 #include "../include/CApi.h"
+#include "../include/App.h"
 #include "../include/Log.h"
 #include "../include/Mouse.h"
 
@@ -6,9 +7,11 @@
 using namespace vega;
 using namespace std;
 
+// This cpp file contains some implementations of the App class available only for the Windows platform.
+
 #ifdef VEGA_WINDOWS
 
-void CApi::InitSDL()
+void App::InitSDL()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
@@ -36,10 +39,9 @@ void CApi::InitSDL()
 }
 
 /**
-Called by the main loop Lua script. Answer to the input events of the application.
-On lua, call vegacheckinput(context).
+Process the input events.
 */
-int CApi::CheckInputLuaFunction(lua_State* luaState)
+void App::ProcessInput()
 {
 	SDL_Event evt;
 	float motionZ = 0.f;
@@ -48,7 +50,7 @@ int CApi::CheckInputLuaFunction(lua_State* luaState)
 		switch (evt.type)
 		{
 		case SDL_QUIT:
-			CApi::GetInstance()->SetExecutingFieldToFalse();
+			SetExecutingFieldToFalse();
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			if (evt.button.button == SDL_BUTTON_WHEELUP)
@@ -62,23 +64,22 @@ int CApi::CheckInputLuaFunction(lua_State* luaState)
 	int newMouseX, newMouseY;
 	Uint8 mouseState = SDL_GetMouseState(&newMouseX, &newMouseY);
 	newMouseY = SDL_GetVideoSurface()->h - newMouseY; // to invert the Y coordinate; for vega, 0 is the bottom of the screen.
-	Mouse lastMouseState = CApi::GetInstance()->currentMouseState;
+	Mouse lastMouseState = currentMouseState;
 	Mouse newMouseState;
 	newMouseState.SetPosition(Vector2(newMouseX, newMouseY));
 	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), motionZ);
 	newMouseState.SetLeftMouseButton(GetMouseButtonState(1, mouseState, lastMouseState.GetLeftMouseButton()));
 	newMouseState.SetMiddleMouseButton(GetMouseButtonState(2, mouseState, lastMouseState.GetMiddleMouseButton()));
 	newMouseState.SetRightMouseButton(GetMouseButtonState(3, mouseState, lastMouseState.GetRightMouseButton()));
-	CApi::GetInstance()->currentMouseState = newMouseState;
+	currentMouseState = newMouseState;
 	
 	lua_getfield(luaState, -1, "input");
 	lua_getfield(luaState, -1, "mouse");
 	newMouseState.WriteOnLuaTable(luaState);
 	lua_pop(luaState, 2); // pops mouse and input
-	return 0;
 }
 
-MouseButton CApi::GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState)
+MouseButton App::GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState)
 {
 	MouseButton newMouseButtonState;
 	newMouseButtonState.pressed = sdlMouseState & SDL_BUTTON(sdlMouseButtonId);
@@ -87,13 +88,13 @@ MouseButton CApi::GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState,
 	return newMouseButtonState;
 }
 
-void CApi::GetScreenSize(int *w, int *h)
+void App::GetScreenSize(int *w, int *h)
 {
 	*w = SDL_GetVideoSurface()->w;
 	*h = SDL_GetVideoSurface()->h;
 }
 
-void CApi::OnRenderFinished()
+void App::OnRenderFinished()
 {
 	SDL_GL_SwapBuffers();
 	SDL_Flip(SDL_GetVideoSurface());
