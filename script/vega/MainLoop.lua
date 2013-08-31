@@ -64,14 +64,20 @@ end
 -- called by the app after run the initial script.
 function vega.mainloop:execute()
 	while self.context.executing do
-		checkmodule(self)
-		checkscene(self)
-		self.context.isframeupdating = true
-		vega.capi.syncbegin()
-		vega.capi.checkinput(self.context)
-		update(self)
-		draw(self)
-		sync(self)
-		self.context.isframeupdating = false
+		self:updateframe()
 	end
+end
+
+--- Called by the main loop each frame. It is an internal method, automatically called by the "execute" function
+-- while the main loop is running.
+function vega.mainloop:updateframe()
+	checkmodule(self)
+	checkscene(self)
+	self.context.isframeupdating = true
+	vega.capi.syncbegin()
+	vega.capi.checkinput(self.context)
+	update(self)
+	draw(self)
+	sync(self)
+	self.context.isframeupdating = false
 end

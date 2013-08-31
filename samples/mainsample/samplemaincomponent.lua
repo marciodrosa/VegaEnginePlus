@@ -3,11 +3,11 @@ require "vega"
 local mainmodule = {}
 
 function mainmodule:load(context)
-	print "Component loaded."
+	print "Module loaded."
 end
 
 function mainmodule:execute(context)
-	print "Component executed."
+	print "Module executed."
 	local scene = vega.scene()
 
 	scene.layers[1].camera.position = { x = 0.5, y = 0.5 }
