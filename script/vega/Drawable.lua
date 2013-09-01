@@ -1,5 +1,4 @@
 require "vegatable"
-require "vector2"
 require "list"
 require "coordinates"
 require "util"

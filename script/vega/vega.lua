@@ -12,8 +12,6 @@ require "vega.matrix"
 require "vega.mouse"
 require "vega.scene"
 require "vega.spritedrawable"
-require "vega.touchpoint"
 require "vega.transform"
 require "vega.util"
-require "vega.vector2"
 

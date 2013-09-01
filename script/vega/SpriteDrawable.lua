@@ -1,5 +1,4 @@
 require "vegatable"
-require "vector2"
 require "drawable"
 require "util"
 
@@ -24,7 +23,7 @@ local function calculateuvs(rows, columns, frame)
 	local top = row / rows
 	local right = (column + 1) / columns
 	local bottom = (row + 1) / rows
-	return vega.Vector2.new(left, top), vega.Vector2.new(right, bottom)
+	return { x = left, y = top }, { x = right, y = bottom }
 end
 
 local function gettextureanduvsforcurrentframe(self)
