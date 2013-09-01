@@ -34,4 +34,11 @@ end
 -- @param m1 the first 3x3 matrix table.
 -- @param m1 the second 3x3 matrix table.
 function vega.matrix.multiply(m1, m2)
+	local result = { {}, {}, {} }
+	for i = 1, 3 do
+		for j = 1, 3 do
+			result[i][j] = (m1[i][1] * m2[1][j]) + (m1[i][2] * m2[2][j]) + (m1[i][3] * m2[3][j])
+		end
+	end
+	return result
 end
