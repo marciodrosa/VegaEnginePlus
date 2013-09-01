@@ -18,16 +18,34 @@ end
 --- Creates and returns a 3x3 translation matrix.
 -- @param translation a 2D vector table with the translation x and y (the keys may be 1, 2, x and/or y).
 function vega.matrix.translation(translation)
+	return {
+		{ 1, 0, translation.x or translation[1] },
+		{ 0, 1, translation.y or translation[2] },
+		{ 0, 0, 1 }
+	}
 end
 
 --- Creates and returns a 3x3 rotation matrix.
 -- @param degrees the angle of the rotation, in degrees.
 function vega.matrix.rotation(degrees)
+	local radians = math.rad(degrees)
+	local cos = math.cos(radians)
+	local sin = math.sin(radians)
+	return {
+		{ cos, sin, 0 },
+		{ -sin, cos, 0 },
+		{ 0, 0, 1 }
+	}
 end
 
 --- Creates and returns a 3x3 scale matrix.
 -- @param scale a 2D vector table with the scale in x and y (the keys may be 1, 2, x and/or y).
 function vega.matrix.scale(scale)
+	return {
+		{ scale.x or scale[1], 0, 0 },
+		{ 0, scale.y or scale[2], 0 },
+		{ 0, 0, 1 }
+	}
 end
 
 --- Multiply the two matrixes and returns the result matrix.
