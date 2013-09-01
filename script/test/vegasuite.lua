@@ -1,4 +1,4 @@
-package.path = package.path..";../?;../?.lua;../vega/?.lua;lunatest/?;lunatest/?.lua"
+package.path = package.path..";../?;../?.lua;../vega/?.lua"
 
 require "vega"
 require "vegaunit"
@@ -18,6 +18,7 @@ vegaunit.addsuite("mousetest")
 vegaunit.addsuite("scenetest")
 vegaunit.addsuite("spritedrawabletest")
 vegaunit.addsuite("touchpointtest")
+vegaunit.addsuite("transformtest")
 vegaunit.addsuite("utiltest")
 vegaunit.addsuite("vector2test")
 

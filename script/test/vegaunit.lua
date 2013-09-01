@@ -114,6 +114,10 @@ function assert_table(actual, message)
 	assert_type("table", actual, message)
 end
 
+function assert_function(actual, message)
+	assert_type("function", actual, message)
+end
+
 function assert_error(expectederror, func, message)
 	local ok, err = pcall(func)
 	if ok then
