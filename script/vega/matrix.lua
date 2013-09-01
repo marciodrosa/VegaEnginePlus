@@ -72,6 +72,16 @@ function vega.matrix.multiply(m1, m2)
 	return setmetatable(result, matrixmetatable)
 end
 
+--- Returns the transpose of the matrix (transposes the rows and columns).
+function vega.matrix.transpose(matrix)
+	local m = {
+		{ matrix[1][1], matrix[2][1], matrix[3][1] },
+		{ matrix[1][2], matrix[2][2], matrix[3][2] },
+		{ matrix[1][3], matrix[2][3], matrix[3][3] },
+	}
+	return setmetatable(m, matrixmetatable)
+end
+
 function matrixmetatable.__tostring(t)
 	return ""..t[1][1].." "..t[1][2].." "..t[1][3].."\n"..t[2][1].." "..t[2][2].." "..t[2][3].."\n"..t[3][1].." "..t[3][2].." "..t[3][3]
 end
@@ -79,5 +89,6 @@ end
 -- todo: add to the metatable functions to extract the position, rotation and scale values from the matrix
 
 matrixmetatableindex.multiply = vega.matrix.multiply
+matrixmetatableindex.transpose = vega.matrix.transpose
 
 matrixmetatable.__index = matrixmetatableindex

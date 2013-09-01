@@ -3,6 +3,7 @@ local matrixtest = {}
 local function assertcontainsmetatable(matrix)
 	local metatable = getmetatable(matrix)
 	assert_equal(vega.matrix.multiply, matrix.multiply, "The matrix should have the function to multiply by another matrix.")
+	assert_equal(vega.matrix.transpose, matrix.transpose, "The matrix should have the function to transpose.")
 	assert_function(metatable.__tostring, "The metatable should have the __tostring function.")
 end
 
@@ -149,7 +150,6 @@ end
 
 function matrixtest.test_should_convert_matrix_to_string()
 	-- given:
-	-- given:
 	local m1 = {
 		{ 1, 2, 3 },
 		{ 4, 5, 6 },
@@ -166,6 +166,30 @@ function matrixtest.test_should_convert_matrix_to_string()
 
 	-- then:
 	assert_equal("300 360 420\n660 810 960\n1020 1260 1500", tostring(result), "The matrix as string is not the expected.")
+end
+
+function matrixtest.test_should_transpose_matrix()
+	-- given:
+	local matrix = {
+		{ 1, 2, 3 },
+		{ 4, 5, 6 },
+		{ 7, 8, 9 }
+	}
+
+	-- when:
+	local result = vega.matrix.transpose(matrix)
+
+	-- then:
+	assert_equal(1, result[1][1], "Matrix[1][1] is not the expected.")
+	assert_equal(2, result[2][1], "Matrix[2][1] is not the expected.")
+	assert_equal(3, result[3][1], "Matrix[3][1] is not the expected.")
+	assert_equal(4, result[1][2], "Matrix[1][2] is not the expected.")
+	assert_equal(5, result[2][2], "Matrix[2][2] is not the expected.")
+	assert_equal(6, result[3][2], "Matrix[3][2] is not the expected.")
+	assert_equal(7, result[1][3], "Matrix[1][3] is not the expected.")
+	assert_equal(8, result[2][3], "Matrix[2][3] is not the expected.")
+	assert_equal(9, result[3][3], "Matrix[3][3] is not the expected.")
+	assertcontainsmetatable(result)
 end
 
 return matrixtest
