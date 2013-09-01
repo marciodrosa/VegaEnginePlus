@@ -4,6 +4,7 @@ local function assertcontainsmetatable(matrix)
 	local metatable = getmetatable(matrix)
 	assert_equal(vega.matrix.multiply, matrix.multiply, "The matrix should have the function to multiply by another matrix.")
 	assert_equal(vega.matrix.transpose, matrix.transpose, "The matrix should have the function to transpose.")
+	assert_equal(vega.matrix.inverse, matrix.inverse, "The matrix should have the inverse function.")
 	assert_function(metatable.__tostring, "The metatable should have the __tostring function.")
 end
 
@@ -205,6 +206,30 @@ function matrixtest.test_should_calculate_determinant_of_the_matrix()
 
 	-- then:
 	assert_equal(5994756, result, "The result is not the expected.")
+end
+
+function matrixtest.test_should_invert_matrix()
+	-- given:
+	local matrix = {
+		{ 100, 1, 2 },
+		{ 3, 200, 4 },
+		{ 5, 6, 300 }
+	}
+
+	-- when:
+	local result = vega.matrix.inverse(matrix)
+
+	-- then:
+	assert_equal(0.010004, result[1][1], 0.00001, "Matrix[1][1] is not the expected.")
+	assert_equal(-0.000146, result[2][1], 0.00001, "Matrix[2][1] is not the expected.")
+	assert_equal(-0.000163, result[3][1], 0.00001, "Matrix[3][1] is not the expected.")
+	assert_equal(-0.000048, result[1][2], 0.00001, "Matrix[1][2] is not the expected.")
+	assert_equal(0.0050027, result[2][2], 0.00001, "Matrix[2][2] is not the expected.")
+	assert_equal(-0.0000992, result[3][2], 0.00001, "Matrix[3][2] is not the expected.")
+	assert_equal(-0.000066, result[1][3], 0.00001, "Matrix[1][3] is not the expected.")
+	assert_equal(-0.0000657, result[2][3], 0.00001, "Matrix[2][3] is not the expected.")
+	assert_equal(0.0033357, result[3][3], 0.00001, "Matrix[3][3] is not the expected.")
+	assertcontainsmetatable(result)
 end
 
 return matrixtest

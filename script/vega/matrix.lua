@@ -82,16 +82,20 @@ function vega.matrix.transpose(matrix)
 	return setmetatable(m, matrixmetatable)
 end
 
---- Returns the inverse of the matrix. Returns nil if the matrix doesn't have an inverse.
-function vega.matrix.inverse(matrix)
-	local m = {
-
-	}
-end
-
 --- Returns the determinant of the matrix.
 function vega.matrix.determinant(m)
 	return (m[1][1] * m[2][2] * m[3][3]) + (m[1][2] * m[2][3] * m[3][1]) + (m[1][3] * m[2][1] * m[3][2]) - (m[1][1] * m[2][3] * m[3][2]) - (m[1][2] * m[2][1] * m[3][3]) - (m[1][3] * m[2][2] * m[3][1])
+end
+
+--- Returns the inverse of the matrix. Returns nil if the matrix doesn't have an inverse.
+function vega.matrix.inverse(m)
+	local det = vega.matrix.determinant(m)
+	local result = {
+		{ ((m[2][2] * m[3][3]) - (m[2][3] * m[3][2])) / det, ((m[1][3] * m[3][2]) - (m[1][2] * m[3][3])) / det, ((m[1][2] * m[2][3]) - (m[1][3] * m[2][2])) / det },
+		{ ((m[2][3] * m[3][1]) - (m[2][1] * m[3][3])) / det, ((m[1][1] * m[3][3]) - (m[1][3] * m[3][1])) / det, ((m[1][3] * m[2][1]) - (m[1][1] * m[2][3])) / det },
+		{ ((m[2][1] * m[3][2]) - (m[2][2] * m[3][1])) / det, ((m[1][2] * m[3][1]) - (m[1][1] * m[3][2])) / det, ((m[1][1] * m[2][2]) - (m[1][2] * m[2][1])) / det }
+	}
+	return setmetatable(result, matrixmetatable)
 end
 
 function matrixmetatable.__tostring(t)
@@ -102,5 +106,6 @@ end
 
 matrixmetatableindex.multiply = vega.matrix.multiply
 matrixmetatableindex.transpose = vega.matrix.transpose
+matrixmetatableindex.inverse = vega.matrix.inverse
 
 matrixmetatable.__index = matrixmetatableindex
