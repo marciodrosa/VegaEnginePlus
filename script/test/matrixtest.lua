@@ -192,4 +192,19 @@ function matrixtest.test_should_transpose_matrix()
 	assertcontainsmetatable(result)
 end
 
+function matrixtest.test_should_calculate_determinant_of_the_matrix()
+	-- given:
+	local matrix = {
+		{ 100, 1, 2 },
+		{ 3, 200, 4 },
+		{ 5, 6, 300 }
+	}
+
+	-- when:
+	local result = vega.matrix.determinant(matrix)
+
+	-- then:
+	assert_equal(5994756, result, "The result is not the expected.")
+end
+
 return matrixtest
