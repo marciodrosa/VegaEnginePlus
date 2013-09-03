@@ -99,9 +99,9 @@ function matrixtest.test_should_create_rotation_matrix()
 
 	-- then:
 	assert_equal(0.866, matrix[1][1], 0.001, "Matrix[1][1] is not the expected.")
-	assert_equal(-0.5, matrix[2][1], 0.001, "Matrix[2][1] is not the expected.")
+	assert_equal(0.5, matrix[2][1], 0.001, "Matrix[2][1] is not the expected.")
 	assert_equal(0, matrix[3][1], "Matrix[3][1] is not the expected.")
-	assert_equal(0.5, matrix[1][2], 0.001, "Matrix[1][2] is not the expected.")
+	assert_equal(-0.5, matrix[1][2], 0.001, "Matrix[1][2] is not the expected.")
 	assert_equal(0.866, matrix[2][2], 0.001, "Matrix[2][2] is not the expected.")
 	assert_equal(0, matrix[3][2], "Matrix[3][2] is not the expected.")
 	assert_equal(0, matrix[1][3], "Matrix[1][3] is not the expected.")

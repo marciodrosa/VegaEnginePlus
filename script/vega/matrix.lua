@@ -41,8 +41,8 @@ function vega.matrix.rotation(degrees)
 	local cos = math.cos(radians)
 	local sin = math.sin(radians)
 	local m = {
-		{ cos, sin, 0 },
-		{ -sin, cos, 0 },
+		{ cos, -sin, 0 },
+		{ sin, cos, 0 },
 		{ 0, 0, 1 }
 	}
 	return setmetatable(m, matrixmetatable)
@@ -59,7 +59,7 @@ function vega.matrix.scale(scale)
 	return setmetatable(m, matrixmetatable)
 end
 
---- Multiply the two matrixes and returns the result matrix.
+--- Multiplies the two matrixes and returns the result matrix.
 -- @param m1 the first 3x3 matrix table.
 -- @param m1 the second 3x3 matrix table.
 function vega.matrix.multiply(m1, m2)

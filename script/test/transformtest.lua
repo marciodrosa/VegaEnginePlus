@@ -1,5 +1,5 @@
 local transformtest = {}
---[[
+
 function transformtest.test_should_calculate_drawable_matrix()
 	-- given:
 	local drawable = vega.drawable {
@@ -14,18 +14,36 @@ function transformtest.test_should_calculate_drawable_matrix()
 
 	-- then:
 	assert_equal(1.060, matrix[1][1], 0.01, "The 1,1 cell of the matrix is not the expected.")
-	assert_equal(1.060, matrix[1][2], 0.01, "The 1,2 cell of the matrix is not the expected.")
-	assert_equal(308.198, matrix[1][3], 0.01, "The 1,3 cell of the matrix is not the expected.")
+	assert_equal(-1.767, matrix[1][2], 0.01, "The 1,2 cell of the matrix is not the expected.")
+	assert_equal(124.748, matrix[1][3], 0.01, "The 1,3 cell of the matrix is not the expected.")
 
-	assert_equal(-1.767, matrix[2][1], 0.01, "The 2,1 cell of the matrix is not the expected.")
+	assert_equal(1.060, matrix[2][1], 0.01, "The 2,1 cell of the matrix is not the expected.")
 	assert_equal(1.767, matrix[2][2], 0.01, "The 2,2 cell of the matrix is not the expected.")
-	assert_equal(156.777, matrix[2][3], 0.01, "The 2,3 cell of the matrix is not the expected.")
+	assert_equal(154.038, matrix[2][3], 0.01, "The 2,3 cell of the matrix is not the expected.")
 
 	assert_equal(0, matrix[3][1], 0.01, "The 3,1 cell of the matrix is not the expected.")
 	assert_equal(0, matrix[3][2], 0.01, "The 3,2 cell of the matrix is not the expected.")
 	assert_equal(1, matrix[3][3], 0.01, "The 3,3 cell of the matrix is not the expected.")
 end
 
+function transformtest.test_should_transform_point()
+	-- given:
+	local m = {
+		{ 1, 2, 3 },
+		{ 4, 5, 6 },
+		{ 7, 8, 9 }
+	}
+	local v = { x = 10, y = 11 }
+
+	-- when:
+	local result = vega.transform.transformpoint(v, m)
+
+	-- then:
+	assert_equal(35, result.x, "x is not the expected.")
+	assert_equal(101, result.y, "y is not the expected.")
+end
+
+--[[
 function transformtest.test_should_calculate_global_drawable_matrix()
 	-- given:
 	local parent1 = vega.drawable {
@@ -113,6 +131,6 @@ function transformtest.test_should_calculate_global_drawable_matrix_on_layer()
 	assert_equal(0, matrix[3][1], 0.01, "The 3,1 cell of the matrix is not the expected.")
 	assert_equal(0, matrix[3][2], 0.01, "The 3,2 cell of the matrix is not the expected.")
 	assert_equal(1, matrix[3][3], 0.01, "The 3,3 cell of the matrix is not the expected.")
-end
-]]
+end]]
+
 return transformtest
