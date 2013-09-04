@@ -21,7 +21,7 @@ function vega.transform.getglobalmatrix(drawable, layer)
 	if drawable.parent ~= nil then
 		local childrenoriginmatrix = vega.matrix.translation(drawable.parent.childrenorigin)
 		local parentmatrix = vega.transform.getglobalmatrix(drawable.parent)
-		matrix = matrix:multiply(childrenoriginmatrix):multiply(parentmatrix)
+		matrix = parentmatrix:multiply(childrenoriginmatrix):multiply(matrix)
 	end
 	if layer ~= nil then
 		local cameramatrix = vega.transform.getglobalmatrix(layer.camera)
