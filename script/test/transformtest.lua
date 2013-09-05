@@ -84,4 +84,76 @@ function transformtest.test_should_calculate_drawable_global_matrix()
 	assert_equal(1, matrix[3][3], 0.01, "The 3,3 cell of the matrix is not the expected.")
 end
 
+function transformtest.test_should_calculate_drawable_global_matrix_with_layer()
+	-- given:
+	local drawable1 = vega.drawable {
+		origin = { x = 10, y = 20 },
+		position = { x = 100, y = 200 },
+		rotation = 45,
+		scale = { x = 1.5, y = 2.5 }
+	}
+	local drawable2 = vega.drawable {
+		origin = { x = 30, y = 40 },
+		position = { x = 110, y = 220 },
+		childrenorigin = { x = -7, y = 8 },
+		rotation = -10,
+		scale = { x = 2, y = 1.5 }
+	}
+	local drawable3 = vega.drawable {
+		origin = { x = 50, y = 60 },
+		position = { x = -500, y = -1000 },
+		rotation = 80,
+		scale = { x = 4, y = 5 }
+	}
+	local cameraparent1 = vega.drawable {
+		origin = { x = 70, y = 80 },
+		position = { x = 120, y = 230 },
+		rotation = 60,
+		scale = { x = 1.5, y = 2.5 }
+	}
+	local cameraparent2 = vega.drawable {
+		origin = { x = 90, y = 100 },
+		position = { x = 130, y = 240 },
+		rotation = -7,
+		scale = { x = 0.8, y = 0.8 }
+	}
+	local camera = vega.camera {
+		origin = { x = 100, y = 110 },
+		position = { x = 140, y = 250 },
+		rotation = -14,
+		scale = { x = 5, y = 6 }
+	}
+
+	drawable1.children.insert(drawable2)
+	drawable2.children.insert(drawable3)
+	cameraparent1.children.insert(cameraparent2)
+	cameraparent2.children.insert(camera)
+
+	local layer = vega.layer {
+		camera = camera,
+		root = vega.drawable {
+			children = {
+				drawable1,
+				cameraparent1
+			}
+		}
+	}
+
+	-- when:
+	local matrix = vega.transform.getglobalmatrix(drawable3, layer)
+
+	-- then:
+	assert_equal(0.6519, matrix[1][1], 0.01, "The 1,1 cell of the matrix is not the expected.")
+	assert_equal(-2.2249, matrix[1][2], 0.01, "The 1,2 cell of the matrix is not the expected.")
+	assert_equal(-116.5531, matrix[1][3], 0.01, "The 1,3 cell of the matrix is not the expected.")
+
+	assert_equal(1.3278, matrix[2][1], 0.01, "The 2,1 cell of the matrix is not the expected.")
+	assert_equal(0.2616, matrix[2][2], 0.01, "The 2,2 cell of the matrix is not the expected.")
+	assert_equal(-337.4195, matrix[2][3], 0.01, "The 2,3 cell of the matrix is not the expected.")
+
+	assert_equal(0, matrix[3][1], 0.01, "The 3,1 cell of the matrix is not the expected.")
+	assert_equal(0, matrix[3][2], 0.01, "The 3,2 cell of the matrix is not the expected.")
+	assert_equal(1, matrix[3][3], 0.01, "The 3,3 cell of the matrix is not the expected.")
+end
+
 return transformtest

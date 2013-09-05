@@ -307,6 +307,7 @@ void SceneRender::SetUpCamera(lua_State* luaState)
 		{
 			Transform parentTransform = GetTransform(luaState);
 			InvertTransformValues(parentTransform);
+			glTranslatef(parentTransform.childrenOrigin.x, parentTransform.childrenOrigin.y, 0.f);
 			glTranslatef(-parentTransform.origin.x, -parentTransform.origin.y, 0.f);
 			glScalef(parentTransform.scale.x, parentTransform.scale.y, 1.f);
 			glRotatef(parentTransform.rotation, 0.f, 0.f, 1.f);

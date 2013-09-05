@@ -9,24 +9,42 @@ function vega.transform.getmatrix(drawable)
 	local originmatrix = vega.matrix.translation { x = -drawable.origin.x, y = -drawable.origin.y }
 	local scalematrix = vega.matrix.scale(drawable.scale)
 	local rotationmatrix = vega.matrix.rotation(drawable.rotation)
-	local translationmatrix = vega.matrix.translation(drawable.position)
-	return translationmatrix:multiply(rotationmatrix):multiply(scalematrix):multiply(originmatrix)
+	local positionmatrix = vega.matrix.translation(drawable.position)
+	return positionmatrix:multiply(rotationmatrix):multiply(scalematrix):multiply(originmatrix)
+end
+
+local function getviewmatrix(drawable)
+	local originmatrix = vega.matrix.translation { x = drawable.origin.x, y = drawable.origin.y }
+	local scalematrix = vega.matrix.scale { x = 1 / drawable.scale.x, y = 1 / drawable.scale.y }
+	local rotationmatrix = vega.matrix.rotation(-drawable.rotation)
+	local positionmatrix = vega.matrix.translation { x = -drawable.position.x, y = -drawable.position.y }
+	return originmatrix:multiply(scalematrix):multiply(rotationmatrix):multiply(positionmatrix)
+end
+
+local function getglobalviewmatrix(drawable)
+	local matrix = getviewmatrix(drawable)
+	if drawable.parent ~= nil then
+		local childrenoriginmatrix = vega.matrix.translation { -drawable.parent.childrenorigin.x, -drawable.parent.childrenorigin.y }
+		local parentmatrix = getglobalviewmatrix(drawable.parent)
+		matrix = matrix:multiply(childrenoriginmatrix):multiply(parentmatrix)
+	end
+	return matrix
 end
 
 --- Creates and returns the matrix with all transforms of the given drawable, relative to
 -- the world. So, all transforms of all parents are included in the matrix. If layer is not nil,
 -- then the camera transforms are included too.
 function vega.transform.getglobalmatrix(drawable, layer)
-	local matrix = vega.transform.getmatrix(drawable)
+	local matrix = vega.matrix.identity()
+	if layer ~= nil then
+		matrix = matrix:multiply(getglobalviewmatrix(layer.camera))
+	end
 	if drawable.parent ~= nil then
 		local childrenoriginmatrix = vega.matrix.translation(drawable.parent.childrenorigin)
 		local parentmatrix = vega.transform.getglobalmatrix(drawable.parent)
-		matrix = parentmatrix:multiply(childrenoriginmatrix):multiply(matrix)
+		matrix = matrix:multiply(parentmatrix):multiply(childrenoriginmatrix)
 	end
-	if layer ~= nil then
-		local cameramatrix = vega.transform.getglobalmatrix(layer.camera)
-		matrix = matrix:multiply(cameramatrix:inverse())
-	end
+	local matrix = matrix:multiply(vega.transform.getmatrix(drawable))
 	return matrix
 end
 
