@@ -30,9 +30,10 @@ local function runsuitefunction(suite, funcname, suitename)
 end
 
 local function runsuite(suite, suitename)
+	print("Running "..suitename)
 	for k, v in pairs(suite) do
 		if string.sub(k, 1, 4) == "test" then
-			print("Running "..suitename.."."..k)
+			io.write(".")
 			local setupok = runsuitefunction(suite, "setup", suitename)
 			if (setupok) then
 				runsuitefunction(suite, k, suitename)
@@ -41,6 +42,7 @@ local function runsuite(suite, suitename)
 			testscount = testscount + 1
 		end
 	end
+	io.write("\n")
 end
 
 local function concatmessages(m1, m2)
