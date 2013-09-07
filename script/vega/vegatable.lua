@@ -1,1 +1,3 @@
-vega = {}
+vega = {
+	drawables = {}
+}

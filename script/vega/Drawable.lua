@@ -113,19 +113,7 @@ function vega.drawable(initialvalues)
 	end
 
 	function drawablemetatable.__pairs(t)
-		local function nextfunction(t, index)
-			local k, v
-			if index == nil or rawget(t, index) ~= nil then
-				k, v = next(t, index)
-				if k == nil then
-					k, v = next(private)
-				end
-			else
-				k, v = next(private, index)
-			end
-			return k, v
-		end
-		return nextfunction, t, nil
+		return vega.util.pairswithprivatetable(t, private)
 	end
 
 	setmetatable(drawable, drawablemetatable)

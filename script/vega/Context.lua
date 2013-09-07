@@ -1,6 +1,7 @@
 require "vegatable"
 require "content"
 require "input"
+require "util"
 
 --- Context is the current state of the engine. Contains the variables that
 -- can be changed to modify the current context. Note: some fields, like scene and module, can't
@@ -50,19 +51,7 @@ function vega.context()
 			end
 		end,
 		__pairs = function(t)
-			local function nextfunction(t, index)
-				local k, v
-				if index == nil or rawget(t, index) ~= nil then
-					k, v = next(t, index)
-					if k == nil then
-						k, v = next(private)
-					end
-				else
-					k, v = next(private, index)
-				end
-				return k, v
-			end
-			return nextfunction, t, nil
+			return vega.util.pairswithprivatetable(t, private)
 		end
 	}
 	setmetatable(context, contextmetatable)

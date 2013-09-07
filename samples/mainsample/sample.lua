@@ -57,6 +57,14 @@ function mainmodule:execute(context)
 					columns = 10
 				},
 			}
+		},
+		vega.drawables.text {
+			content = "This is a text.",
+			fontsize = 0.05,
+			position = { x = 0, y = 0.8 },
+			font = {
+				texture = context.content.textures.arial
+			}
 		}
 	}
 
