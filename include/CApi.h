@@ -31,6 +31,7 @@ namespace vega
 		static int ScreenSizeLuaFunction(lua_State *luaState);
 		static int LoadTextureLuaFunction(lua_State *luaState);
 		static int ReleaseTexturesLuaFunction(lua_State *luaState);
+		static int LoadFontMetricsLuaFunction(lua_State *luaState);
 	};
 }
 

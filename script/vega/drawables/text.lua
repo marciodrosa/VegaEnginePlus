@@ -12,11 +12,7 @@ local function hasvaliddata(textdrawable)
 	return textdrawable:hasvalidfont(textdrawable) and type(textdrawable.content) == "string" and type(textdrawable.fontsize) == "number"
 end
 
---- Returns the width for the drawable of the given character.
--- @param charcode the ascii number of the character
-local function widthforascii(textdrawable, charcode)
-	local areaheight = textdrawable.font.texture.height / 16
-	local scale = textdrawable.fontsize / areaheight
+local function getmetric(textdrawable, charcode)
 	local metric
 	if type(textdrawable.font.metrics) == "table" then
 		metric = textdrawable.font.metrics[charcode]
@@ -24,7 +20,15 @@ local function widthforascii(textdrawable, charcode)
 	if type(metric) ~= "number" then
 		metric = textdrawable.font.texture.width / 16
 	end
-	return metric * scale
+	return metric
+end
+
+--- Returns the width for the drawable of the given character.
+-- @param charcode the ascii number of the character
+local function widthforascii(textdrawable, charcode)
+	local areaheight = textdrawable.font.texture.height / 16
+	local scale = textdrawable.fontsize / areaheight
+	return getmetric(textdrawable, charcode) * scale
 end
 
 --- Internal function. Returns three values: the begining index of the next line, the text of the current
@@ -100,20 +104,20 @@ local function lineposition(textdrawable, linenumber, linewidth)
 	return pos
 end
 
-local function createdrawableforcharacter(font, color, srcx, srcy, srcwidth, srcheight, x, y, width, height)
+local function createdrawableforcharacter(font, color, texturex, texturey, texturewidth, textureheight, x, y, width, height)
 	return vega.drawable {
 		texture = font.texture,
 		color = color,
 		position = { x = x, y = y },
 		size = { x = width, y = height },
-		topleftuv = { x = srcx, y = srcy },
-		bottomrightuv = { x = srcx + srcwidth, y = srcy + srcheight },
+		topleftuv = { x = texturex, y = texturey },
+		bottomrightuv = { x = texturex + texturewidth, y = texturey + textureheight },
 	}
 end
 
 local function refreshcharactersdrawables(textdrawable, lines, lineswidth)
 	textdrawable.charactersdrawable.children = {}
-	local srcareasize = 0.0625
+	local textureareasize = 0.0625
 	for i, line in ipairs(lines) do
 		local posline = textdrawable:lineposition(i, lineswidth[i])
 		local x = posline.x
@@ -122,9 +126,10 @@ local function refreshcharactersdrawables(textdrawable, lines, lineswidth)
 			local byte = line:byte(j)
 			if byte <= 255 then
 				local charwidth = textdrawable:widthforascii(byte)
-				local srcx = (byte % 16) * srcareasize
-				local srcy = math.modf(byte / 16) * srcareasize
-				textdrawable.charactersdrawable.children.insert(createdrawableforcharacter(textdrawable.font, textdrawable.fontcolor, srcx, srcy, srcareasize, srcareasize, x, y, charwidth, textdrawable.fontsize))
+				local texturex = (byte % 16) * textureareasize
+				local texturey = math.modf(byte / 16) * textureareasize
+				local texturewidth = getmetric(textdrawable, byte) / textdrawable.font.texture.width
+				textdrawable.charactersdrawable.children.insert(createdrawableforcharacter(textdrawable.font, textdrawable.fontcolor, texturex, texturey, texturewidth, textureareasize, x, y, charwidth, textdrawable.fontsize))
 				x = x + charwidth
 			end
 		end
@@ -161,8 +166,13 @@ end
 -- are removed and recreated. This drawable size is automatically calculated to fit the space needed for the text.
 -- If you change a field of the text after the creation, you need to call the :refresh function to update the
 -- drawables.
+--
+-- The text needs a font. A font is a table with a field "texture" (a texture with all characters into the image)
+-- and a field "metrics" (a table with the width of each character in the image, in pixels; the key of each field
+-- of the metrics table is the ASCII code of the character). You can load fonts using context.content.fonts["my font"].
+--
 -- @field content string to be rendered.
--- @field font the font to be used. Create a font using vega.font() function.
+-- @field font the font to be used. Load a font using context.content.fonts.
 -- @field fontsize the height of each character. Default is 1.
 -- @field align string to set the alignment of the lines of the text. Can be "left", "right" or "center".
 -- @field fontcolor the tint color of the font.

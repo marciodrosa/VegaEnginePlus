@@ -61,22 +61,27 @@ function contenttest.test_should_call_c_api_to_release_textures()
 	assert_true(textureswasreleasedbycapi, "Should call the c api to release the textures.")
 end
 
-function contenttest.test_should_clear_textures_table_after_release_resources()
+function contenttest.test_should_clear_tables_after_release_resources()
 	-- given:
 	vega.capi = {
-		loadtexture = function(texturename)
+		loadtexture = function()
+			return {}
+		end,
+		loadfontmetrics = function()
 			return {}
 		end,
 		releasetextures = function()
 		end
 	}
 	mytext = content.textures["some texture"]
+	myfont = content.fonts["some font"]
 
 	-- when:
 	content:releaseresources()
 	
 	-- then:
 	assert_nil(rawget(content.textures, "some texture"), "Should remove the previous loaded texture from the textures table.")
+	assert_nil(rawget(content.fonts, "some font"), "Should remove the previous loaded texture from the textures table.")
 end
 
 function contenttest.test_should_load_texture_again_after_release_resources()

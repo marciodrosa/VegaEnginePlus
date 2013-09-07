@@ -3,6 +3,7 @@
 #include "../include/App.h"
 
 #include <ctime>
+#include <fstream>
 
 using namespace std;
 using namespace vega;
@@ -54,6 +55,10 @@ void CApi::Init(lua_State *luaState)
 	
 	lua_pushstring(luaState, "releasetextures");
 	lua_pushcfunction(luaState, ReleaseTexturesLuaFunction);
+	lua_settable(luaState, -3);
+	
+	lua_pushstring(luaState, "loadfontmetrics");
+	lua_pushcfunction(luaState, LoadFontMetricsLuaFunction);
 	lua_settable(luaState, -3);
 
 	lua_pop(luaState, 2);
@@ -153,4 +158,33 @@ int CApi::ReleaseTexturesLuaFunction(lua_State *luaState)
 {
 	App::GetSingleton()->ReleaseTextures();
 	return 0;
+}
+
+
+/**
+Loads and returns a table with font metrics. Expected a string with the filename as input.
+*/
+int CApi::LoadFontMetricsLuaFunction(lua_State *luaState)
+{
+	string filename = lua_tostring(luaState, -1);
+	ifstream file(filename, ios::binary);
+	if (!file)
+	{
+		return 0;
+	}
+	else
+	{
+		lua_newtable(luaState); // creates the metrics table
+		int byte;
+		int index = 0;
+		while ((byte = file.get()) != EOF)
+		{
+			lua_pushnumber(luaState, (lua_Number)index);
+			lua_pushnumber(luaState, (lua_Number)byte);
+			lua_settable(luaState, -3); // sets table[index] = byte
+			index++;
+		}
+		file.close();
+		return 1;
+	}
 }

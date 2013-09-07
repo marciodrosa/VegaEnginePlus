@@ -108,9 +108,7 @@ function mainmodule:execute(context)
 				vega.drawables.text {
 					content = "This is a text.",
 					fontsize = 0.05,
-					font = {
-						texture = context.content.textures.arial
-					}
+					font = context.content.fonts.arial
 				}
 			}
 		}

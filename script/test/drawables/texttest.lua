@@ -402,6 +402,35 @@ function texttest.test_should_set_texture_and_color_on_characters()
 	assert_equal(0.3125, a.bottomrightuv.y, "bottomrightuv.y is not the expected.")
 end
 
+function texttest.test_should_set_texture_and_color_on_characters_with_custom_metrics()
+	-- given:
+	text.fontsize = 20
+	text.fontcolor = { r = 255, g = 255, b = 255 }
+	text.widthforascii = function() return 10 end
+	text.content = "A" -- ascii 65
+	text.font = {
+		texture = {
+			width = 100,
+			height = 200
+		},
+		metrics = {
+			[65] = 20
+		}
+	}
+
+	-- when:
+	text:refresh()
+
+	-- then:
+	local a = text.charactersdrawable.children[1]
+	assert_equal(text.font.texture, a.texture, "Should set the texture of the character.")
+	assert_equal(text.fontcolor, a.color, "Should set the color of the character.")
+	assert_equal(0.0625, a.topleftuv.x, "topleftuv.x is not the expected.")
+	assert_equal(0.25, a.topleftuv.y, "topleftuv.y is not the expected.")
+	assert_equal(0.2625, a.bottomrightuv.x, "bottomrightuv.x is not the expected.")
+	assert_equal(0.3125, a.bottomrightuv.y, "bottomrightuv.y is not the expected.")
+end
+
 function texttest.test_should_set_size_to_fit_characters()
 	-- given:
 	text.font = createvalidfont()
