@@ -106,15 +106,14 @@ local function createdrawableforcharacter(font, color, srcx, srcy, srcwidth, src
 		color = color,
 		position = { x = x, y = y },
 		size = { x = width, y = height },
-		lefttopuv = { x = srcx / font.texture.width, y = srcy / font.texture.height },
-		rightbottomuv = { x = srcwidth / font.texture.width, y = srcheight / font.texture.height },
+		topleftuv = { x = srcx, y = srcy },
+		bottomrightuv = { x = srcx + srcwidth, y = srcy + srcheight },
 	}
 end
 
 local function refreshcharactersdrawables(textdrawable, lines, lineswidth)
 	textdrawable.charactersdrawable.children = {}
-	local srcareawidth = textdrawable.font.texture.width / 16
-	local srcareaheight = textdrawable.font.texture.height / 16
+	local srcareasize = 0.0625
 	for i, line in ipairs(lines) do
 		local posline = textdrawable:lineposition(i, lineswidth[i])
 		local x = posline.x
@@ -123,17 +122,16 @@ local function refreshcharactersdrawables(textdrawable, lines, lineswidth)
 			local byte = line:byte(j)
 			if byte <= 255 then
 				local charwidth = textdrawable:widthforascii(byte)
-				local srcx = (byte % 16) * srcareawidth
-				local srcy = (byte / 16) * srcareaheight
-				local srcwidth = charwidth
-				local srcheight = srcareaheight
-				textdrawable.charactersdrawable.children.insert(createdrawableforcharacter(textdrawable.font, textdrawable.fontcolor, srcx, srcy, srcwidth, srcheight, x, y, charwidth, textdrawable.fontsize))
+				local srcx = (byte % 16) * srcareasize
+				local srcy = math.modf(byte / 16) * srcareasize
+				textdrawable.charactersdrawable.children.insert(createdrawableforcharacter(textdrawable.font, textdrawable.fontcolor, srcx, srcy, srcareasize, srcareasize, x, y, charwidth, textdrawable.fontsize))
 				x = x + charwidth
 			end
 		end
 	end
 end
 
+--- Recreates the characters to refresh the text.
 local function refresh(textdrawable)
 	if textdrawable:hasvaliddata() then
 		local formattedcontent = ""
@@ -161,6 +159,8 @@ end
 --- Creates a text drawable. This drawable has one child. This child has a collection of children, each child
 -- is a character of the text. When the text is refreshed (some field is changed by the user), these children
 -- are removed and recreated. This drawable size is automatically calculated to fit the space needed for the text.
+-- If you change a field of the text after the creation, you need to call the :refresh function to update the
+-- drawables.
 -- @field content string to be rendered.
 -- @field font the font to be used. Create a font using vega.font() function.
 -- @field fontsize the height of each character. Default is 1.
@@ -183,25 +183,7 @@ function vega.drawables.text(initialvalues)
 		processline = processline,
 		lineposition = lineposition,
 	}
-	local textmetatable = {}
-	local private = {}
-
-	textmetatable.__index = private
-
-	function textmetatable.__newindex(t, index, value)
-		if index == "fontsize" or index == "maxlinewidth" or index == "align" or index == "content" or index == "font" or index == "fontcolor" then
-			private[index] = value
-			t:refresh()
-		else
-			rawset(t, index, value)
-		end
-	end
-
-	function textmetatable.__pairs(t)
-		return vega.util.pairswithprivatetable(t, private)
-	end
-
-	setmetatable(text, textmetatable) -- todo: is replacing the drawable metatable!!
-
-	return vega.util.copyvaluesintotable(initialvalues, text)
+	vega.util.copyvaluesintotable(initialvalues, text)
+	text:refresh()
+	return text
 end

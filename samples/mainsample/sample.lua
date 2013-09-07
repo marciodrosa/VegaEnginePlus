@@ -57,14 +57,6 @@ function mainmodule:execute(context)
 					columns = 10
 				},
 			}
-		},
-		vega.drawables.text {
-			content = "This is a text.",
-			fontsize = 0.05,
-			position = { x = 0, y = 0.8 },
-			font = {
-				texture = context.content.textures.arial
-			}
 		}
 	}
 
@@ -106,6 +98,20 @@ function mainmodule:execute(context)
 						}
 					}
 				},
+			}
+		}
+	}
+
+	scene.layers[3] = vega.layer {
+		root = vega.drawable {
+			children = {
+				vega.drawables.text {
+					content = "This is a text.",
+					fontsize = 0.05,
+					font = {
+						texture = context.content.textures.arial
+					}
+				}
 			}
 		}
 	}

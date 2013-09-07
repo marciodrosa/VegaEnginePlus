@@ -333,6 +333,9 @@ function texttest.test_should_create_drawables_for_characters()
 	text.widthforascii = function() return 10 end
 	text.content = "Vega\nSDK"
 
+	-- when:
+	text:refresh()
+
 	-- then:
 	assert_equal(7, #text.charactersdrawable.children, "Should create 7 drawables for the 7 characters.")
 	local v = text.charactersdrawable.children[1]
@@ -376,6 +379,42 @@ function texttest.test_should_create_drawables_for_characters()
 	assert_equal(20, k.position.y, "k.position.y is not the expected.")
 	assert_equal(10, k.size.x, "k.size.x is not the expected.")
 	assert_equal(20, k.size.y, "k.size.y is not the expected.")
+end
+
+function texttest.test_should_set_texture_and_color_on_characters()
+	-- given:
+	text.font = createvalidfont()
+	text.fontsize = 20
+	text.fontcolor = { r = 255, g = 255, b = 255 }
+	text.widthforascii = function() return 10 end
+	text.content = "A" -- ascii 65
+
+	-- when:
+	text:refresh()
+
+	-- then:
+	local a = text.charactersdrawable.children[1]
+	assert_equal(text.font.texture, a.texture, "Should set the texture of the character.")
+	assert_equal(text.fontcolor, a.color, "Should set the color of the character.")
+	assert_equal(0.0625, a.topleftuv.x, "topleftuv.x is not the expected.")
+	assert_equal(0.25, a.topleftuv.y, "topleftuv.y is not the expected.")
+	assert_equal(0.125, a.bottomrightuv.x, "bottomrightuv.x is not the expected.")
+	assert_equal(0.3125, a.bottomrightuv.y, "bottomrightuv.y is not the expected.")
+end
+
+function texttest.test_should_set_size_to_fit_characters()
+	-- given:
+	text.font = createvalidfont()
+	text.fontsize = 20
+	text.widthforascii = function() return 10 end
+	text.content = "The vega\nSDK"
+
+	-- when:
+	text:refresh()
+
+	-- then:
+	assert_equal(80, text.size.x, "The width is not the expected.")
+	assert_equal(40, text.size.y, "The height is not the expected.")
 end
 
 return texttest
