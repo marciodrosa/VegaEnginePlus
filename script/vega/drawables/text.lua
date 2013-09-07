@@ -61,6 +61,8 @@ local function processline(textdrawable, initialcharindex)
 					nextlineindex = lastblankspaceindex + 1
 				else -- if there is no blank space in the current line, then there is just one word that extrapolates the entire line; So, we need to cut the word in half.
 					x = x - textdrawable:widthforascii(byte)
+					lastcharindex = lastcharindex - 1
+					nextlineindex = nextlineindex - 1
 				end
 				break
 			end
@@ -86,7 +88,7 @@ end
 local function lineposition(textdrawable, linenumber, linewidth)
 	local pos = {
 		x = 0,
-		y = textdrawable.fontsize * linenumber
+		y = textdrawable.fontsize * (linenumber - 1)
 	}
 	if textdrawable.align == "left" then
 		pos.x = 0
@@ -103,7 +105,7 @@ local function createdrawableforcharacter(font, color, srcx, srcy, srcwidth, src
 		texture = font.texture,
 		color = color,
 		position = { x = x, y = y },
-		size = { x = width, y = width },
+		size = { x = width, y = height },
 		lefttopuv = { x = srcx / font.texture.width, y = srcy / font.texture.height },
 		rightbottomuv = { x = srcwidth / font.texture.width, y = srcheight / font.texture.height },
 	}
@@ -199,7 +201,7 @@ function vega.drawables.text(initialvalues)
 		return vega.util.pairswithprivatetable(t, private)
 	end
 
-	setmetatable(text, textmetatable)
+	setmetatable(text, textmetatable) -- todo: is replacing the drawable metatable!!
 
 	return vega.util.copyvaluesintotable(initialvalues, text)
 end

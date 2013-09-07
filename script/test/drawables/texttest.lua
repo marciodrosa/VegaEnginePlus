@@ -211,8 +211,8 @@ function texttest.test_should_process_lines()
 	assert_equal(130, width2, "The second line width is not the expected.")
 
 	assert_equal(36, next3, "The initial index of line above the third is not the expected.")
-	assert_equal("lines.", text3, "The first line text is not the expected.")
-	assert_equal(60, width3, "The first line width is not the expected.")
+	assert_equal("lines.", text3, "The third line text is not the expected.")
+	assert_equal(60, width3, "The third line width is not the expected.")
 end
 
 function texttest.test_should_wrap_line_to_max_width_when_process_lines()
@@ -238,12 +238,38 @@ function texttest.test_should_wrap_line_to_max_width_when_process_lines()
 	assert_equal(90, width2, "The second line width is not the expected.")
 
 	assert_equal(30, next3, "The initial index of line above the third is not the expected.")
-	assert_equal("original", text3, "The first line text is not the expected.")
-	assert_equal(80, width3, "The first line width is not the expected.")
+	assert_equal("original", text3, "The third line text is not the expected.")
+	assert_equal(80, width3, "The third line width is not the expected.")
 
 	assert_equal(42, next4, "The initial index of line above the fourth is not the expected.")
 	assert_equal("single line.", text4, "The fourth line text is not the expected.")
 	assert_equal(120, width4, "The fourth line width is not the expected.")
+end
+
+function texttest.test_should_wrap_line_to_max_width_when_process_lines_and_cut_word_in_half()
+	-- given:
+	text.content = "onebigword."
+	text.font = createvalidfont()
+	text.maxlinewidth = 50
+	text.widthforascii = function() return 10 end
+
+	-- when:
+	local next1, text1, width1 = text:processline(1)
+	local next2, text2, width2 = text:processline(next1)
+	local next3, text3, width3 = text:processline(next2)
+
+	-- then:
+	assert_equal(6, next1, "The initial index of line above the first is not the expected.")
+	assert_equal("onebi", text1, "The first line text is not the expected.")
+	assert_equal(50, width1, "The first line width is not the expected.")
+
+	assert_equal(11, next2, "The initial index of line above the second is not the expected.")
+	assert_equal("gword", text2, "The second line text is not the expected.")
+	assert_equal(50, width2, "The second line width is not the expected.")
+
+	assert_equal(12, next3, "The initial index of line above the third is not the expected.")
+	assert_equal(".", text3, "The third line text is not the expected.")
+	assert_equal(10, width3, "The third line width is not the expected.")
 end
 
 function texttest.test_should_calculate_line_position()
@@ -255,7 +281,7 @@ function texttest.test_should_calculate_line_position()
 
 	-- then:
 	assert_equal(0, pos.x, "x is not the expected.")
-	assert_equal(30, pos.y, "y is not the expected.")
+	assert_equal(20, pos.y, "y is not the expected.")
 end
 
 function texttest.test_should_calculate_line_position_align_left()
@@ -269,7 +295,7 @@ function texttest.test_should_calculate_line_position_align_left()
 
 	-- then:
 	assert_equal(0, pos.x, "x is not the expected.")
-	assert_equal(30, pos.y, "y is not the expected.")
+	assert_equal(20, pos.y, "y is not the expected.")
 end
 
 function texttest.test_should_calculate_line_position_align_right()
@@ -283,7 +309,7 @@ function texttest.test_should_calculate_line_position_align_right()
 
 	-- then:
 	assert_equal(600, pos.x, "x is not the expected.")
-	assert_equal(30, pos.y, "y is not the expected.")
+	assert_equal(20, pos.y, "y is not the expected.")
 end
 
 function texttest.test_should_calculate_line_position_align_center()
@@ -297,7 +323,59 @@ function texttest.test_should_calculate_line_position_align_center()
 
 	-- then:
 	assert_equal(300, pos.x, "x is not the expected.")
-	assert_equal(30, pos.y, "y is not the expected.")
+	assert_equal(20, pos.y, "y is not the expected.")
+end
+
+function texttest.test_should_create_drawables_for_characters()
+	-- given:
+	text.font = createvalidfont()
+	text.fontsize = 20
+	text.widthforascii = function() return 10 end
+	text.content = "Vega\nSDK"
+
+	-- then:
+	assert_equal(7, #text.charactersdrawable.children, "Should create 7 drawables for the 7 characters.")
+	local v = text.charactersdrawable.children[1]
+	local e = text.charactersdrawable.children[2]
+	local g = text.charactersdrawable.children[3]
+	local a = text.charactersdrawable.children[4]
+	local s = text.charactersdrawable.children[5]
+	local d = text.charactersdrawable.children[6]
+	local k = text.charactersdrawable.children[7]
+	assert_equal(0, v.position.x, "v.position.x is not the expected.")
+	assert_equal(0, v.position.y, "v.position.y is not the expected.")
+	assert_equal(10, v.size.x, "v.size.x is not the expected.")
+	assert_equal(20, v.size.y, "v.size.y is not the expected.")
+
+	assert_equal(10, e.position.x, "e.position.x is not the expected.")
+	assert_equal(0, e.position.y, "e.position.y is not the expected.")
+	assert_equal(10, e.size.x, "e.size.x is not the expected.")
+	assert_equal(20, e.size.y, "e.size.y is not the expected.")
+
+	assert_equal(20, g.position.x, "g.position.x is not the expected.")
+	assert_equal(0, g.position.y, "g.position.y is not the expected.")
+	assert_equal(10, g.size.x, "g.size.x is not the expected.")
+	assert_equal(20, g.size.y, "g.size.y is not the expected.")
+
+	assert_equal(30, a.position.x, "a.position.x is not the expected.")
+	assert_equal(0, a.position.y, "a.position.y is not the expected.")
+	assert_equal(10, a.size.x, "a.size.x is not the expected.")
+	assert_equal(20, a.size.y, "a.size.y is not the expected.")
+
+	assert_equal(0, s.position.x, "s.position.x is not the expected.")
+	assert_equal(20, s.position.y, "s.position.y is not the expected.")
+	assert_equal(10, s.size.x, "s.size.x is not the expected.")
+	assert_equal(20, s.size.y, "s.size.y is not the expected.")
+
+	assert_equal(10, d.position.x, "d.position.x is not the expected.")
+	assert_equal(20, d.position.y, "d.position.y is not the expected.")
+	assert_equal(10, d.size.x, "d.size.x is not the expected.")
+	assert_equal(20, d.size.y, "d.size.y is not the expected.")
+
+	assert_equal(20, k.position.x, "k.position.x is not the expected.")
+	assert_equal(20, k.position.y, "k.position.y is not the expected.")
+	assert_equal(10, k.size.x, "k.size.x is not the expected.")
+	assert_equal(20, k.size.y, "k.size.y is not the expected.")
 end
 
 return texttest
