@@ -1,4 +1,5 @@
 require "vega.camera"
+require "vega.collision"
 require "vega.color"
 require "vega.content"
 require "vega.context"

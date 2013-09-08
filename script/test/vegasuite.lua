@@ -4,6 +4,7 @@ require "vega"
 require "vegaunit"
 
 vegaunit.addsuite("cameratest")
+vegaunit.addsuite("collisiontest")
 vegaunit.addsuite("colortest")
 vegaunit.addsuite("contenttest")
 vegaunit.addsuite("contexttest")
