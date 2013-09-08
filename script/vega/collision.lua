@@ -16,7 +16,15 @@ function vega.collision.rectcollideswithpoint(rpos, rsize, point)
 end
 
 function vega.collision.rectcollideswithrect(rpos1, rsize1, rpos2, rsize2)
-	
+	local rpos1_2 = {
+		x = rpos1.x + rsize1.x,
+		y = rpos1.y + rsize1.y,
+	}
+	local rpos2_2 = {
+		x = rpos2.x + rsize2.x,
+		y = rpos2.y + rsize2.y,
+	}
+	return not (rpos2.x > rpos1_2.x or rpos2_2.x < rpos1.x or rpos2.y > rpos1_2.y or rpos2_2.y < rpos1.y)
 end
 
 function vega.collision.drawablecollideswithpoint(d, point, layer1, layer2)
