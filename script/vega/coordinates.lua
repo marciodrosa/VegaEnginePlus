@@ -5,9 +5,16 @@ local function setcoordinatevalues(t, coordinate, absolutevalue, relativevalue)
 	rawset(t, "relative"..coordinate, relativevalue)
 end
 
+local function getrelativetotable(relativeto)
+	if type(relativeto) == "function" then return relativeto()
+	elseif type(relativeto) == "table" then return relativeto
+	else return nil
+	end
+end
+
 local function getvaluetoberelative(relativeto, coordinate)
 	local result = 1
-	local relativetotable = relativeto()
+	local relativetotable = getrelativetotable(relativeto)
 	if relativetotable ~= nil then
 		result = relativetotable[coordinate]
 	end
@@ -77,8 +84,8 @@ end
 -- parent size. The drawable origin is relative to the size of himself.
 --
 -- @param initialvalues optional table with the initial values
--- @param relativeto optional function that can return a table (with x and y fields). This table is used as absolute values
--- when set relative values in the coordinates.
+-- @param relativeto optional table (or function that returns this table) with x and y fields. This table is used as
+-- absolute values when set relative values in the coordinates.
 function vega.coordinates(initialvalues, relativeto)
 
 	relativeto = relativeto or function() end

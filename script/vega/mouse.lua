@@ -12,7 +12,7 @@ require "vega.coordinates"
 -- @field buttons contains three fields with the state of each mouse button: left, right and middle. Each field
 -- contains the boolean fields pressed, wasclicked (if it was clicked in the last frame) and wasreleased (if it
 -- was released in the last frame).
-function vega.mouse(screen)
+function vega.mouse(display)
 	local function createbuttonstate()
 		return {
 			pressed = false,
@@ -21,13 +21,9 @@ function vega.mouse(screen)
 		}
 	end
 
-	local function relativeto()
-		return screen.size
-	end
-
 	local mouse = {
-		position = vega.coordinates({}, relativeto),
-		motion = vega.coordinates({}, relativeto),
+		position = vega.coordinates({}, display.size),
+		motion = vega.coordinates({}, display.size),
 		buttons = {
 			left = createbuttonstate(),
 			right = createbuttonstate(),
