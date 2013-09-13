@@ -156,4 +156,49 @@ function transformtest.test_should_calculate_drawable_global_matrix_with_layer()
 	assert_equal(1, matrix[3][3], 0.01, "The 3,3 cell of the matrix is not the expected.")
 end
 
+function transformtest.test_should_calculate_view_matrix()
+	-- given:
+	local cameraparent1 = vega.drawable {
+		origin = { x = 70, y = 80 },
+		position = { x = 120, y = 230 },
+		rotation = 60,
+		scale = { x = 1.5, y = 2.5 }
+	}
+	local cameraparent2 = vega.drawable {
+		origin = { x = 90, y = 100 },
+		position = { x = 130, y = 240 },
+		rotation = -7,
+		scale = { x = 0.8, y = 0.8 }
+	}
+	local camera = vega.camera {
+		origin = { x = 100, y = 110 },
+		position = { x = 140, y = 250 },
+		rotation = -14,
+		scale = { x = 5, y = 6 }
+	}
+
+	cameraparent1.children.insert(cameraparent2)
+	cameraparent2.children.insert(camera)
+
+	local layer = vega.layer {
+		camera = camera,
+	}
+
+	-- when:
+	local matrix = vega.transform.getviewmatrix(layer)
+
+	-- then:
+	assert_equal(0.1088, matrix[1][1], 0.01, "The 1,1 cell of the matrix is not the expected.")
+	assert_equal(0.1168, matrix[1][2], 0.01, "The 1,2 cell of the matrix is not the expected.")
+	assert_equal(57.9542, matrix[1][3], 0.01, "The 1,3 cell of the matrix is not the expected.")
+
+	assert_equal(-0.0424, matrix[2][1], 0.01, "The 2,1 cell of the matrix is not the expected.")
+	assert_equal(0.0820, matrix[2][2], 0.01, "The 2,2 cell of the matrix is not the expected.")
+	assert_equal(34.3653, matrix[2][3], 0.01, "The 2,3 cell of the matrix is not the expected.")
+
+	assert_equal(0, matrix[3][1], 0.01, "The 3,1 cell of the matrix is not the expected.")
+	assert_equal(0, matrix[3][2], 0.01, "The 3,2 cell of the matrix is not the expected.")
+	assert_equal(1, matrix[3][3], 0.01, "The 3,3 cell of the matrix is not the expected.")
+end
+
 return transformtest
