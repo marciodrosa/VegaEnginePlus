@@ -7,18 +7,17 @@ end
 
 local function getrelativetotable(relativeto)
 	if type(relativeto) == "function" then return relativeto()
-	elseif type(relativeto) == "table" then return relativeto
 	else return nil
 	end
 end
 
 local function getvaluetoberelative(relativeto, coordinate)
-	local result = 1
+	local result
 	local relativetotable = getrelativetotable(relativeto)
 	if relativetotable ~= nil then
 		result = relativetotable[coordinate]
 	end
-	return result
+	return result or 1
 end
 
 local function getabsolute(t, coordinate, relativeto)
@@ -53,10 +52,10 @@ end
 
 local function setinitialvalues(t, initialvalues)
 	if initialvalues ~= nil then
-		if initialvalues.x ~= nil then t.x = initialvalues.x end
-		if initialvalues.y ~= nil then t.y = initialvalues.y end
 		if initialvalues.relativex ~= nil then t.relativex = initialvalues.relativex end
 		if initialvalues.relativey ~= nil then t.relativey = initialvalues.relativey end
+		if initialvalues.x ~= nil then t.x = initialvalues.x end
+		if initialvalues.y ~= nil then t.y = initialvalues.y end
 		if initialvalues.keeprelativex ~= nil then t.keeprelativex = initialvalues.keeprelativex end
 		if initialvalues.keeprelativey ~= nil then t.keeprelativey = initialvalues.keeprelativey end
 	end
@@ -84,11 +83,11 @@ end
 -- parent size. The drawable origin is relative to the size of himself.
 --
 -- @param initialvalues optional table with the initial values
--- @param relativeto optional table (or function that returns this table) with x and y fields. This table is used as
--- absolute values when set relative values in the coordinates.
-function vega.coordinates(initialvalues, relativeto)
+-- @param relativefunction optional function that must return a table with x and y fields. This table is used as
+-- absolute values when calculate relative coordinates.
+function vega.coordinates(initialvalues, relativefunction)
 
-	relativeto = relativeto or function() end
+	local relativefunction = relativefunction or function() end
 
 	local coordinates = {
 		x = 0,
@@ -102,16 +101,16 @@ function vega.coordinates(initialvalues, relativeto)
 		elseif index == "y" then setcoordinatevalues(t, "y", value, nil, false)
 		elseif index == "relativex" then setcoordinatevalues(t, "x", nil, value, true)
 		elseif index == "relativey" then setcoordinatevalues(t, "y", nil, value, true)
-		elseif index == "keeprelativex" then convertrelative(t, "x", value, relativeto)
-		elseif index == "keeprelativey" then convertrelative(t, "y", value, relativeto)
+		elseif index == "keeprelativex" then convertrelative(t, "x", value, relativefunction)
+		elseif index == "keeprelativey" then convertrelative(t, "y", value, relativefunction)
 		else rawset(t, index, value) end
 	end
 
 	function coordinatesmetatable.__index(t, index)
-		if index == "x" then return getabsolute(t, "x", relativeto)
-		elseif index == "y" then return getabsolute(t, "y", relativeto)
-		elseif index == "relativex" then return getrelative(t, "x", relativeto)
-		elseif index == "relativey" then return getrelative(t, "y", relativeto)
+		if index == "x" then return getabsolute(t, "x", relativefunction)
+		elseif index == "y" then return getabsolute(t, "y", relativefunction)
+		elseif index == "relativex" then return getrelative(t, "x", relativefunction)
+		elseif index == "relativey" then return getrelative(t, "y", relativefunction)
 		elseif index == "keeprelativex" then return rawget(t, "relativex") ~= nil
 		elseif index == "keeprelativey" then return rawget(t, "relativey") ~= nil
 		else return rawget(t, index) end

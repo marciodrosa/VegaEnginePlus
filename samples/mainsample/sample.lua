@@ -10,122 +10,100 @@ function mainmodule:execute(context)
 	print "Module executed."
 	local scene = vega.scene()
 
-	scene.layers[1].camera.position = { x = 0.5, y = 0.5 }
+	local xaxis = vega.drawable {
+		color = { r = 255, g = 0, b = 0 },
+		size = { x = 10, y = 0.005 },
+		origin = { relativex = 0.5, relativey = 0.5 }
+	}
+
+	local yaxis = vega.drawable {
+		color = { r = 0, g = 255, b = 0 },
+		size = { x = 0.005, y = 10 },
+		origin = { relativex = 0.5, relativey = 0.5 }
+	}
+
+	local yellowrectangle = vega.drawable {
+		color = { r = 255, g = 255, b = 0 },
+		size = { x = 0.1, y = 0.1 },
+		position = { x = -0.3, y = -0.2 },
+		origin = { relativex = 0.5, relativey = 0.5 },
+		rotation = 0
+	} 
+
+	local whiterectangle = vega.drawable {
+		color = { r = 255, g = 255, b = 255 },
+		size = { x = 0.1, y = 0.1 },
+		position = { x = 0.2, y = 0.1 },
+		origin = { relativex = 0.5, relativey = 0.5 },
+		scale = { x = 2, y = 1 },
+		rotation = 35
+	} 
+
+	local blackrectangle = vega.drawable {
+		color = { r = 0, g = 0, b = 0 },
+		size = { x = 0.1, y = 0.1 },
+		position = { x = 0.2, y = 0.3 },
+		origin = { relativex = 0.5, relativey = 0.5 },
+		rotation = 80
+	}
+
+	local greydot = vega.drawable {
+		color = { r = 120, g = 120, b = 120 },
+		size = { x = 0.01, y = 0.01 },
+		position = { x = 0, y = 0 },
+		origin = { relativex = 0.5, relativey = 0.5 }
+	}
+
+	yellowrectangle.children.insert(whiterectangle)
+	whiterectangle.children.insert(blackrectangle)
 
 	scene.layers[1].root.children = {
-		vega.drawable {
-			name = "firstrectangle",
-			color = { r = 255, g = 0, b = 0 },
-			size = { x = 0.3, y = 0.3 },
-			children = {
-				vega.drawable {
-					name = "rotatedrectangle",
-					color = { r = 0, g = 200, b = 0, a = 125 },
-					size = { x = 0.2, y = 0.2 },
-					position = { x = 0.25, y = 0.25 },
-					origin = { relativex = 0.5, relativey = 0.5 }
-				},
-				vega.drawable {
-					color = { r = 255, g = 255, b = 255 },
-					size = { x = 0.1, y = 0.1 }
-				},
-			}
-		},
-		vega.drawable {
-			texture = context.content.textures.vegatexture,
-			bottomrightuv = { x = 3, y = 3 },
-			size = { x = 0.4, y = 0.4 },
-			origin = { relativex = 0.5, relativey = 0.5 },
-			position = { relativex = 0.5, relativey = 0.5 }
-		},
-		vega.spritedrawable {
-			name = "coin",
-			size = { x = 0.2, y = 0.2 },
-			position = { x = 0.5, y = 0.5 },
-			rows = 2,
-			columns = 10,
-			texture = context.content.textures.coin,
-			extensions = {
-				{
-					texture = context.content.textures.coinblue,
-					rows = 2,
-					columns = 10
-				},
-				{
-					texture = context.content.textures.coinred,
-					rows = 2,
-					columns = 10
-				},
-			}
-		}
+		xaxis,
+		yaxis,
+		yellowrectangle
+	}
+	scene.layers[1].camera = vega.camera {
+		position = { x = -0.1, y = -0.05 },
+		rotation = 30,
+		scale = { x = 0.9, y = 0.9 }
 	}
 
-	scene.layers[2] = vega.layer {
+	local displaydot = vega.drawable {
+		color = { r = 255, g = 255, b = 0 },
+		visibility = 0.75,
+		size = { x = 50, y = 50 },
+		origin = { x = 25, y = 25 }
+	}
+	local displaylayer = vega.layer {
+		size = context.output.display.size,
+		root = vega.drawable {
+			children = {
+				displaydot
+			}
+		},
 		camera = vega.camera {
-			size = { x = 100, y = 100},
-			autocalculatewidth = false,
-			autocalculateheight = false
-		},
-		root = vega.drawable {
-			children = {
-				vega.drawable {
-					size = { x = 100, y = 100 },
-					origin = { x = 50, y = 50 },
-					children = {
-						vega.drawable {
-							size = { x = 5, y = 5 },
-							color = { r = 0, g = 0, b = 255},
-							position = { relativex = 0, relativey = 0 },
-							origin = { relativex = 0.5, relativey = 0.5 }
-						},
-						vega.drawable {
-							size = { x = 5, y = 5 },
-							color = { r = 0, g = 0, b = 255},
-							position = { relativex = 1, relativey = 0 },
-							origin = { relativex = 0.5, relativey = 0.5 }
-						},
-						vega.drawable {
-							size = { x = 5, y = 5 },
-							color = { r = 0, g = 0, b = 255},
-							position = { relativex = 1, relativey = 1 },
-							origin = { relativex = 0.5, relativey = 0.5 }
-						},
-						vega.drawable {
-							size = { x = 5, y = 5 },
-							color = { r = 0, g = 0, b = 255},
-							position = { relativex = 0, relativey = 1 },
-							origin = { relativex = 0.5, relativey = 0.5 }
-						}
-					}
-				},
-			}
+			origin = { x = 0, y = 0 },
+			autocalculatewidth = true,
+			autocalculateheight = true
 		}
 	}
-
-	scene.layers[3] = vega.layer {
-		root = vega.drawable {
-			children = {
-				vega.drawables.text {
-					content = "This is a text.",
-					fontsize = 0.05,
-					font = context.content.fonts.arial
-				}
-			}
-		}
-	}
+	scene.layers.insert(displaylayer)
 	
 	scene.controllers = {
 		{
 			update = function(self, context)
-				local rotatedrectangle = context.scene.layers[1].root.children.firstrectangle.children.rotatedrectangle
-				rotatedrectangle.rotation = rotatedrectangle.rotation + 1
+				whiterectangle.rotation = whiterectangle.rotation - 0.5
+				blackrectangle.rotation = blackrectangle.rotation + 1
+				local blackrectanglematrix = vega.transform.getglobalmatrix(blackrectangle, scene.layers[1])
+				greydot.position = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
 			end
 		},
 		{
 			update = function(self, context)
-				local coin = context.scene.layers[1].root.children.coin
-				coin.frame = coin.frame + 1
-				if coin.frame > coin:getframescount() then coin.frame = 1 end
+				local blackrectanglematrix = vega.transform.getglobalmatrix(blackrectangle)
+				local blackrectanglepos = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
+				local screenposition = vega.coordinatesconverter.fromlayertodisplay(blackrectanglepos, scene.layers[1], context.output.display)
+				displaydot.position = screenposition
 			end
 		},
 		{

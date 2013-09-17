@@ -73,7 +73,7 @@ function vega.drawable(initialvalues)
 		if key == "position" or key == "size" then
 			private[key] = vega.coordinates(value, function() return getparentsize(t) end)
 		elseif key == "origin" or key == "childrenorigin" then
-			private[key] = vega.coordinates(value, t.size)
+			private[key] = vega.coordinates(value, function() return t.size end)
 		elseif key == "background" then
 			private.background = value
 			if value ~= nil then

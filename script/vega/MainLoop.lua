@@ -12,9 +12,10 @@ vega.mainloop = {
 	context = vega.context()
 }
 
-local function refreshviewportsize(scene)
+local function checkdisplaysize(context)
 	local screenwidth, screenheight = vega.capi.screensize()
-	for i, v in ipairs(scene.layers) do
+	context.output.display.size = { x = screenwidth, y = screenheight }
+	for i, v in ipairs(context.scene.layers) do
 		v.camera:refreshsizebylayer(screenwidth, screenheight)
 	end
 end
@@ -41,7 +42,7 @@ end
 
 local function update(self)
 	if self.context.scene then
-		refreshviewportsize(self.context.scene)
+		checkdisplaysize(self.context)
 		self.context.scene:updatecontrollers(self.context)
 	end
 end

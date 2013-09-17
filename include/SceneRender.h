@@ -18,6 +18,9 @@ namespace vega
 	{
 		Vector2 position, origin, childrenOrigin, scale;
 		float rotation;
+		Transform() : rotation(0)
+		{
+		}
 	};
 
 	/**

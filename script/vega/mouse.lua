@@ -21,9 +21,13 @@ function vega.mouse(display)
 		}
 	end
 
+	local function getdisplaysize()
+		return display.size
+	end
+
 	local mouse = {
-		position = vega.coordinates({}, display.size),
-		motion = vega.coordinates({}, display.size),
+		position = vega.coordinates({}, getdisplaysize),
+		motion = vega.coordinates({}, getdisplaysize),
 		buttons = {
 			left = createbuttonstate(),
 			right = createbuttonstate(),
