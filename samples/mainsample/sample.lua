@@ -60,7 +60,8 @@ function mainmodule:execute(context)
 	scene.layers[1].root.children = {
 		xaxis,
 		yaxis,
-		yellowrectangle
+		yellowrectangle,
+		greydot
 	}
 	scene.layers[1].camera = vega.camera {
 		position = { x = -0.1, y = -0.05 },
@@ -95,7 +96,7 @@ function mainmodule:execute(context)
 				whiterectangle.rotation = whiterectangle.rotation - 0.5
 				blackrectangle.rotation = blackrectangle.rotation + 1
 				local blackrectanglematrix = vega.transform.getglobalmatrix(blackrectangle, scene.layers[1])
-				greydot.position = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
+				--greydot.position = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
 			end
 		},
 		{
@@ -104,6 +105,9 @@ function mainmodule:execute(context)
 				local blackrectanglepos = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
 				local screenposition = vega.coordinatesconverter.fromlayertodisplay(blackrectanglepos, scene.layers[1], context.output.display)
 				displaydot.position = screenposition
+
+				local layerposition = vega.coordinatesconverter.fromdisplaytolayer(screenposition, context.output.display, scene.layers[1])
+				greydot.position = layerposition
 			end
 		},
 		{

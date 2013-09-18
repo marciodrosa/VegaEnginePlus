@@ -23,7 +23,21 @@ function vega.coordinatesconverter.fromlayertodisplay(coordinates, layer, displa
 end
 
 --- Returns where the display coordinates are located in the given layer.
-function vega.coordinatesconverter.fromdisplaytolayer(coordinates, layer, display)
+-- @param coordinates table with x and y fields. x and y are the pixel coordinates of the
+-- display, can be negative values or values greater than the display size if the coordinates
+-- are out of the display.
+-- @param display the display.
+-- @param layer the layer to calculate.
+-- @returns a table created with the function vega.coordinates, where the x and y fields
+-- are the coordinates within the layer, and relativex and relativey are relative to the layer
+-- view size (camera size).
+function vega.coordinatesconverter.fromdisplaytolayer(coordinates, display, layer)
+	local newcoordinates = {}
+	newcoordinates.x = (layer.camera.size.x * coordinates.x) / display.size.x
+	newcoordinates.y = (layer.camera.size.y * coordinates.y) / display.size.y
+	local viewmatrix = vega.transform.getviewmatrix(layer):inverse()
+	newcoordinates = vega.transform.transformpoint(newcoordinates, viewmatrix)
+	return vega.coordinates(newcoordinates, function() return layer.camera.size end)
 end
 
 --- Returns where the coordinates of the first layer are located in the second layer.
