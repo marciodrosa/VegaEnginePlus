@@ -1,25 +1,8 @@
 require "vegatable"
 require "matrix"
 
+--- Table with auxiliar functions relative to drawables transformations.
 vega.transform = {}
-
-local function getviewmatrix(drawable)
-	local originmatrix = vega.matrix.translation { x = drawable.origin.x, y = drawable.origin.y }
-	local scalematrix = vega.matrix.scale { x = 1 / drawable.scale.x, y = 1 / drawable.scale.y }
-	local rotationmatrix = vega.matrix.rotation(-drawable.rotation)
-	local positionmatrix = vega.matrix.translation { x = -drawable.position.x, y = -drawable.position.y }
-	return originmatrix:multiply(scalematrix):multiply(rotationmatrix):multiply(positionmatrix)	
-end
-
-local function getglobalviewmatrix(drawable)
-	local matrix = getviewmatrix(drawable)
-	if drawable.parent ~= nil then
-		local childrenoriginmatrix = vega.matrix.translation { -drawable.parent.childrenorigin.x, -drawable.parent.childrenorigin.y }
-		local parentmatrix = getglobalviewmatrix(drawable.parent)
-		matrix = matrix:multiply(childrenoriginmatrix):multiply(parentmatrix)
-	end
-	return matrix
-end
 
 --- Creates and returns the matrix with all transforms of the given drawable, relative to
 -- the drawable parent.
@@ -44,14 +27,13 @@ function vega.transform.getglobalmatrix(drawable, layer)
 		local parentmatrix = vega.transform.getglobalmatrix(drawable.parent)
 		matrix = matrix:multiply(parentmatrix):multiply(childrenoriginmatrix)
 	end
-	local matrix = matrix:multiply(vega.transform.getmatrix(drawable))
-	return matrix
+	return matrix:multiply(vega.transform.getmatrix(drawable))
 end
 
 --- Creates and returns the matrix with all transforms of the view (camera) of the given layer.
 -- It includes the transforms of the camera and all parents.
 function vega.transform.getviewmatrix(layer)
-	return getglobalviewmatrix(layer.camera)
+	return vega.transform.getglobalmatrix(layer.camera):inverse()
 end
 
 --- Returns the point v transformed with the transformation matrix m.
@@ -65,3 +47,16 @@ function vega.transform.transformpoint(v, m)
 		y = (m[2][1] * vx) + (m[2][2] * vy) + m[2][3]
 	}
 end
+
+--[[
+function vega.transform.getpositionrelativetoroot(drawable)
+
+end
+
+function vega.transform.getscalerelativetoroot(drawable)
+
+end
+
+function vega.transform.getrotationrelativetoroot(drawable)
+
+end]]
