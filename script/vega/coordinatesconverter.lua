@@ -42,4 +42,11 @@ end
 
 --- Returns where the coordinates of the first layer are located in the second layer.
 function vega.coordinatesconverter.fromlayertoanotherlayer(coordinates, layer1, layer2)
+	local viewmatrix1 = vega.transform.getviewmatrix(layer1)
+	local newcoordinates = vega.transform.transformpoint(coordinates, viewmatrix1)
+	newcoordinates.x = (layer2.camera.size.x * newcoordinates.x) / layer1.camera.size.x
+	newcoordinates.y = (layer2.camera.size.y * newcoordinates.y) / layer1.camera.size.y
+	local viewmatrix2 = vega.transform.getviewmatrix(layer2):inverse()
+	newcoordinates = vega.transform.transformpoint(newcoordinates, viewmatrix2)
+	return vega.coordinates(newcoordinates, function() return layer2.size end)
 end

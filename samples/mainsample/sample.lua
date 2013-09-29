@@ -47,21 +47,13 @@ function mainmodule:execute(context)
 		rotation = 80
 	}
 
-	local greydot = vega.drawable {
-		color = { r = 120, g = 120, b = 120 },
-		size = { x = 0.01, y = 0.01 },
-		position = { x = 0, y = 0 },
-		origin = { relativex = 0.5, relativey = 0.5 }
-	}
-
 	yellowrectangle.children.insert(whiterectangle)
 	whiterectangle.children.insert(blackrectangle)
 
 	scene.layers[1].root.children = {
 		xaxis,
 		yaxis,
-		yellowrectangle,
-		greydot
+		yellowrectangle
 	}
 	scene.layers[1].camera = vega.camera {
 		position = { x = -0.1, y = -0.05 },
@@ -83,9 +75,9 @@ function mainmodule:execute(context)
 			}
 		},
 		camera = vega.camera {
-			origin = { x = 0, y = 0 },
-			autocalculatewidth = true,
-			autocalculateheight = true
+			position = { x = -100, y = 200 },
+			size = { x = 500, y = 500 },
+			rotation = 45
 		}
 	}
 	scene.layers.insert(displaylayer)
@@ -96,18 +88,15 @@ function mainmodule:execute(context)
 				whiterectangle.rotation = whiterectangle.rotation - 0.5
 				blackrectangle.rotation = blackrectangle.rotation + 1
 				local blackrectanglematrix = vega.transform.getglobalmatrix(blackrectangle, scene.layers[1])
-				--greydot.position = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
 			end
 		},
 		{
 			update = function(self, context)
 				local blackrectanglematrix = vega.transform.getglobalmatrix(blackrectangle)
 				local blackrectanglepos = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
-				local screenposition = vega.coordinatesconverter.fromlayertodisplay(blackrectanglepos, scene.layers[1], context.output.display)
-				displaydot.position = screenposition
-
-				local layerposition = vega.coordinatesconverter.fromdisplaytolayer(screenposition, context.output.display, scene.layers[1])
-				greydot.position = layerposition
+				local layer2pos = vega.coordinatesconverter.fromlayertoanotherlayer(blackrectanglepos, scene.layers[1], scene.layers[2])
+				--local screenposition = vega.coordinatesconverter.fromlayertodisplay(blackrectanglepos, scene.layers[1], context.output.display)
+				displaydot.position = layer2pos
 			end
 		},
 		{
