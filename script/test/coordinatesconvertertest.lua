@@ -1,6 +1,6 @@
-local coordinatesconvertertest = {}
+local spaceconvertertest = {}
 
-function coordinatesconvertertest.test_should_convert_from_layer_to_display()
+function spaceconvertertest.test_should_convert_from_layer_to_display()
 	-- given:
 	local layer = vega.layer {
 		camera = vega.camera {
@@ -17,17 +17,17 @@ function coordinatesconvertertest.test_should_convert_from_layer_to_display()
 			y = 600,
 		}
 	}
-	local originalcoordinates = { x = 3, y = 6 }
+	local originalvector = { x = 3, y = 6 }
 
 	-- when:
-	local convertedcoordinates = vega.coordinatesconverter.fromlayertodisplay(originalcoordinates, layer, display)
+	local convertedvector = vega.spaceconverter.fromlayertodisplay(originalvector, layer, display)
 
 	-- then:
-	assert_equal(311.4218, convertedcoordinates.x, 0.0001, "convertedcoordinates.x is not the expected.")
-	assert_equal(282.7608, convertedcoordinates.y, 0.0001, "convertedcoordinates.y is not the expected.")
+	assert_equal(311.4218, convertedvector.x, 0.0001, "convertedvector.x is not the expected.")
+	assert_equal(282.7608, convertedvector.y, 0.0001, "convertedvector.y is not the expected.")
 end
 
-function coordinatesconvertertest.test_should_return_values_relative_to_display_size_when_convert_from_layer_to_display()
+function spaceconvertertest.test_should_return_values_relative_to_display_size_when_convert_from_layer_to_display()
 	-- given:
 	local layer = vega.layer {
 		camera = vega.camera {
@@ -42,17 +42,17 @@ function coordinatesconvertertest.test_should_return_values_relative_to_display_
 			y = 600,
 		}
 	}
-	local originalcoordinates = { x = 4, y = -1 }
+	local originalvector = { x = 4, y = -1 }
 
 	-- when:
-	local convertedcoordinates = vega.coordinatesconverter.fromlayertodisplay(originalcoordinates, layer, display)
+	local convertedvector = vega.spaceconverter.fromlayertodisplay(originalvector, layer, display)
 
 	-- then:
-	assert_equal(0.9, convertedcoordinates.relativex, 0.0001, "convertedcoordinates.relativex is not the expected.")
-	assert_equal(0.45, convertedcoordinates.relativey, 0.0001, "convertedcoordinates.relativey is not the expected.")
+	assert_equal(0.9, convertedvector.relativex, 0.0001, "convertedvector.relativex is not the expected.")
+	assert_equal(0.45, convertedvector.relativey, 0.0001, "convertedvector.relativey is not the expected.")
 end
 
-function coordinatesconvertertest.test_should_convert_from_display_to_layer()
+function spaceconvertertest.test_should_convert_from_display_to_layer()
 	-- given:
 	local layer = vega.layer {
 		camera = vega.camera {
@@ -69,17 +69,17 @@ function coordinatesconvertertest.test_should_convert_from_display_to_layer()
 			y = 600,
 		}
 	}
-	local originalcoordinates = { x = 3, y = 6 }
+	local originalvector = { x = 3, y = 6 }
 
 	-- when:
-	local convertedcoordinates = vega.coordinatesconverter.fromdisplaytolayer(originalcoordinates, display, layer)
+	local convertedvector = vega.spaceconverter.fromdisplaytolayer(originalvector, display, layer)
 
 	-- then:
-	assert_equal(0.6189, convertedcoordinates.x, 0.0001, "convertedcoordinates.x is not the expected.")
-	assert_equal(1.6425, convertedcoordinates.y, 0.0001, "convertedcoordinates.y is not the expected.")
+	assert_equal(0.6189, convertedvector.x, 0.0001, "convertedvector.x is not the expected.")
+	assert_equal(1.6425, convertedvector.y, 0.0001, "convertedvector.y is not the expected.")
 end
 
-function coordinatesconvertertest.test_should_return_values_relative_to_layer_size_when_convert_from_display_to_layer()
+function spaceconvertertest.test_should_return_values_relative_to_layer_size_when_convert_from_display_to_layer()
 	-- given:
 	local layer = vega.layer {
 		camera = vega.camera {
@@ -94,17 +94,17 @@ function coordinatesconvertertest.test_should_return_values_relative_to_layer_si
 			y = 800,
 		}
 	}
-	local originalcoordinates = { x = 900, y = 800 }
+	local originalvector = { x = 900, y = 800 }
 
 	-- when:
-	local convertedcoordinates = vega.coordinatesconverter.fromdisplaytolayer(originalcoordinates, display, layer)
+	local convertedvector = vega.spaceconverter.fromdisplaytolayer(originalvector, display, layer)
 
 	-- then:
-	assert_equal(0.4, convertedcoordinates.relativex, 0.0001, "convertedcoordinates.relativex is not the expected.")
-	assert_equal(0.5, convertedcoordinates.relativey, 0.0001, "convertedcoordinates.relativey is not the expected.")
+	assert_equal(0.4, convertedvector.relativex, 0.0001, "convertedvector.relativex is not the expected.")
+	assert_equal(0.5, convertedvector.relativey, 0.0001, "convertedvector.relativey is not the expected.")
 end
 
-function coordinatesconvertertest.test_should_convert_from_one_layer_to_another()
+function spaceconvertertest.test_should_convert_from_one_layer_to_another()
 	-- given:
 	local layer1 = vega.layer {
 		camera = vega.camera {
@@ -120,14 +120,14 @@ function coordinatesconvertertest.test_should_convert_from_one_layer_to_another(
 			rotation = 45
 		}
 	}
-	local originalcoordinates = { x = 900, y = 800 }
+	local originalvector = { x = 900, y = 800 }
 
 	-- when:
-	local convertedcoordinates = vega.coordinatesconverter.fromlayertoanotherlayer(originalcoordinates, layer1, layer2)
+	local convertedvector = vega.spaceconverter.fromlayertoanotherlayer(originalvector, layer1, layer2)
 
 	-- then:
-	assert_equal(40912.1933, convertedcoordinates.x, 0.0001, "convertedcoordinates.x is not the expected.")
-	assert_equal(86467.0273, convertedcoordinates.y, 0.0001, "convertedcoordinates.y is not the expected.")
+	assert_equal(40912.1933, convertedvector.x, 0.0001, "convertedvector.x is not the expected.")
+	assert_equal(86467.0273, convertedvector.y, 0.0001, "convertedvector.y is not the expected.")
 end
 
-return coordinatesconvertertest
+return spaceconvertertest

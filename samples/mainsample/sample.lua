@@ -93,7 +93,7 @@ function mainmodule:execute(context)
 		{
 			update = function(self, context)
 				local blackrectanglepos = vega.transform.getpositionrelativetoroot(blackrectangle)
-				local layer2pos = vega.coordinatesconverter.fromlayertoanotherlayer(blackrectanglepos, scene.layers[1], scene.layers[2])
+				local layer2pos = vega.spaceconverter.fromlayertoanotherlayer(blackrectanglepos, scene.layers[1], scene.layers[2])
 				displaydot.position = layer2pos
 			end
 		},
