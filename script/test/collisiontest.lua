@@ -338,4 +338,29 @@ function collisiontest.test_drawable_should_not_collide_with_point()
 	assert_false(collides, "The drawable should not collide with the point.")
 end
 
+function collisiontest.test_rotated_drawable_should_collide_with_point()
+	-- given:
+	local drawable = vega.drawable {
+		size = { x = 100, y = 100 },
+		origin = { x = 50, y = 50 },
+		rotation = 45
+	}
+	local collidedpoint = {
+		x = 50,
+		y = 0
+	}
+	local notcollidedpoint = {
+		x = 50,
+		y = 50
+	}
+
+	-- when:
+	local collideswithpoint1 = vega.collision.drawablecollideswithpoint(drawable, collidedpoint)
+	local collideswithpoint2 = vega.collision.drawablecollideswithpoint(drawable, notcollidedpoint)
+
+	-- then:
+	assert_true(collideswithpoint1, "The drawable should collide with the first point.")
+	assert_false(collideswithpoint2, "The drawable should not collide with the second point.")
+end
+
 return collisiontest
