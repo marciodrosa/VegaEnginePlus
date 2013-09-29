@@ -41,6 +41,10 @@ function vega.spaceconverter.fromdisplaytolayer(vector, display, layer)
 end
 
 --- Returns where the vector of the first layer is located in the second layer.
+-- @param vector the original vector.
+-- @param layer1 the layer where the vector is.
+-- @param layer2 the layer you want to know where the vector is located.
+-- @returns a new vector. The relativex and relativey fields are relative to the layer2 size.
 function vega.spaceconverter.fromlayertoanotherlayer(vector, layer1, layer2)
 	local viewmatrix1 = vega.transform.getviewmatrix(layer1)
 	local newvector = vega.transform.transformpoint(vector, viewmatrix1)
@@ -48,5 +52,5 @@ function vega.spaceconverter.fromlayertoanotherlayer(vector, layer1, layer2)
 	newvector.y = (layer2.camera.size.y * newvector.y) / layer1.camera.size.y
 	local viewmatrix2 = vega.transform.getviewmatrix(layer2):inverse()
 	newvector = vega.transform.transformpoint(newvector, viewmatrix2)
-	return vega.vector(newvector, function() return layer2.size end)
+	return vega.vector(newvector, function() return layer2.camera.size end)
 end

@@ -130,4 +130,26 @@ function spaceconvertertest.test_should_convert_from_one_layer_to_another()
 	assert_equal(86467.0273, convertedvector.y, 0.0001, "convertedvector.y is not the expected.")
 end
 
+function spaceconvertertest.test_should_return_values_relative_to_the_other_layer_size_when_convert_from_layer_to_another_layer()
+	-- given:
+	local layer1 = vega.layer {
+		camera = vega.camera {
+			size = { x = 100, y = 200 },
+		}
+	}
+	local layer2 = vega.layer {
+		camera = vega.camera {
+			size = { x = 200, y = 400 },
+		}
+	}
+	local originalvector = { x = 50, y = 50 }
+
+	-- when:
+	local convertedvector = vega.spaceconverter.fromlayertoanotherlayer(originalvector, layer1, layer2)
+
+	-- then:
+	assert_equal(0.5, convertedvector.relativex, 0.0001, "convertedvector.relativex is not the expected.")
+	assert_equal(0.25, convertedvector.relativey, 0.0001, "convertedvector.relativey is not the expected.")
+end
+
 return spaceconvertertest
