@@ -1,5 +1,5 @@
 require "vegatable"
-require "vega.coordinates"
+require "vega.vector"
 
 --- Creates a mouse state object. It is not normally called by the user, because an object
 -- is automatically created by SDK.

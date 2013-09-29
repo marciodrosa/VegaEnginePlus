@@ -1,7 +1,7 @@
 require "vegatable"
 require "transform"
 require "matrix"
-require "coordinates"
+require "vector"
 
 --- Table with functions to convert vectors from one space to another.
 vega.spaceconverter = {}
