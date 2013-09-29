@@ -2,13 +2,15 @@ local collisiontest = {}
 
 function collisiontest.test_rectangle_should_collide_with_point_at_begining()
 	-- given:
-	local rpos = {
-		x = 10,
-		y = 11
-	}
-	local rsize = {
-		x = 5,
-		y = 6
+	local rect = {
+		position = {
+			x = 10,
+			y = 11
+		},
+		size = {
+			x = 5,
+			y = 6
+		}
 	}
 	local point = {
 		x = 10,
@@ -16,7 +18,7 @@ function collisiontest.test_rectangle_should_collide_with_point_at_begining()
 	}
 
 	-- when:
-	local collides = vega.collision.rectcollideswithpoint(rpos, rsize, point)
+	local collides = vega.collision.rectcollideswithpoint(rect, point)
 
 	-- then:
 	assert_true(collides)
@@ -24,13 +26,15 @@ end
 
 function collisiontest.test_rectangle_should_collide_with_point_at_end()
 	-- given:
-	local rpos = {
-		x = 10,
-		y = 11
-	}
-	local rsize = {
-		x = 5,
-		y = 6
+	local rect = {
+		position = {
+			x = 10,
+			y = 11
+		},
+		size = {
+			x = 5,
+			y = 6
+		}
 	}
 	local point = {
 		x = 15,
@@ -38,7 +42,7 @@ function collisiontest.test_rectangle_should_collide_with_point_at_end()
 	}
 
 	-- when:
-	local collides = vega.collision.rectcollideswithpoint(rpos, rsize, point)
+	local collides = vega.collision.rectcollideswithpoint(rect, point)
 
 	-- then:
 	assert_true(collides)
@@ -46,13 +50,15 @@ end
 
 function collisiontest.test_rectangle_should_collide_with_point_at_middle()
 	-- given:
-	local rpos = {
-		x = 10,
-		y = 11
-	}
-	local rsize = {
-		x = 5,
-		y = 6
+	local rect = {
+		position = {
+			x = 10,
+			y = 11
+		},
+		size = {
+			x = 5,
+			y = 6
+		}
 	}
 	local point = {
 		x = 12,
@@ -60,7 +66,7 @@ function collisiontest.test_rectangle_should_collide_with_point_at_middle()
 	}
 
 	-- when:
-	local collides = vega.collision.rectcollideswithpoint(rpos, rsize, point)
+	local collides = vega.collision.rectcollideswithpoint(rect, point)
 
 	-- then:
 	assert_true(collides)
@@ -68,13 +74,15 @@ end
 
 function collisiontest.test_rectangle_should_not_collide_with_point_at_left()
 	-- given:
-	local rpos = {
-		x = 10,
-		y = 11
-	}
-	local rsize = {
-		x = 5,
-		y = 6
+	local rect = {
+		position = {
+			x = 10,
+			y = 11
+		},
+		size = {
+			x = 5,
+			y = 6
+		}
 	}
 	local point = {
 		x = 9,
@@ -82,7 +90,7 @@ function collisiontest.test_rectangle_should_not_collide_with_point_at_left()
 	}
 
 	-- when:
-	local collides = vega.collision.rectcollideswithpoint(rpos, rsize, point)
+	local collides = vega.collision.rectcollideswithpoint(rect, point)
 
 	-- then:
 	assert_false(collides)
@@ -90,13 +98,15 @@ end
 
 function collisiontest.test_rectangle_should_not_collide_with_point_at_right()
 	-- given:
-	local rpos = {
-		x = 10,
-		y = 11
-	}
-	local rsize = {
-		x = 5,
-		y = 6
+	local rect = {
+		position = {
+			x = 10,
+			y = 11
+		},
+		size = {
+			x = 5,
+			y = 6
+		}
 	}
 	local point = {
 		x = 16,
@@ -104,7 +114,7 @@ function collisiontest.test_rectangle_should_not_collide_with_point_at_right()
 	}
 
 	-- when:
-	local collides = vega.collision.rectcollideswithpoint(rpos, rsize, point)
+	local collides = vega.collision.rectcollideswithpoint(rect, point)
 
 	-- then:
 	assert_false(collides)
@@ -112,13 +122,15 @@ end
 
 function collisiontest.test_rectangle_should_not_collide_with_point_above()
 	-- given:
-	local rpos = {
-		x = 10,
-		y = 11
-	}
-	local rsize = {
-		x = 5,
-		y = 6
+	local rect = {
+		position = {
+			x = 10,
+			y = 11
+		},
+		size = {
+			x = 5,
+			y = 6
+		}
 	}
 	local point = {
 		x = 10,
@@ -126,7 +138,7 @@ function collisiontest.test_rectangle_should_not_collide_with_point_above()
 	}
 
 	-- when:
-	local collides = vega.collision.rectcollideswithpoint(rpos, rsize, point)
+	local collides = vega.collision.rectcollideswithpoint(rect, point)
 
 	-- then:
 	assert_false(collides)
@@ -134,13 +146,15 @@ end
 
 function collisiontest.test_rectangle_should_not_collide_with_point_below()
 	-- given:
-	local rpos = {
-		x = 10,
-		y = 11
-	}
-	local rsize = {
-		x = 5,
-		y = 6
+	local rect = {
+		position = {
+			x = 10,
+			y = 11
+		},
+		size = {
+			x = 5,
+			y = 6
+		}
 	}
 	local point = {
 		x = 10,
@@ -148,7 +162,7 @@ function collisiontest.test_rectangle_should_not_collide_with_point_below()
 	}
 
 	-- when:
-	local collides = vega.collision.rectcollideswithpoint(rpos, rsize, point)
+	local collides = vega.collision.rectcollideswithpoint(rect, point)
 
 	-- then:
 	assert_false(collides)
@@ -156,52 +170,62 @@ end
 
 function collisiontest.test_rectangle_should_collide_with_rectangle()
 	-- given:
-	local pos1 = {
-		x = 10,
-		y = 20,
+	local rect1 = {
+		position = {
+			x = 10,
+			y = 20,
+		},
+		size = {
+			x = 100,
+			y = 200,
+		}
 	}
-	local size1 = {
-		x = 100,
-		y = 200,
+	local rect2 = {
+		position = {
+			x = 0,
+			y = 0
+		},
+		size = {
+			x = 10,
+			y = 20
+		}
 	}
-	local pos2 = {
-		x = 0,
-		y = 0
+	local rect3 = {
+		position = {
+			x = 110,
+			y = 0
+		},
+		size = {
+			x = 1,
+			y = 20
+		}
 	}
-	local size2 = {
-		x = 10,
-		y = 20
+	local rect4 = {
+		position = {
+			x = 0,
+			y = 220
+		},
+		size = {
+			x = 10,
+			y = 1
+		}
 	}
-	local pos3 = {
-		x = 110,
-		y = 0
-	}
-	local size3 = {
-		x = 1,
-		y = 20
-	}
-	local pos4 = {
-		x = 0,
-		y = 220
-	}
-	local size4 = {
-		x = 10,
-		y = 1
-	}
-	local pos5 = {
-		x = 110,
-		y = 220
-	}
-	local size5 = {
-		x = 1,
-		y = 1
+	local rect5 = {
+		position = {
+			x = 110,
+			y = 220
+		},
+		size = {
+			x = 1,
+			y = 1
+		}
 	}
 
 	-- when:
-	local rect1collideswithrect2 = vega.collision.rectcollideswithrect(pos1, size1, pos2, size2)
-	local rect1collideswithrect3 = vega.collision.rectcollideswithrect(pos1, size1, pos3, size3)
-	local rect1collideswithrect4 = vega.collision.rectcollideswithrect(pos1, size1, pos4, size4)
-	local rect1collideswithrect5 = vega.collision.rectcollideswithrect(pos1, size1, pos5, size5)
+	local rect1collideswithrect2 = vega.collision.rectcollideswithrect(rect1, rect2)
+	local rect1collideswithrect3 = vega.collision.rectcollideswithrect(rect1, rect3)
+	local rect1collideswithrect4 = vega.collision.rectcollideswithrect(rect1, rect4)
+	local rect1collideswithrect5 = vega.collision.rectcollideswithrect(rect1, rect5)
 
 	-- then:
 	assert_true(rect1collideswithrect2, "The rectangle should collide with rect2.")
@@ -212,52 +236,62 @@ end
 
 function collisiontest.test_rectangle_should_not_collide_with_rectangle()
 	-- given:
-	local pos1 = {
-		x = 10,
-		y = 20,
+	local rect1 = {
+		position = {
+			x = 10,
+			y = 20,
+		},
+		size = {
+			x = 100,
+			y = 200,
+		}
 	}
-	local size1 = {
-		x = 100,
-		y = 200,
+	local rect2 = {
+		position = {
+			x = 0,
+			y = 110
+		},
+		size = {
+			x = 9,
+			y = 1
+		}
 	}
-	local pos2 = {
-		x = 0,
-		y = 110
+	local rect3 = {
+		position = {
+			x = 60,
+			y = 0
+		},
+		size = {
+			x = 1,
+			y = 19
+		}
 	}
-	local size2 = {
-		x = 9,
-		y = 1
+	local rect4 = {
+		position = {
+			x = 111,
+			y = 110,
+		},
+		size = {
+			x = 1,
+			y = 1
+		}
 	}
-	local pos3 = {
-		x = 60,
-		y = 0
-	}
-	local size3 = {
-		x = 1,
-		y = 19
-	}
-	local pos4 = {
-		x = 111,
-		y = 110,
-	}
-	local size4 = {
-		x = 1,
-		y = 1
-	}
-	local pos5 = {
-		x = 60,
-		y = 221,
-	}
-	local size5 = {
-		x = 1,
-		y = 1
+	local rect5 = {
+		position = {
+			x = 60,
+			y = 221,
+		},
+		size = {
+			x = 1,
+			y = 1
+		}
 	}
 	
 	-- when:
-	local rect1collideswithrect2 = vega.collision.rectcollideswithrect(pos1, size1, pos2, size2)
-	local rect1collideswithrect3 = vega.collision.rectcollideswithrect(pos1, size1, pos3, size3)
-	local rect1collideswithrect4 = vega.collision.rectcollideswithrect(pos1, size1, pos4, size4)
-	local rect1collideswithrect5 = vega.collision.rectcollideswithrect(pos1, size1, pos5, size5)
+	local rect1collideswithrect2 = vega.collision.rectcollideswithrect(rect1, rect2)
+	local rect1collideswithrect3 = vega.collision.rectcollideswithrect(rect1, rect3)
+	local rect1collideswithrect4 = vega.collision.rectcollideswithrect(rect1, rect4)
+	local rect1collideswithrect5 = vega.collision.rectcollideswithrect(rect1, rect5)
 
 	-- then:
 	assert_false(rect1collideswithrect2, "The rectangle should not collide with rect2.")
