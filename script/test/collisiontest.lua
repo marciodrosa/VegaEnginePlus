@@ -363,4 +363,38 @@ function collisiontest.test_rotated_drawable_should_collide_with_point()
 	assert_false(collideswithpoint2, "The drawable should not collide with the second point.")
 end
 
+function collisiontest.test_drawable_should_collide_with_point_from_another_layer()
+	-- given:
+	local drawablelayer = vega.layer {
+		camera = vega.camera {
+			size = { x = 100, y = 100 },
+		}
+	}
+	local pointlayer = vega.layer {
+		camera = vega.camera {
+			size = { x = 200, y = 200 },
+		}
+	}
+	local drawable = vega.drawable {
+		position = { x = 0, y = 0 },
+		size = { x = 10, y = 10 },
+	}
+	local collidedpoint = {
+		x = 20,
+		y = 0
+	}
+	local notcollidedpoint = {
+		x = 21,
+		y = 0
+	}
+
+	-- when:
+	local collideswithpoint1 = vega.collision.drawablecollideswithpoint(drawable, collidedpoint, drawablelayer, pointlayer)
+	local collideswithpoint12 = vega.collision.drawablecollideswithpoint(drawable, notcollidedpoint, drawablelayer, pointlayer)
+
+	-- then:
+	assert_true(collideswithpoint1, "The drawable should collide with the first point.")
+	assert_false(collideswithpoint2, "The drawable should not collide with the second point.")
+end
+
 return collisiontest
