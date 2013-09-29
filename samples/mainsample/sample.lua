@@ -85,6 +85,17 @@ function mainmodule:execute(context)
 	scene.controllers = {
 		{
 			update = function(self, context)
+				blackrectangle.color = 0xff000000
+				local mouseposition = context.input.mouse.position
+				mouseposition = vega.spaceconverter.fromdisplaytolayer(mouseposition, context.output.display, scene.layers[1])
+				local ismousecollidedwithrect = vega.collision.drawablecollideswithpoint(blackrectangle, mouseposition, scene.layers[1])
+				if ismousecollidedwithrect then
+					blackrectangle.color = 0xff555555
+				end
+			end
+		},
+		{
+			update = function(self, context)
 				whiterectangle.rotation = whiterectangle.rotation - 0.5
 				blackrectangle.rotation = blackrectangle.rotation + 1
 				local blackrectanglematrix = vega.transform.getglobalmatrix(blackrectangle, scene.layers[1])

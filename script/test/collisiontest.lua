@@ -300,4 +300,42 @@ function collisiontest.test_rectangle_should_not_collide_with_rectangle()
 	assert_false(rect1collideswithrect5, "The rectangle should not collide with rect5.")
 end
 
+function collisiontest.test_drawable_should_collide_with_point()
+	-- given:
+	local drawable = vega.drawable {
+		position = { x = 10, y = 20 },
+		size = { x = 100, y = 200 },
+		scale = { x = 2, y = 4 }
+	}
+	local point = {
+		x = 210,
+		y = 820
+	}
+
+	-- when:
+	local collides = vega.collision.drawablecollideswithpoint(drawable, point)
+
+	-- then:
+	assert_true(collides, "The drawable should collide with the point.")
+end
+
+function collisiontest.test_drawable_should_not_collide_with_point()
+	-- given:
+	local drawable = vega.drawable {
+		position = { x = 10, y = 20 },
+		size = { x = 100, y = 200 },
+		scale = { x = 2, y = 4 }
+	}
+	local point = {
+		x = 211,
+		y = 821
+	}
+
+	-- when:
+	local collides = vega.collision.drawablecollideswithpoint(drawable, point)
+
+	-- then:
+	assert_false(collides, "The drawable should not collide with the point.")
+end
+
 return collisiontest

@@ -1,5 +1,6 @@
 require "vegatable"
 require "matrix"
+require "spaceconverter"
 require "transform"
 
 --- Contains functions to calculate collisions between points, rectangles and drawables.
@@ -36,26 +37,24 @@ end
 -- @arg d the drawable to test.
 -- @arg point the point (table with x and y fields).
 -- @arg layer1 the layer of the drawable, If nil, it is ignored.
--- @arg layer2 the layer of the point. If nil, layer1 is used.
+-- @arg layer2 the layer of the point. If nil, layer1 is used. If layer1 is nil, layer2 is also ignored.
 function vega.collision.drawablecollideswithpoint(d, point, layer1, layer2)
-	--[[
-	layer2 = layer2 or layer1
-	local rpos = d.position
-	local rsize = d.size
-	local drawableinversematrix = vega.transform.getglobalmatrix(d, layer1):inverse()
-	if layer2 ~= nil
-		
+	local inversematrix = vega.transform.getglobalmatrix(d):inverse()
+	local drawablerectangle = {
+		position = { x = 0, y = 0},
+		size = d.size
+	}
+	if layer1 ~= nil and layer2 ~= nil then
+		point = vega.spaceconverter.fromlayertoanotherlayer(point, layer2, layer1)
 	end
-	if layer1 ~= nil and layer2 ~= nil and layer1 ~= layer2
-		-- todo: scale according layers sizes
-	end
-	vega.transform.transformpoint(rpos, drawableinversematrix)
-	return vega.collision.rectcollideswithpoint(rpos, rsize, point)
-	]]--
+	point = vega.transform.transformpoint(point, inversematrix)
+	return vega.collision.rectcollideswithpoint(drawablerectangle, point)
 end
 
-function vega.collision.drawablecollideswithrect(d, rpos, rsize, layer1, layer2)
+--[[
+function vega.collision.drawablecollideswithrect(d, rect, layer1, layer2)
 end
 
 function vega.collision.drawablecollideswithdrawable(d1, d2, layer1, layer2)
 end
+]]
