@@ -201,4 +201,39 @@ function transformtest.test_should_calculate_view_matrix()
 	assert_equal(1, matrix[3][3], 0.01, "The 3,3 cell of the matrix is not the expected.")
 end
 
+function transformtest.test_should_calculate_position_relative_to_root()
+	-- given:
+	local drawable1 = vega.drawable {
+		position = { x = 10, y = 20 },
+		rotation = 45,
+		scale = { x = 30, y = 40 },
+		origin = { x = 50, y = 60 },
+		childrenorigin = { x = 70, y = 80 },
+	}
+	local drawable2 = vega.drawable {
+		position = { x = 90, y = 100 },
+		rotation = 50,
+		scale = { x = 110, y = 120 },
+		origin = { x = 130, y = 140 },
+		childrenorigin = { x = 150, y = 160 },
+	}
+	local drawable3 = vega.drawable {
+		position = { x = 170, y = 180 },
+		rotation = 55,
+		scale = { x = 190, y = 200 },
+		origin = { x = 210, y = 220 },
+		childrenorigin = { x = 230, y = 240 },
+	}
+	drawable1.children.insert(drawable2)
+	drawable2.children.insert(drawable3)
+
+	-- when:
+	local position = vega.transform.getpositionrelativetoroot(drawable3)
+
+	-- then:
+	assert_equal(226696907.9447, position.x, 0.0001, "position.x is not the expected.")
+	assert_equal(38463992.0554, position.y, 0.0001, "position.y is not the expected.")
+
+end
+
 return transformtest

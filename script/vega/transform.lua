@@ -48,15 +48,9 @@ function vega.transform.transformpoint(v, m)
 	}
 end
 
---[[
+--- The position of a drawable is relative to its parent. This function calculates
+-- the position coordinates relative to the root of the drawables tree.
 function vega.transform.getpositionrelativetoroot(drawable)
-
+	local matrix = vega.transform.getglobalmatrix(drawable)
+	return vega.transform.transformpoint( { x = 0, y = 0}, matrix)
 end
-
-function vega.transform.getscalerelativetoroot(drawable)
-
-end
-
-function vega.transform.getrotationrelativetoroot(drawable)
-
-end]]

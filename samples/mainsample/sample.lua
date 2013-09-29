@@ -92,10 +92,8 @@ function mainmodule:execute(context)
 		},
 		{
 			update = function(self, context)
-				local blackrectanglematrix = vega.transform.getglobalmatrix(blackrectangle)
-				local blackrectanglepos = vega.transform.transformpoint({ x = 0, y = 0 }, blackrectanglematrix)
+				local blackrectanglepos = vega.transform.getpositionrelativetoroot(blackrectangle)
 				local layer2pos = vega.coordinatesconverter.fromlayertoanotherlayer(blackrectanglepos, scene.layers[1], scene.layers[2])
-				--local screenposition = vega.coordinatesconverter.fromlayertodisplay(blackrectanglepos, scene.layers[1], context.output.display)
 				displaydot.position = layer2pos
 			end
 		},

@@ -126,8 +126,8 @@ function coordinatesconvertertest.test_should_convert_from_one_layer_to_another(
 	local convertedcoordinates = vega.coordinatesconverter.fromlayertoanotherlayer(originalcoordinates, layer1, layer2)
 
 	-- then:
-	assert_equal(40912.1933, convertedcoordinates.relativex, 0.0001, "convertedcoordinates.relativex is not the expected.")
-	assert_equal(86467.0273, convertedcoordinates.relativey, 0.0001, "convertedcoordinates.relativey is not the expected.")
+	assert_equal(40912.1933, convertedcoordinates.x, 0.0001, "convertedcoordinates.x is not the expected.")
+	assert_equal(86467.0273, convertedcoordinates.y, 0.0001, "convertedcoordinates.y is not the expected.")
 end
 
 return coordinatesconvertertest
