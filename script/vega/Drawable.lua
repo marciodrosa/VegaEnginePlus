@@ -29,8 +29,8 @@ end
 --
 -- The coordinates fields (position, size, origin, childrenorigin, scale, topleftuv and bottomrightuv)
 -- requires a table with x and y fields. Some of them (position, size, origin and childrenorigin) copies the
--- values when they are setted and converts it to a coordinates table using the vega.coordinates function. So,
--- you can use relative values, as you can read on vega.coordinates documentation (fields relativex/y and
+-- values when they are setted and converts it to a vector table using the vega.vega function. So,
+-- you can use relative values, as you can read on vega.vector documentation (fields relativex/y and
 -- keeprelativex/y). Position and size can be relative to the drawable's parent size; origin and childrenorigin
 -- can be relative to the drawable size. 
 -- @param initialvalues optional table with the initial values of the drawable. The fields are copied into the
@@ -71,9 +71,9 @@ function vega.drawable(initialvalues)
 
 	function drawablemetatable.__newindex(t, key, value)
 		if key == "position" or key == "size" then
-			private[key] = vega.coordinates(value, function() return getparentsize(t) end)
+			private[key] = vega.vector(value, function() return getparentsize(t) end)
 		elseif key == "origin" or key == "childrenorigin" then
-			private[key] = vega.coordinates(value, function() return t.size end)
+			private[key] = vega.vector(value, function() return t.size end)
 		elseif key == "background" then
 			private.background = value
 			if value ~= nil then

@@ -1,8 +1,8 @@
 require "vegatable"
 
-local function setcoordinatevalues(t, coordinate, absolutevalue, relativevalue)
-	rawset(t, coordinate, absolutevalue)
-	rawset(t, "relative"..coordinate, relativevalue)
+local function setvectorvalues(t, field, absolutevalue, relativevalue)
+	rawset(t, field, absolutevalue)
+	rawset(t, "relative"..field, relativevalue)
 end
 
 local function getrelativetotable(relativeto)
@@ -11,42 +11,42 @@ local function getrelativetotable(relativeto)
 	end
 end
 
-local function getvaluetoberelative(relativeto, coordinate)
+local function getvaluetoberelative(relativeto, field)
 	local result
 	local relativetotable = getrelativetotable(relativeto)
 	if relativetotable ~= nil then
-		result = relativetotable[coordinate]
+		result = relativetotable[field]
 	end
 	return result or 1
 end
 
-local function getabsolute(t, coordinate, relativeto)
-	local relativetovalue = getvaluetoberelative(relativeto, coordinate)
-	if rawget(t, coordinate) == nil then
-		return rawget(t, "relative"..coordinate) * relativetovalue
+local function getabsolute(t, field, relativeto)
+	local relativetovalue = getvaluetoberelative(relativeto, field)
+	if rawget(t, field) == nil then
+		return rawget(t, "relative"..field) * relativetovalue
 	else
-		return rawget(t, coordinate)
+		return rawget(t, field)
 	end
 end
 
-local function getrelative(t, coordinate, relativeto)
-	local relativetovalue = getvaluetoberelative(relativeto, coordinate)
-	if rawget(t, "relative"..coordinate) == nil then
+local function getrelative(t, field, relativeto)
+	local relativetovalue = getvaluetoberelative(relativeto, field)
+	if rawget(t, "relative"..field) == nil then
 		if relativetovalue == 0 then
-			return rawget(t, coordinate)
+			return rawget(t, field)
 		else
-			return rawget(t, coordinate) / relativetovalue
+			return rawget(t, field) / relativetovalue
 		end
 	else
-		return rawget(t, "relative"..coordinate)
+		return rawget(t, "relative"..field)
 	end
 end
 
-local function convertrelative(t, coordinate, converttorelative, relativeto)
-	if rawget(t, "relative"..coordinate) == nil and converttorelative then
-		setcoordinatevalues(t, coordinate, nil, getrelative(t, coordinate, relativeto))
-	elseif rawget(t, coordinate) == nil and not converttorelative then
-		setcoordinatevalues(t, coordinate, getabsolute(t, coordinate, relativeto), nil)
+local function convertrelative(t, field, converttorelative, relativeto)
+	if rawget(t, "relative"..field) == nil and converttorelative then
+		setvectorvalues(t, field, nil, getrelative(t, field, relativeto))
+	elseif rawget(t, field) == nil and not converttorelative then
+		setvectorvalues(t, field, getabsolute(t, field, relativeto), nil)
 	end
 end
 
@@ -61,52 +61,51 @@ local function setinitialvalues(t, initialvalues)
 	end
 end
 
-local function areequal(coordinate1, coordinate2)
-	return rawget(coordinate1, "x") == rawget(coordinate2, "x") and rawget(coordinate1, "y") == rawget(coordinate2, "y") and rawget(coordinate1, "relativex") == rawget(coordinate2, "relativex") and rawget(coordinate1, "relativey") == rawget(coordinate2, "relativey")
+local function areequal(v1, v2)
+	return rawget(v1, "x") == rawget(v2, "x") and rawget(v1, "y") == rawget(v2, "y") and rawget(v1, "relativex") == rawget(v2, "relativex") and rawget(v1, "relativey") == rawget(v2, "relativey")
 end
 
---- Creates a 2D coordinates system (X, Y). It is more used internally by the SDK with the drawables tables.
--- To get or set the coordinates, use mytable.x and mytable.y. You an also set/get relative values with mytable.relativex
--- and mytable.relativey. For example, when working with the size of a drawable, you can set drawable.size.relativex = 0.5.
--- With this value, the drawable width will be 50% of his parent width. When the parent size changes, the drawable size
--- automatically changes too.
+--- Creates a 2D vector with x and y fields. You can set/get relative values with myvector.relativex
+-- and myvector.relativey. For example, when working with the size of a drawable, you can set
+-- drawable.size.relativex = 0.5. With this value, the drawable width will be 50% of its parent width.
+-- When the parent size changes, the drawable size automatically changes too.
 --
 -- To set a relative value and turn off the auto-update feature, you can set the relativex or relativey and then set
--- keeprelativex = false or keeprelativey = false. Using the above example, the drawable width is changed to 50% of his
+-- keeprelativex = false or keeprelativey = false. Using the above example, the drawable width is changed to 50% of its
 -- parent width, but then is no more updated when the parent size changes. The opposite can also be done: set the x or
--- y coordinate and then set keeprelativex or keeprelativey to true.
+-- y field and then set keeprelativex or keeprelativey to true.
 --
--- After set an absolute coordinate (x or y), you can get the relative coordinate (relativex or relativey). It will be
--- calculated on the fly. The same if you set the relative coordinate and want to get the absolute one.
+-- After set an absolute (not relative) value on x or y, you can get the relative value (relativex or relativey).
+-- It will be calculated in real time. The same if you set the relative value and want to get the absolute one.
 --
--- Note that the relative coordinates depends of the context: a drawable size, for example, is relative to the drawable's
--- parent size. The drawable origin is relative to the size of himself.
+-- Note that the relative values depends of the context: a drawable size, for example, is relative to the drawable's
+-- parent size. The drawable origin is relative to the size of itself.
 --
 -- @param initialvalues optional table with the initial values
 -- @param relativefunction optional function that must return a table with x and y fields. This table is used as
--- absolute values when calculate relative coordinates.
-function vega.coordinates(initialvalues, relativefunction)
+-- absolute values when calculate relative values.
+function vega.vector(initialvalues, relativefunction)
 
 	local relativefunction = relativefunction or function() end
 
-	local coordinates = {
+	local v = {
 		x = 0,
 		y = 0
 	}
 
-	local coordinatesmetatable = {}
+	local metatable = {}
 
-	function coordinatesmetatable.__newindex(t, index, value)
-		if index == "x" then setcoordinatevalues(t, "x", value, nil, false)
-		elseif index == "y" then setcoordinatevalues(t, "y", value, nil, false)
-		elseif index == "relativex" then setcoordinatevalues(t, "x", nil, value, true)
-		elseif index == "relativey" then setcoordinatevalues(t, "y", nil, value, true)
+	function metatable.__newindex(t, index, value)
+		if index == "x" then setvectorvalues(t, "x", value, nil, false)
+		elseif index == "y" then setvectorvalues(t, "y", value, nil, false)
+		elseif index == "relativex" then setvectorvalues(t, "x", nil, value, true)
+		elseif index == "relativey" then setvectorvalues(t, "y", nil, value, true)
 		elseif index == "keeprelativex" then convertrelative(t, "x", value, relativefunction)
 		elseif index == "keeprelativey" then convertrelative(t, "y", value, relativefunction)
 		else rawset(t, index, value) end
 	end
 
-	function coordinatesmetatable.__index(t, index)
+	function metatable.__index(t, index)
 		if index == "x" then return getabsolute(t, "x", relativefunction)
 		elseif index == "y" then return getabsolute(t, "y", relativefunction)
 		elseif index == "relativex" then return getrelative(t, "x", relativefunction)
@@ -116,9 +115,9 @@ function vega.coordinates(initialvalues, relativefunction)
 		else return rawget(t, index) end
 	end
 
-	coordinatesmetatable.__eq = areequal
+	metatable.__eq = areequal
 
-	setmetatable(coordinates, coordinatesmetatable)
-	setinitialvalues(coordinates, initialvalues)
-	return coordinates
+	setmetatable(v, metatable)
+	setinitialvalues(v, initialvalues)
+	return v
 end
