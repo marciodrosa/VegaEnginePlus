@@ -283,4 +283,47 @@ function vectortest.test_pairs_iteration()
 	assert_equal(30, t.relativey, "t.relativey is not the expected.")
 end
 
+function vectortest.test_set_x_and_y_using_keys_1_and_2()
+	-- given:
+	vector = vega.vector()
+	vector[1] = 10
+	vector[2] = 20
+
+	-- when:
+	local x = vector.x
+	local y = vector.y
+
+	-- then:
+	assert_equal(10, x, "x is not the expected.")
+	assert_equal(20, y, "y is not the expected.")
+end
+
+function vectortest.test_get_x_and_y_using_keys_1_and_2()
+	-- given:
+	vector = vega.vector()
+	vector.x = 10
+	vector.y = 20
+
+	-- when:
+	local x = vector[1]
+	local y = vector[2]
+
+	-- then:
+	assert_equal(10, x, "x is not the expected.")
+	assert_equal(20, y, "y is not the expected.")
+end
+
+function vectortest.test_should_create_vector_using_keys_1_and_2()
+	-- given:
+	vector = vega.vector { 10, 20 }
+
+	-- when:
+	local x = vector.x
+	local y = vector.y
+
+	-- then:
+	assert_equal(10, x, "x is not the expected.")
+	assert_equal(20, y, "y is not the expected.")
+end
+
 return vectortest

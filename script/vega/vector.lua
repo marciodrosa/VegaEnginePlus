@@ -54,8 +54,8 @@ local function setinitialvalues(t, initialvalues)
 	if initialvalues ~= nil then
 		if initialvalues.relativex ~= nil then t.relativex = initialvalues.relativex end
 		if initialvalues.relativey ~= nil then t.relativey = initialvalues.relativey end
-		if initialvalues.x ~= nil then t.x = initialvalues.x end
-		if initialvalues.y ~= nil then t.y = initialvalues.y end
+		if (initialvalues.x or initialvalues[1]) ~= nil then t.x = initialvalues.x or initialvalues[1] end
+		if (initialvalues.y or initialvalues[2]) ~= nil then t.y = initialvalues.y or initialvalues[2] end
 		if initialvalues.keeprelativex ~= nil then t.keeprelativex = initialvalues.keeprelativex end
 		if initialvalues.keeprelativey ~= nil then t.keeprelativey = initialvalues.keeprelativey end
 	end
@@ -69,6 +69,9 @@ end
 -- and myvector.relativey. For example, when working with the size of a drawable, you can set
 -- drawable.size.relativex = 0.5. With this value, the drawable width will be 50% of its parent width.
 -- When the parent size changes, the drawable size automatically changes too.
+--
+-- Instead of use the x and y fields, you can also use 1 and 2 keys. It will be automatically converted
+-- to/from x and y.
 --
 -- To set a relative value and turn off the auto-update feature, you can set the relativex or relativey and then set
 -- keeprelativex = false or keeprelativey = false. Using the above example, the drawable width is changed to 50% of its
@@ -102,6 +105,8 @@ function vega.vector(initialvalues, relativefunction)
 		elseif index == "relativey" then setvectorvalues(t, "y", nil, value, true)
 		elseif index == "keeprelativex" then convertrelative(t, "x", value, relativefunction)
 		elseif index == "keeprelativey" then convertrelative(t, "y", value, relativefunction)
+		elseif index == 1 then t.x = value
+		elseif index == 2 then t.y = value
 		else rawset(t, index, value) end
 	end
 
@@ -112,6 +117,8 @@ function vega.vector(initialvalues, relativefunction)
 		elseif index == "relativey" then return getrelative(t, "y", relativefunction)
 		elseif index == "keeprelativex" then return rawget(t, "relativex") ~= nil
 		elseif index == "keeprelativey" then return rawget(t, "relativey") ~= nil
+		elseif index == 1 then return t.x
+		elseif index == 2 then return t.y
 		else return rawget(t, index) end
 	end
 
