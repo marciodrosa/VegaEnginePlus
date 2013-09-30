@@ -33,9 +33,7 @@ end
 local function createbuttoncontroller(buttondrawable, callback, layer, context)
 	return {
 		update = function(self, context)
-			local mouseposition = context.input.mouse.position
-			mouseposition = vega.spaceconverter.fromdisplaytolayer(mouseposition, context.output.display, layer)
-			local isfocused = vega.collision.drawablecollideswithpoint(buttondrawable, mouseposition)
+			local isfocused = vega.collision.drawablecollideswithdisplaypoint(buttondrawable, context.input.mouse.position, layer, context.output.display)
 			if isfocused then
 				buttondrawable.children.background.color = 0xffffffff
 				buttondrawable.children.text.fontcolor = 0xff000000

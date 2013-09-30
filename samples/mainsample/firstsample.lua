@@ -3,11 +3,9 @@ require "vega"
 firstsample = {}
 
 function firstsample:load(context)
-	print "Module loaded."
 end
 
 function firstsample:execute(context)
-	print "Module executed."
 	local scene = vega.scene()
 
 	local xaxis = vega.drawable {

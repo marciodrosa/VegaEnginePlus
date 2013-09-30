@@ -17,14 +17,12 @@ function mainmenu:execute(context)
 			label = "first",
 			callback = function(context)
 				context.nextmodule = firstsample
-				print(context.nextmodule)
 			end
 		},
 		{
 			label = "second",
 			callback = function(context)
 				context.nextmodule = secondsample
-				print(context.nextmodule)
 			end
 		},
 	})

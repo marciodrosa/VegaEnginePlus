@@ -3,11 +3,9 @@ require "vega"
 secondsample = {}
 
 function secondsample:load(context)
-	print "Module loaded."
 end
 
 function secondsample:execute(context)
-	print "Module executed."
 	local scene = vega.scene()
 
 	scene.layers[1].camera.position = { x = 0.5, y = 0.5 }
