@@ -201,10 +201,10 @@ void SceneRender::RenderDrawableRectangle(lua_State* luaState, lua_Number visibi
 		ReadVector2FromTableField(luaState, "topleftuv", topLeftUV);
 		ReadVector2FromTableField(luaState, "bottomrightuv", bottomRightUV);
 		
+		glColor4f(color.r, color.g, color.b, color.a * (float) visibility);
+		
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		SetUpTextureMode(luaState);
-		
-		glColor4f(color.r, color.g, color.b, color.a * (float) visibility);
 
 		GLfloat vertexes[] = {0.f, 0.f,  size.x, 0.f,  size.x, size.y,  0.f, size.y};
 		GLfloat uvCoordinates[] = {topLeftUV.x, bottomRightUV.y,  bottomRightUV.x, bottomRightUV.y,  bottomRightUV.x, topLeftUV.y,  topLeftUV.x, topLeftUV.y};

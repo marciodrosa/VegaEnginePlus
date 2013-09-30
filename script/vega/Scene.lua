@@ -33,7 +33,7 @@ end
 -- controllers that updates the state of the scene. Set a scene into the current context
 -- (the "nextscene" field of the Context table) to render and update the scene in the main loop.
 -- @field viewport a Viewport table, a new instance is created by default.
--- @field background color the color of the background, a blue color is created by default.
+-- @field backgroundcolor the color of the background, a blue color is created by default.
 -- @field framespersecond the frames per second used by the main loop to update and render
 -- this scene. It is 30 by default.
 -- @field controllers list of controller tables. You can add or remove tables from this list.

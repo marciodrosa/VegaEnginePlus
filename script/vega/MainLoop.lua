@@ -21,9 +21,9 @@ local function checkdisplaysize(context)
 end
 
 local function checkmodule(self)
-	if self.context.module ~= self.context.module and self.context.module ~= nil then
-		self.context.module = self.context.module;
-		self.context.module = nil
+	if self.context.module ~= self.context.nextmodule and self.context.nextmodule ~= nil then
+		self.context.module = self.context.nextmodule;
+		self.context.nextmodule = nil
 	end
 	if currentmodule ~= self.context.module then
 		currentmodule = self.context.module;

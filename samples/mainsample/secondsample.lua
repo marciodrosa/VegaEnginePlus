@@ -1,12 +1,12 @@
 require "vega"
 
-local mainmodule = {}
+secondsample = {}
 
-function mainmodule:load(context)
+function secondsample:load(context)
 	print "Module loaded."
 end
 
-function mainmodule:execute(context)
+function secondsample:execute(context)
 	print "Module executed."
 	local scene = vega.scene()
 
@@ -156,7 +156,7 @@ function mainmodule:execute(context)
 		},
 	}
 	
-	context.nextscene = scene
-end
+	context.scene = scene
 
-vega.mainloop.context.module = mainmodule
+	sampleutil.createbackbuttonlayer(context)
+end
