@@ -397,4 +397,37 @@ function collisiontest.test_drawable_should_collide_with_point_from_another_laye
 	assert_false(collideswithpoint2, "The drawable should not collide with the second point.")
 end
 
+function collisiontest.test_drawable_should_collide_with_display_point()
+	-- given:
+	local drawablelayer = vega.layer {
+		camera = vega.camera {
+			position = { x = 50, y = 50 },
+			size = { x = 100, y = 100 },
+		}
+	}
+	local display = {
+		size = { x = 200, y = 200 },
+	}
+	local drawable = vega.drawable {
+		position = { x = 0, y = 0 },
+		size = { x = 10, y = 10 },
+	}
+	local collidedpoint = {
+		x = 20,
+		y = 0
+	}
+	local notcollidedpoint = {
+		x = 21,
+		y = 0
+	}
+
+	-- when:
+	local collideswithpoint1 = vega.collision.drawablecollideswithdisplaypoint(drawable, collidedpoint, drawablelayer, display)
+	local collideswithpoint12 = vega.collision.drawablecollideswithdisplaypoint(drawable, notcollidedpoint, drawablelayer, display)
+
+	-- then:
+	assert_true(collideswithpoint1, "The drawable should collide with the first point.")
+	assert_false(collideswithpoint2, "The drawable should not collide with the second point.")
+end
+
 return collisiontest

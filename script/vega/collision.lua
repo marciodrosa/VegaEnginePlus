@@ -51,6 +51,18 @@ function vega.collision.drawablecollideswithpoint(d, point, layer1, layer2)
 	return vega.collision.rectcollideswithpoint(drawablerectangle, point)
 end
 
+--- Returns true if the drawable collides with display point.
+-- @arg d the drawable to test.
+-- @arg point the point (table with x and y fields).
+-- @arg layer the layer of the drawable, If nil, it is ignored.
+-- @arg display the display. If nil or layer is nil, it is ignored.
+function vega.collision.drawablecollideswithdisplaypoint(d, point, layer, display)
+	if layer ~= nil and display ~= nil then
+		point = vega.spaceconverter.fromdisplaytolayer(point, display, layer)
+	end
+	return vega.collision.drawablecollideswithpoint(d, point)
+end
+
 --[[
 function vega.collision.drawablecollideswithrect(d, rect, layer1, layer2)
 end
