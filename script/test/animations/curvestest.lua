@@ -36,4 +36,12 @@ function curvestest.test_accelerationandslowdown_function_should_return_y_accele
 	assert_fx_should_returns_y(vega.animations.curves.accelerationandslowdown, 1, 1)
 end
 
+function curvestest.test_slowdownandacceleration_function_should_return_y_slowing_and_accelerating()
+	assert_fx_should_returns_y(vega.animations.curves.slowdownandacceleration, 0, 0)
+	assert_fx_should_returns_y(vega.animations.curves.slowdownandacceleration, 0.25, 0.375)
+	assert_fx_should_returns_y(vega.animations.curves.slowdownandacceleration, 0.5, 0.5)
+	assert_fx_should_returns_y(vega.animations.curves.slowdownandacceleration, 0.75, 0.625)
+	assert_fx_should_returns_y(vega.animations.curves.slowdownandacceleration, 1, 1)
+end
+
 return curvestest

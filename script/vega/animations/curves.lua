@@ -31,3 +31,13 @@ function vega.animations.curves.accelerationandslowdown(x)
 		return ((-x * x) / 2) + 1
 	end
 end
+
+--- A mix of slowdown and acceleration functions. Y starts with a slowdown and finishes with an acceleration.
+function vega.animations.curves.slowdownandacceleration(x)
+	x = (x - 0.5) * 2
+	if x < 0.5 then
+		return -(x * x) / 2 + 0.5
+	else
+		return (x * x) / 2 + 0.5
+	end
+end
