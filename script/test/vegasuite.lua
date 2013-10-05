@@ -6,6 +6,7 @@ require "vegaunit"
 vegaunit.addsuite("animationtest")
 vegaunit.addsuite("animations.curvestest")
 vegaunit.addsuite("animations.hidetest")
+vegaunit.addsuite("animations.showtest")
 vegaunit.addsuite("cameratest")
 vegaunit.addsuite("collisiontest")
 vegaunit.addsuite("colortest")

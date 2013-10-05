@@ -1,6 +1,7 @@
 require "vega.animation"
 require "vega.animations.curves"
 require "vega.animations.hide"
+require "vega.animations.show"
 require "vega.camera"
 require "vega.collision"
 require "vega.color"
