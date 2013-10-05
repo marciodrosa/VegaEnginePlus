@@ -12,4 +12,12 @@ function curvestest.test_linear_function_should_return_y_equal_to_x()
 	assert_fx_should_returns_y(vega.animations.curves.linear, 1, 1)
 end
 
+function curvestest.test_acceleration_function_should_return_x_times_x()
+	assert_fx_should_returns_y(vega.animations.curves.acceleration, 0, 0)
+	assert_fx_should_returns_y(vega.animations.curves.acceleration, 0.25, 0.0625)
+	assert_fx_should_returns_y(vega.animations.curves.acceleration, 0.5, 0.25)
+	assert_fx_should_returns_y(vega.animations.curves.acceleration, 0.75, 0.5625)
+	assert_fx_should_returns_y(vega.animations.curves.acceleration, 1, 1)
+end
+
 return curvestest

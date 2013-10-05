@@ -8,3 +8,10 @@ vega.animations.curves = {}
 function vega.animations.curves.linear(x)
 	return x
 end
+
+--- Curve function used by animations created with the vega.animation function. It uses a quadratic
+-- function to simulate an acceleration. So, the Y values starts to increase slowly and finishes with
+-- a boost.
+function vega.animations.curves.acceleration(x)
+	return x * x
+end
