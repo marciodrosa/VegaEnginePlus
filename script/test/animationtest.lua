@@ -10,6 +10,7 @@ function animationtest.test_should_initialize_with_default_values()
 	assert_equal(animation.length, 1, "length is not the expected.")
 	assert_equal(animation.frame, 1, "frame is not the expected.")
 	assert_equal(animation.curvefunction, vega.animations.curves.linear, "curvefunction is not the expected.")
+	assert_nil(animation.trackposition, "Should not initialize the field trackposition.")
 end
 
 function animationtest.test_should_set_value_of_a_table_field()

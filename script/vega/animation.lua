@@ -55,6 +55,9 @@ end
 -- @field curvefunction a function that receives x and must return a y. It defines the how the
 -- initialvalue and finalvalue are interpolated. This field is initiated with the function
 -- vega.animations.curves.linear, so the interpolation is linear.
+-- @field trackposition the frame of the animation track where this animation starts to play. This
+-- field is nil by default and it's only used if the animation is attached to a track created with
+-- the vega.animationtrack function.
 function vega.animation(initialvalues)
 	local animation = {
 		init = init,
