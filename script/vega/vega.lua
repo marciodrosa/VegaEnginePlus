@@ -1,3 +1,5 @@
+require "vega.animation"
+require "vega.animations.curves.linear"
 require "vega.camera"
 require "vega.collision"
 require "vega.color"

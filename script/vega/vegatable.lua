@@ -1,3 +1,6 @@
 vega = {
-	drawables = {}
+	drawables = {},
+	animations = {
+		curves = {}
+	},
 }

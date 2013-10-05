@@ -123,9 +123,9 @@ end
 function assert_error(expectederror, func, message)
 	local ok, err = pcall(func)
 	if ok then
-		fail(concatmessages("Expected error '"..expectederror.." was not thrown."), message)
-	elseif string.find(err, expectederror) == nil then
-		fail(concatmessages("Expected error '"..expectederror.." is not equal to '"..err.."'."), message)
+		fail(concatmessages("Expected error '"..expectederror.."'' was not thrown."), message)
+	elseif string.find(err, expectederror, 1, true) == nil then
+		fail(concatmessages("Expected error '"..expectederror.."'' is not equal to '"..err.."'."), message)
 	end
 end
 
