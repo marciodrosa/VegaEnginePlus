@@ -1,6 +1,6 @@
 require "vegatable"
 require "util"
-require "animations.curves.linear"
+require "animations.curves"
 
 local metatable = {}
 
