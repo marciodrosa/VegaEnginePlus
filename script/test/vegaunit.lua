@@ -55,14 +55,15 @@ local function concatmessages(m1, m2)
 end
 
 function vegaunit.addsuite(name)
-	suites[name] = require(name)
+	table.insert(suites, name)
 end
 
 function vegaunit.run()
 	failures = {}
 	testscount = 0
-	for k, v in pairs(suites) do
-		runsuite(v, k)
+	for i, suitename in ipairs(suites) do
+		local suite = require(suitename)
+		runsuite(suite, suitename)
 	end
 	printfails()
 	printstatistics()

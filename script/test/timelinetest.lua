@@ -55,7 +55,27 @@ function timelinetest.test_should_call_two_actions()
 	timeline:update(context)
 	assert_equal(1, firstfunctioncalls, "Should have called the first function 1 time after fourth update.")
 	assert_equal(1, secondfunctioncalls, "Should have called the second function 1 time after fourth update.")
+end
 
+function timelinetest.test_should_call_two_actions_at_same_frame()
+	-- given:
+	local firstfunctioncalls = 0
+	local secondfunctioncalls = 0
+	local calledfunctions = {}
+	local function firstfunction()
+		table.insert(calledfunctions, firstfunction)
+	end
+	local function secondfunction()
+		table.insert(calledfunctions, secondfunction)
+	end
+	timeline.actions = {
+		[1] = { firstfunction, secondfunction }
+	}
+
+	-- when / then:
+	timeline:update(context)
+	assert_equal(firstfunction, calledfunctions[1], "Should have called the first function.")
+	assert_equal(secondfunction, calledfunctions[2], "Should have called the second function.")
 end
 
 return timelinetest
