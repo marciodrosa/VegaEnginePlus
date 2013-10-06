@@ -123,10 +123,11 @@ end
 
 function timelinetest.test_should_finish_after_action_table_was_finished()
 	-- given:
+	local t = {
+		execute = function() end
+	}
 	timeline.actions = {
-		[2] = {
-			execute = function() end
-		}
+		[2] = t
 	}
 
 	-- when / then:
@@ -134,9 +135,34 @@ function timelinetest.test_should_finish_after_action_table_was_finished()
 	timeline:update(context)
 	assert_nil(timeline.finished, "Should not have finished because the action table was not finished yet.")
 
-	timeline.finished = true
+	t.finished = true
 	timeline:update(context)
 	assert_true(timeline.finished, "Should set the finished field, because the action table was finished.")
+end
+
+function timelinetest.test_should_finish_after_all_actions_tables_were_finished()
+	-- given:
+	local t1 = {
+		execute = function() end
+	}
+	local t2 = {
+		execute = function() end
+	}
+	timeline.actions = {
+		[1] = { t1, t2 }
+	}
+
+	-- when / then:
+	timeline:update(context)
+	assert_nil(timeline.finished, "Should not have finished because the attached tables were not finished yet.")
+
+	t1.finished = true
+	timeline:update(context)
+	assert_nil(timeline.finished, "Should not have finished because one of the attached tables was not finished yet.")
+
+	t2.finished = true
+	timeline:update(context)
+	assert_true(timeline.finished, "Should set the finished field, because all attached tables were finished.")
 end
 
 return timelinetest

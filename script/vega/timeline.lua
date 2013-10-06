@@ -19,10 +19,13 @@ local function findactionsforcurrentframe(self)
 end
 
 local function verifyongoingactions(ongoingactions)
-	for i = 1, #ongoingactions do
+	local i = 1
+	while true do
+		if i > #ongoingactions then break end
 		if ongoingactions[i].finished then
 			table.remove(ongoingactions, i)
-			i = i - 1
+		else
+			i = i + 1
 		end
 	end
 end
