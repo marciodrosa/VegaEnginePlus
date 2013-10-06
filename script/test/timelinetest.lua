@@ -105,4 +105,38 @@ function timelinetest.test_should_call_table_function()
 	assert_equal(t, selfarg, "Should pass the table as argument to the function.")
 end
 
+function timelinetest.test_should_finish_after_all_actions_are_executed()
+	-- given:
+	timeline.actions = {
+		[1] = function() end,
+		[3] = function() end
+	}
+
+	-- when / then:
+	timeline:update(context)
+	timeline:update(context)
+	assert_nil(timeline.finished, "Should not have finished because there is one action to be executed.")
+
+	timeline:update(context)
+	assert_true(timeline.finished, "Should set the finished field, because all actions were executed.")
+end
+
+function timelinetest.test_should_finish_after_action_table_was_finished()
+	-- given:
+	timeline.actions = {
+		[2] = {
+			execute = function() end
+		}
+	}
+
+	-- when / then:
+	timeline:update(context)
+	timeline:update(context)
+	assert_nil(timeline.finished, "Should not have finished because the action table was not finished yet.")
+
+	timeline.finished = true
+	timeline:update(context)
+	assert_true(timeline.finished, "Should set the finished field, because the action table was finished.")
+end
+
 return timelinetest

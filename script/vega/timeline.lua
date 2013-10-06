@@ -22,7 +22,7 @@ local function verifyongoingactions(ongoingactions)
 	for i = 1, #ongoingactions do
 		if ongoingactions[i].finished then
 			table.remove(ongoingactions, i)
-			i = i-1
+			i = i - 1
 		end
 	end
 end
