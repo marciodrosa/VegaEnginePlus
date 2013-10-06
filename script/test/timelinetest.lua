@@ -72,10 +72,37 @@ function timelinetest.test_should_call_two_actions_at_same_frame()
 		[1] = { firstfunction, secondfunction }
 	}
 
-	-- when / then:
+	-- when:
 	timeline:update(context)
+
+	-- then:
 	assert_equal(firstfunction, calledfunctions[1], "Should have called the first function.")
 	assert_equal(secondfunction, calledfunctions[2], "Should have called the second function.")
+end
+
+function timelinetest.test_should_call_table_function()
+	-- given:
+	local functionwasexecuted = false
+	local contextarg = nil
+	local selfarg = nil
+	local t = {
+		execute = function(self, c)
+			functionwasexecuted = true
+			contextarg = c
+			selfarg = self
+		end
+	}
+	timeline.actions = {
+		[1] = t
+	}
+
+	-- when:
+	timeline:update(context)
+
+	-- then:
+	assert_true(functionwasexecuted, "Should have executed the table function.")
+	assert_equal(context, contextarg, "Should pass the context as argument to the function.")
+	assert_equal(t, selfarg, "Should pass the table as argument to the function.")
 end
 
 return timelinetest
