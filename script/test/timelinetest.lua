@@ -165,4 +165,15 @@ function timelinetest.test_should_finish_after_all_actions_tables_were_finished(
 	assert_true(timeline.finished, "Should set the finished field, because all attached tables were finished.")
 end
 
+function timelinetest.test_should_finish_when_there_is_no_actions()
+	-- given:
+	timeline.actions = {}
+
+	-- when:
+	timeline:update(context)
+
+	-- then:
+	assert_true(timeline.finished, "Should set the finished field.")
+end
+
 return timelinetest
