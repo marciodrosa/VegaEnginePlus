@@ -28,14 +28,22 @@ local function init(self)
 	if self.to == nil then self.to = self.on[self.what] end
 end
 
+--- Updates the controller. It calls updateframe and then increases the field self.frame.
 local function update(self)
 	self:updateframe()
 	if self.frame >= self.length then self.finished = true end
 	if self.frame < self.length then self.frame = self.frame + 1 end
 end
 
+--- Updates the current frame. It changes the value of the field "what" on table "on" to
+-- the expected value of the current frame.
 local function updateframe(self)
 	self.on[self.what] = self.from + ((self.to - self.from) * self.y)
+end
+
+--- Adds this animation as a controller to the current scene of the current context.
+local function execute(self, context)
+	context.scene.controllers.insert(self)
 end
 
 --- Creates an animation. If added to a scene as controller, it changes the field value
@@ -63,6 +71,7 @@ function vega.animation(initialvalues)
 		init = init,
 		update = update,
 		updateframe = updateframe,
+		execute = execute,
 		curvefunction = vega.animations.curves.linear,
 		frame = 1,
 		length = 1,

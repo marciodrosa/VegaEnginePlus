@@ -213,4 +213,18 @@ function animationtest.test_should_initialize_initial_value_with_current_value_i
 	assert_equal(10, animation.to, "The final value is not the expected.")
 end
 
+function animationtest.test_should_add_animation_as_scene_controller_when_call_execute()
+	-- given:
+	local context = {
+		scene = vega.scene()
+	}
+
+	-- when:
+	animation:execute(context)
+
+	-- then:
+	assert_equal(1, #context.scene.controllers, "The scene should have 1 attached controller.")
+	assert_equal(animation, context.scene.controllers[1], "The animation should be the attached controller.")
+end
+
 return animationtest
