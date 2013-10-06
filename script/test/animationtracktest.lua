@@ -239,4 +239,18 @@ function animationtracktest.test_should_not_initialize_animation_if_already_init
 	assert_false(initwascalled, "The init function should not be called because the animation is already initiated.")
 end
 
+function animationtracktest.test_should_add_animation_track_as_scene_controller_when_call_execute()
+	-- given:
+	local context = {
+		scene = vega.scene()
+	}
+
+	-- when:
+	animationtrack:execute(context)
+
+	-- then:
+	assert_equal(1, #context.scene.controllers, "The scene should have 1 attached controller.")
+	assert_equal(animationtrack, context.scene.controllers[1], "The animation track should be the attached controller.")
+end
+
 return animationtracktest

@@ -43,6 +43,7 @@ local function mustfinishanimationaftercurrentiteration(self)
 	return self.iterations ~= 0 and self.currentiteration + 1 > self.iterations 
 end
 
+--- Updates the controller.
 local function update(self, context)
 	for i, animation in ipairs(self.animations) do
 		if mustupdateanimation(self, animation) then
@@ -74,6 +75,11 @@ local function update(self, context)
 	end
 end
 
+--- Adds this animation track as a controller to the current scene of the current context.
+local function execute(self, context)
+	context.scene.controllers.insert(self)
+end
+
 --- Creates an animation track. An animation track is a table that contains one or more
 -- animations (created by vega.animation function) attached to it. Instead of add an animation
 -- as a controller to a scene, attach this animation to an animation track and, then, add the
@@ -103,7 +109,8 @@ function vega.animationtrack(initialvalues)
 		pingpong = false,
 		frame = 1,
 		animations = {},
-		update = update
+		update = update,
+		execute = execute
 	}
 	return vega.util.copyvaluesintotable(initialvalues, animationtrack)
 end
