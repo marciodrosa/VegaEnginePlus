@@ -58,4 +58,24 @@ function actionsqueuetest.test_should_execute_attached_tables_one_after_other()
 	assert_true(actionsqueue.finished, "The actions queue should be finished after all tables were finished.")
 end
 
+function actionsqueuetest.test_should_execute_next_table_in_the_same_frame_if_current_table_is_finished()
+	-- given:
+	local t2executed = true
+	local t1 = {
+		execute = function(self, context)
+			self.finished = true
+		end
+	}
+	local t2 = {
+		execute = function(self, context)
+			t2executed = true
+		end
+	}
+	actionsqueue.actions = { t1, t2 }
+
+	-- when / then:
+	actionsqueue:update(context)
+	assert_true(t2executed, "The second table should be executed, because the first table was executed and finished.")
+end
+
 return actionsqueuetest
