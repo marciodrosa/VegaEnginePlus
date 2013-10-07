@@ -189,4 +189,19 @@ function timelinetest.test_should_attach_controller_to_scene_when_call_execute_f
 	assert_equal(timeline, scene.controllers[1], "The timeline should be the attached controller.")
 end
 
+function timelinetest.test_should_create_table_with_initial_values()
+	-- given:
+	local actions = {}
+
+	-- when:
+	timeline = vega.timeline {
+		actions = actions,
+		frame = 2,
+	}
+
+	-- then:
+	assert_equal(actions, timeline.actions, "timeline.actions is not the expected.")
+	assert_equal(2, timeline.frame, "timeline.frame is not the expected.")
+end
+
 return timelinetest
