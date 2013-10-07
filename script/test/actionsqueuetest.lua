@@ -117,4 +117,19 @@ function actionsqueuetest.test_should_execute_action_functions()
 	assert_true(actionsqueue.finished, "The actions queue should be finished.")
 end
 
+function actionsqueuetest.test_should_initialize_with_list_of_tables_and_functions()
+	-- given:
+	local list = {
+		function() end,
+		function() end,
+		{}
+	}
+
+	-- when:
+	actionsqueue = vega.actionsqueue(list)
+
+	-- then:
+	assert_equal(list, actionsqueue.actions, "Should create the actions queue using the list passed as parameter.")
+end
+
 return actionsqueuetest
