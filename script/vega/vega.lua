@@ -1,3 +1,4 @@
+require "vega.actionsqueue"
 require "vega.animation"
 require "vega.animations.curves"
 require "vega.animations.hide"
