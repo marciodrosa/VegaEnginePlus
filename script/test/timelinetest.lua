@@ -176,4 +176,17 @@ function timelinetest.test_should_finish_when_there_is_no_actions()
 	assert_true(timeline.finished, "Should set the finished field.")
 end
 
+function timelinetest.test_should_attach_controller_to_scene_when_call_execute_function()
+	-- given:
+	local scene = vega.scene()
+	context.scene = scene
+
+	-- when:
+	timeline:execute(context)
+
+	-- then:
+	assert_equal(1, #scene.controllers, "The scene should have 1 attached controller.")
+	assert_equal(timeline, scene.controllers[1], "The timeline should be the attached controller.")
+end
+
 return timelinetest

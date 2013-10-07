@@ -63,6 +63,11 @@ local function update(self, context, ongoingactions)
 	end
 end
 
+--- Adds this timeline as a controller to the current scene of the current context.
+local function execute(self, context)
+	context.scene.controllers.insert(self)
+end
+
 --- Creates and returns a timeline table. It can be attached to a scene as a controller.
 -- It executes actions (functions or tables which a function named "execute") attached to
 -- a given frame of the timeline. The timeline controller is finished when there is no more
@@ -82,7 +87,8 @@ function vega.timeline(initialvalues)
 		actions = {},
 		update = function(self, context)
 			update(self, context, ongoingactions)
-		end
+		end,
+		execute = execute
 	}
 	return vega.util.copyvaluesintotable(initialvalues, timeline)
 end
