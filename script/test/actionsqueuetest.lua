@@ -73,9 +73,48 @@ function actionsqueuetest.test_should_execute_next_table_in_the_same_frame_if_cu
 	}
 	actionsqueue.actions = { t1, t2 }
 
+	-- when:
+	actionsqueue:update(context)
+
+	-- then:
+	assert_true(t2executed, "The second table should be executed, because the first table was executed and finished.")
+end
+
+function actionsqueuetest.test_should_execute_action_functions()
+	-- given:
+	local t1executed = false
+	local f1executed = false
+	local f1contextarg
+	local f2executed = false
+	local t1 = {
+		execute = function(self, context)
+			t1executed = true
+		end
+	}
+	local f1 = function(context)
+		f1executed = true
+		f1contextarg = context
+	end
+	local f2 = function(context)
+		f2executed = true
+	end
+	actionsqueue.actions = { f1, t1, f2 }
+
 	-- when / then:
 	actionsqueue:update(context)
-	assert_true(t2executed, "The second table should be executed, because the first table was executed and finished.")
+	assert_true(f1executed, "The first function should be executed.")
+	assert_equal(context, f1contextarg, "The context arg passed to the function is not the expected.")
+	assert_true(t1executed, "The first table should be executed.")
+
+	actionsqueue:update(context)
+	actionsqueue:update(context)
+	assert_false(f2executed, "The second function should not be executed before the previous table is finished.")
+	assert_nil(actionsqueue.finished, "The actions queue should not be finished yet.")
+
+	t1.finished = true
+	actionsqueue:update(context)
+	assert_true(f2executed, "The second function should be executed.")
+	assert_true(actionsqueue.finished, "The actions queue should be finished.")
 end
 
 return actionsqueuetest
