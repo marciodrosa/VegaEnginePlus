@@ -132,4 +132,17 @@ function actionsqueuetest.test_should_initialize_with_list_of_tables_and_functio
 	assert_equal(list, actionsqueue.actions, "Should create the actions queue using the list passed as parameter.")
 end
 
+function actionsqueuetest.test_should_attach_controller_to_scene_when_call_execute_function()
+	-- given:
+	local scene = vega.scene()
+	context.scene = scene
+
+	-- when:
+	actionsqueue:execute(context)
+
+	-- then:
+	assert_equal(1, #scene.controllers, "The scene should have 1 attached controller.")
+	assert_equal(actionsqueue, scene.controllers[1], "The actions queue should be the attached controller.")
+end
+
 return actionsqueuetest

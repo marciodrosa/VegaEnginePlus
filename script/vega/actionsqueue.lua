@@ -22,6 +22,11 @@ local function update(self, context, privatedata)
 	end
 end
 
+--- Adds this actions queue as a controller to the current scene of the current context.
+local function execute(self, context)
+	context.scene.controllers.insert(self)
+end
+
 --- Creates and returns a controller that executes a queue of actions.
 -- When attached to a scene, each action is executed. When an action
 -- has a duration of many frames, the next action of the queue is not
@@ -44,6 +49,7 @@ function vega.actionsqueue(actions)
 		actions = actions or {},
 		update = function(self, context)
 			update(self, context, privatedata)
-		end
+		end,
+		execute = execute
 	}
 end
