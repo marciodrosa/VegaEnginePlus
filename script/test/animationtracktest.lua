@@ -253,4 +253,30 @@ function animationtracktest.test_should_add_animation_track_as_scene_controller_
 	assert_equal(animationtrack, context.scene.controllers[1], "The animation track should be the attached controller.")
 end
 
+function animationtracktest.test_should_play_backwards_if_set_reverse_as_true()
+	-- given:
+	animation.length = 10
+	animation.trackposition = 1
+	table.insert(animationtrack.animations, animation)
+
+	-- when:
+	animationtrack:update()
+	animationtrack:update()
+	animationtrack:update()
+	animationtrack.reverse = true
+	animationtrack:update()
+	animationtrack:update()
+	animationtrack:update()
+
+	-- then:
+	assert_equal(6, #updatedframes, "Should have updated the animation 6 times.")
+	assert_equal(1, updatedframes[1], "Should have updated the frame 1 for the first iteration.")
+	assert_equal(2, updatedframes[2], "Should have updated the frame 2 for the first iteration.")
+	assert_equal(3, updatedframes[3], "Should have updated the frame 3 for the second iteration.")
+	assert_equal(4, updatedframes[4], "Should have updated the frame 4 for the second iteration.")
+	assert_equal(3, updatedframes[5], "Should have updated the frame 3 for the third iteration.")
+	assert_equal(2, updatedframes[6], "Should have updated the frame 2 for the third iteration.")
+	assert_nil(animationtrack.finished, "The track should not be finished because it iterates infinite times.")
+end
+
 return animationtracktest

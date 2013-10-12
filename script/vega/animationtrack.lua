@@ -14,13 +14,9 @@ local function getframetoupdateanimation(self, animation)
 	return self.frame - gettrackposition(animation) + 1
 end
 
-local function iscurrentiterationreverse(self)
-	return self.pingpong and (self.currentiteration % 2) == 0
-end
-
 local function islastframeofiteration(self)
 	local islastframe
-	if iscurrentiterationreverse(self) then
+	if self.reverse then
 		islastframe = self.frame <= 1
 	else
 		if self.length == nil then
@@ -61,13 +57,14 @@ local function update(self, context)
 		if mustfinishanimationaftercurrentiteration(self) then
 			self.finished = true
 		else
+			if self.pingpong then self.reverse = not self.reverse end
 			self.currentiteration = self.currentiteration + 1
-			if not iscurrentiterationreverse(self) then
+			if not self.reverse then
 				self.frame = 1
 			end
 		end
 	else
-		if iscurrentiterationreverse(self) then
+		if self.reverse then
 			self.frame = self.frame - 1
 		else
 			self.frame = self.frame + 1
@@ -95,8 +92,10 @@ end
 -- @field pingpong if true, each iteration will have the reverse direction of the previous iteration.
 -- So, if the current iteration is playing as usual, the next one will play from last frame to the
 -- first one. Default value is false.
--- @field frame the current frame of the track, starts with 0 and it's automatically increased on
+-- @field frame the current frame of the track, starts with 1 and it's automatically increased on
 -- each update of the controller.
+-- @field reverse set to true to play backwards. It is automatically setted to true or false when the
+-- iteration ends and pingpong is true.
 -- @field length the size of the track. If not nil, then each iteration will be finished after updates
 -- all frames defined by this field. Otherwise, the iteration will be finished after update all frames
 -- of all animations. This field is nil by default.
@@ -108,6 +107,7 @@ function vega.animationtrack(initialvalues)
 		currentiteration = 1,
 		pingpong = false,
 		frame = 1,
+		reverse = false,
 		animations = {},
 		update = update,
 		execute = execute
