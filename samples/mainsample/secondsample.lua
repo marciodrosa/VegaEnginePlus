@@ -1,5 +1,3 @@
-require "vega"
-
 secondsample = {}
 
 function secondsample:load(context)

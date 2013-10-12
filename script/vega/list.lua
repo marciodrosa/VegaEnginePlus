@@ -1,4 +1,4 @@
-require "vegatable"
+require "vega.vegatable"
 
 local function listcontainsvalue(content, value)
 	for k, v in pairs(content) do

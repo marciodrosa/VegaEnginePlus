@@ -1,4 +1,4 @@
-require "vegatable"
+require "vega.vegatable"
 
 local function update(self, context, privatedata)
 	while privatedata.iterator <= #self.actions do

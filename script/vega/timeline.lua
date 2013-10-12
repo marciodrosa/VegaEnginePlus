@@ -1,5 +1,5 @@
-require "vegatable"
-require "util"
+require "vega.vegatable"
+require "vega.util"
 
 local function findactionsforcurrentframe(self)
 	local frameobject = self.actions[self.frame]

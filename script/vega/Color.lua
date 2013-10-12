@@ -1,4 +1,4 @@
-require "vegatable"
+require "vega.vegatable"
 
 --- A table with functions to manipulate colors. When using Vega SDK, colors can be represented by a number (ARGB values,
 -- one byte per component, from 0 to 255) or by a table (with a, r, g and b fields, each one with values from 0 to 255).

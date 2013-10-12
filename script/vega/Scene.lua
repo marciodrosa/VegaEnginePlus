@@ -1,8 +1,8 @@
-require "vegatable"
-require "color"
-require "layer"
-require "list"
-require "util"
+require "vega.vegatable"
+require "vega.color"
+require "vega.layer"
+require "vega.list"
+require "vega.util"
 
 --- Update all controllers attached to this scene. This function is automatically called by the
 -- main loop.

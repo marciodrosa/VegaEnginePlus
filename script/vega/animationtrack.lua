@@ -1,5 +1,5 @@
-require "vegatable"
-require "util"
+require "vega.vegatable"
+require "vega.util"
 
 local function gettrackposition(animation)
 	return animation.trackposition or 1

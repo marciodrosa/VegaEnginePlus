@@ -1,4 +1,4 @@
-require "vegatable"
+require "vega.vegatable"
 
 --- Table with functions to be used on animations curves. See vega.animation function.
 vega.animations.curves = {}

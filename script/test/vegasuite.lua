@@ -1,6 +1,6 @@
 package.path = package.path..";../?;../?.lua;../vega/?.lua"
 
-require "vega"
+require "vega.vega"
 require "vegaunit"
 
 vegaunit.addsuite("actionsqueuetest")

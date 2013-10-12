@@ -1,6 +1,6 @@
-require "vegatable"
-require "animation"
-require "util"
+require "vega.vegatable"
+require "vega.animation"
+require "vega.util"
 
 --- Creates an animation with the function vega.animation that shows a hidden drawable,
 -- changing the value of the "visibility" field. This function is equivalent of

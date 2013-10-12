@@ -1,6 +1,6 @@
-require "vegatable"
-require "drawable"
-require "util"
+require "vega.vegatable"
+require "vega.drawable"
+require "vega.util"
 
 --- Returns true if the text has a valid font to be rendered.
 local function hasvalidfont(textdrawable)

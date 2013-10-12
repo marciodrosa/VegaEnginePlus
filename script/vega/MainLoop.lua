@@ -1,7 +1,7 @@
-require "vegatable"
-require "context"
-require "content"
-require "capi"
+require "vega.vegatable"
+require "vega.context"
+require "vega.content"
+require "vega.capi"
 
 local currentmodule = nil
 

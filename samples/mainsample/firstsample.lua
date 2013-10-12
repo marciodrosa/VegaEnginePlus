@@ -1,5 +1,3 @@
-require "vega"
-
 firstsample = {}
 
 function firstsample:load(context)

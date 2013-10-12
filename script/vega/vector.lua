@@ -1,4 +1,4 @@
-require "vegatable"
+require "vega.vegatable"
 
 local function setvectorvalues(t, field, absolutevalue, relativevalue)
 	rawset(t, field, absolutevalue)

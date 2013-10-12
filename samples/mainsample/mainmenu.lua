@@ -1,4 +1,3 @@
-require "vega"
 require "sampleutil"
 require "firstsample"
 require "secondsample"

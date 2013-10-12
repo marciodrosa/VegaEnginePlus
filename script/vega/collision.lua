@@ -1,7 +1,7 @@
-require "vegatable"
-require "matrix"
-require "spaceconverter"
-require "transform"
+require "vega.vegatable"
+require "vega.matrix"
+require "vega.spaceconverter"
+require "vega.transform"
 
 --- Contains functions to calculate collisions between points, rectangles and drawables.
 vega.collision = {}

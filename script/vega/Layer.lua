@@ -1,7 +1,7 @@
-require "vegatable"
-require "drawable"
-require "camera"
-require "util"
+require "vega.vegatable"
+require "vega.drawable"
+require "vega.camera"
+require "vega.util"
 
 vega.Layer = {}
 

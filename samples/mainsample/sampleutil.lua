@@ -1,5 +1,3 @@
-require "vega"
-
 sampleutil = {}
 
 local function createbuttondrawable(label, context)

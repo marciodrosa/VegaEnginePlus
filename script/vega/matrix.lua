@@ -1,4 +1,4 @@
-require "vegatable"
+require "vega.vegatable"
 
 --- Table with 3x3 matrix operations functions. The functions that receives matrix or vectors as parameters
 -- doesn't check the integrity of the parameters for performance reasons. So, it is assumed the data is

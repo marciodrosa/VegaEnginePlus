@@ -1,5 +1,5 @@
-require "vegatable"
-require "matrix"
+require "vega.vegatable"
+require "vega.matrix"
 
 --- Table with auxiliar functions relative to drawables transformations.
 vega.transform = {}

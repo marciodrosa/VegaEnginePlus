@@ -59,7 +59,7 @@ void App::Execute(string scriptName)
 	Log::Info("Opening Lua libraries...");
 	luaL_openlibs(luaState);
 	Log::Info("Configuring Lua package path...");
-	luaL_loadstring(luaState, "package.path = package.path..';vega/?.lua;vega/?;script/vega/?.lua;script/vega/?'");
+	luaL_loadstring(luaState, "package.path = package.path..';script/?.lua;script/?'");
 	lua_pcall(luaState, 0, 0, 0);
 	
 #ifdef VEGA_ANDROID
@@ -69,7 +69,7 @@ void App::Execute(string scriptName)
 
 	Log::Info("Requiring 'vega' Lua script...");
 	lua_getglobal(luaState, "require");
-	lua_pushstring(luaState, "vega");
+	lua_pushstring(luaState, "vega.vega");
 	if (lua_pcall(luaState, 1, 1, 0) != 0)
 	{
 		Log::Error("Error when require 'vega':");

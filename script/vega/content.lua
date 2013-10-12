@@ -1,5 +1,5 @@
-require "vegatable"
-require "capi"
+require "vega.vegatable"
+require "vega.capi"
 
 local function createtexturestable()
 	local textures = {}

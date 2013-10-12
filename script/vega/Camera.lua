@@ -1,5 +1,5 @@
-require "vegatable"
-require "util"
+require "vega.vegatable"
+require "vega.util"
 
 --- Refreshes the size of the camera, given the layer size. The size is calculated with
 -- the autocalculatewidth and autocalculateheight. This function is automatically called

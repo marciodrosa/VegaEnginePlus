@@ -1,7 +1,7 @@
-require "vegatable"
-require "content"
-require "input"
-require "util"
+require "vega.vegatable"
+require "vega.content"
+require "vega.input"
+require "vega.util"
 
 --- Context is the current state of the engine. Contains the variables that
 -- can be changed to modify the current context. Note: some fields, like scene and module, can't

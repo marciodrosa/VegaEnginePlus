@@ -1,4 +1,4 @@
-require "vegatable"
+require "vega.vegatable"
 
 vega.util = {}
 

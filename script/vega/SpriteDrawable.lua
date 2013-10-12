@@ -1,6 +1,6 @@
-require "vegatable"
-require "drawable"
-require "util"
+require "vega.vegatable"
+require "vega.drawable"
+require "vega.util"
 
 local functions = {}
 

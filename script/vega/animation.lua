@@ -1,6 +1,6 @@
-require "vegatable"
-require "util"
-require "animations.curves"
+require "vega.vegatable"
+require "vega.util"
+require "vega.animations.curves"
 
 local metatable = {}
 

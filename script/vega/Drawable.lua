@@ -1,7 +1,7 @@
-require "vegatable"
-require "list"
-require "vector"
-require "util"
+require "vega.vegatable"
+require "vega.list"
+require "vega.vector"
+require "vega.util"
 
 local drawablefunctions = {}
 
