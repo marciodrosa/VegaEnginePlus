@@ -71,8 +71,8 @@ local function operate(v1, v2, op)
 		if v1.keeprelativex then newv.relativex = op(v1.relativex, v2) else newv.x = op(v1.x, v2) end
 		if v1.keeprelativey then newv.relativey = op(v1.relativey, v2) else newv.y = op(v1.y, v2) end
 	else
-		if v1.keeprelativex then newv.relativex = op(v1.relativex, v2.relativex) else newv.x = op(v1.x, v2.x) end
-		if v1.keeprelativey then newv.relativey = op(v1.relativey, v2.relativey) else newv.y = op(v1.y, v2.y) end
+		if v1.keeprelativex then newv.relativex = op(v1.relativex, v2.relativex or v2[1]) else newv.x = op(v1.x, v2.x or v2[1]) end
+		if v1.keeprelativey then newv.relativey = op(v1.relativey, v2.relativey or v2[2]) else newv.y = op(v1.y, v2.y or v2[2]) end
 	end
 	return newv
 end
