@@ -9,7 +9,7 @@ set _vegapath=..\..\VegaSDK
 :: output:
 set _outputpath=%_configuration%
 set _scriptsoutputpath=%_outputpath%\script
-set _contentoutput=%_outputpath%\content
+set _contentoutputpath=%_outputpath%\content
 
 :: other:
 set _vegadlls=libjpeg-8.dll libpng15-15.dll libtiff-5.dll libwebp-2.dll lua52.dll SDL.dll SDL_image.dll zlib1.dll
@@ -20,9 +20,9 @@ echo "Starting post build of Lua SDK..."
 :: remove old dirs and create new ones:
 echo "Create directories on output dir..."
 if exist "%_scriptsoutputpath%" rd /s /q "%_scriptsoutputpath%"
-if exist "%_contentoutput%" rd /s /q "%_contentoutput%"
+if exist "%_contentoutputpath%" rd /s /q "%_contentoutputpath%"
 md "%_scriptsoutputpath%"
-md "%_contentoutput%"
+md "%_contentoutputpath%"
 
 :: copy and compile Lua scripts:
 echo "Moving and compiling Lua scripts..."
@@ -32,7 +32,7 @@ forfiles /p %_scriptsoutputpath%\ /m *.lua /s /c "luac luac -o @path @path"
 
 :: copy content files:
 echo "Moving content dir..."
-robocopy "%_contentpath" "%_contentoutput%" /e
+robocopy "%_contentpath%" "%_contentoutputpath%" /e
 
 :: copy DLLs:
 echo "Moving DLLs..."
