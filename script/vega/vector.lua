@@ -61,8 +61,47 @@ local function setinitialvalues(t, initialvalues)
 	end
 end
 
-local function areequal(v1, v2)
+local function equal(v1, v2)
 	return rawget(v1, "x") == rawget(v2, "x") and rawget(v1, "y") == rawget(v2, "y") and rawget(v1, "relativex") == rawget(v2, "relativex") and rawget(v1, "relativey") == rawget(v2, "relativey")
+end
+
+local function operate(v1, v2, op)
+	local newv = vega.vector()
+	if type(v2) == "number" then
+		if v1.keeprelativex then newv.relativex = op(v1.relativex, v2) else newv.x = op(v1.x, v2) end
+		if v1.keeprelativey then newv.relativey = op(v1.relativey, v2) else newv.y = op(v1.y, v2) end
+	else
+		if v1.keeprelativex then newv.relativex = op(v1.relativex, v2.relativex) else newv.x = op(v1.x, v2.x) end
+		if v1.keeprelativey then newv.relativey = op(v1.relativey, v2.relativey) else newv.y = op(v1.y, v2.y) end
+	end
+	return newv
+end
+
+local function add(v1, v2)
+	return operate(v1, v2, function(i, j) return i + j end)
+end
+
+local function sub(v1, v2)
+	return operate(v1, v2, function(i, j) return i - j end)
+end
+
+local function mul(v1, v2)
+	return operate(v1, v2, function(i, j) return i * j end)
+end
+
+local function div(v1, v2)
+	return operate(v1, v2, function(i, j) return i / j end)
+end
+
+local function pow(v1, v2)
+	return operate(v1, v2, function(i, j) return i ^ j end)
+end
+
+local function unm(v)
+	local newv = vega.vector()
+	if v.keeprelativex then newv.relativex = -v.relativex else newv.x = -v.x end
+	if v.keeprelativey then newv.relativey = -v.relativey else newv.y = -v.y end
+	return newv
 end
 
 --- Creates a 2D vector with x and y fields. You can set/get relative values with myvector.relativex
@@ -122,7 +161,13 @@ function vega.vector(initialvalues, relativefunction)
 		else return rawget(t, index) end
 	end
 
-	metatable.__eq = areequal
+	metatable.__eq = equal
+	metatable.__add = add
+	metatable.__sub = sub
+	metatable.__mul = mul
+	metatable.__div = div
+	metatable.__pow = pow
+	metatable.__unm = unm
 
 	setmetatable(v, metatable)
 	setinitialvalues(v, initialvalues)

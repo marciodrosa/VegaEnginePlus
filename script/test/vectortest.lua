@@ -326,4 +326,332 @@ function vectortest.test_should_create_vector_using_keys_1_and_2()
 	assert_equal(20, y, "y is not the expected.")
 end
 
+function vectortest.test_should_add_vector_with_number()
+	-- given:
+	vector = vega.vector { 10, 20 }
+
+	-- when:
+	vector = vector + 5
+
+	-- then:
+	assert_equal(15, vector.x, "vector.x is not the expected.")
+	assert_equal(25, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_add_relative_vector_with_number()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+
+	-- when:
+	vector = vector + 5
+
+	-- then:
+	assert_equal(15, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(25, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_add_vector_with_vector()
+	-- given:
+	vector = vega.vector { 10, 20 }
+	local v2 = vega.vector { 5, 2 }
+
+	-- when:
+	vector = vector + v2
+
+	-- then:
+	assert_equal(15, vector.x, "vector.x is not the expected.")
+	assert_equal(22, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_add_relative_vector_with_vector()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+	local v2 = vega.vector({ 5, 2, }, relativetofunction)
+	parentvector.x = 5
+	parentvector.y = 4
+
+	-- when:
+	vector = vector + v2
+
+	-- then:
+	assert_equal(11, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(20.5, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_sub_vector_with_number()
+	-- given:
+	vector = vega.vector { 10, 20 }
+
+	-- when:
+	vector = vector - 5
+
+	-- then:
+	assert_equal(5, vector.x, "vector.x is not the expected.")
+	assert_equal(15, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_sub_relative_vector_with_number()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+
+	-- when:
+	vector = vector - 5
+
+	-- then:
+	assert_equal(5, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(15, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_sub_vector_with_vector()
+	-- given:
+	vector = vega.vector { 10, 20 }
+	local v2 = vega.vector { 5, 2 }
+
+	-- when:
+	vector = vector - v2
+
+	-- then:
+	assert_equal(5, vector.x, "vector.x is not the expected.")
+	assert_equal(18, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_sub_relative_vector_with_vector()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+	local v2 = vega.vector({ 5, 2, }, relativetofunction)
+	parentvector.x = 5
+	parentvector.y = 4
+
+	-- when:
+	vector = vector - v2
+
+	-- then:
+	assert_equal(9, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(19.5, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_mul_vector_with_number()
+	-- given:
+	vector = vega.vector { 10, 20 }
+
+	-- when:
+	vector = vector * 5
+
+	-- then:
+	assert_equal(50, vector.x, "vector.x is not the expected.")
+	assert_equal(100, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_mul_relative_vector_with_number()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+
+	-- when:
+	vector = vector * 5
+
+	-- then:
+	assert_equal(50, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(100, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_mul_vector_with_vector()
+	-- given:
+	vector = vega.vector { 10, 20 }
+	local v2 = vega.vector { 5, 2 }
+
+	-- when:
+	vector = vector * v2
+
+	-- then:
+	assert_equal(50, vector.x, "vector.x is not the expected.")
+	assert_equal(40, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_mul_relative_vector_with_vector()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+	local v2 = vega.vector({ 5, 2, }, relativetofunction)
+	parentvector.x = 5
+	parentvector.y = 4
+
+	-- when:
+	vector = vector * v2
+
+	-- then:
+	assert_equal(10, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(10, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_div_vector_with_number()
+	-- given:
+	vector = vega.vector { 10, 20 }
+
+	-- when:
+	vector = vector / 5
+
+	-- then:
+	assert_equal(2, vector.x, "vector.x is not the expected.")
+	assert_equal(4, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_div_relative_vector_with_number()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+
+	-- when:
+	vector = vector / 5
+
+	-- then:
+	assert_equal(2, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(4, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_div_vector_with_vector()
+	-- given:
+	vector = vega.vector { 10, 20 }
+	local v2 = vega.vector { 5, 2 }
+
+	-- when:
+	vector = vector / v2
+
+	-- then:
+	assert_equal(2, vector.x, "vector.x is not the expected.")
+	assert_equal(10, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_div_relative_vector_with_vector()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+	local v2 = vega.vector({ 5, 2, }, relativetofunction)
+	parentvector.x = 5
+	parentvector.y = 4
+
+	-- when:
+	vector = vector / v2
+
+	-- then:
+	assert_equal(10, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(40, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_pow_vector_with_number()
+	-- given:
+	vector = vega.vector { 10, 20 }
+
+	-- when:
+	vector = vector ^ 5
+
+	-- then:
+	assert_equal(100000, vector.x, "vector.x is not the expected.")
+	assert_equal(3200000, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_pow_relative_vector_with_number()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+
+	-- when:
+	vector = vector ^ 5
+
+	-- then:
+	assert_equal(100000, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(3200000, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_pow_vector_with_vector()
+	-- given:
+	vector = vega.vector { 10, 20 }
+	local v2 = vega.vector { 5, 2 }
+
+	-- when:
+	vector = vector ^ v2
+
+	-- then:
+	assert_equal(100000, vector.x, "vector.x is not the expected.")
+	assert_equal(400, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_pow_relative_vector_with_vector()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+	local v2 = vega.vector({ 5, 2, }, relativetofunction)
+	parentvector.x = 5
+	parentvector.y = 4
+
+	-- when:
+	vector = vector ^ v2
+
+	-- then:
+	assert_equal(10, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(4.4721, vector.relativey, 0.001, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_unm_vector()
+	-- given:
+	vector = vega.vector { 10, 20 }
+
+	-- when:
+	vector = -vector
+
+	-- then:
+	assert_equal(-10, vector.x, "vector.x is not the expected.")
+	assert_equal(-20, vector.y, "vector.y is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_unm_relative_vector()
+	-- given:
+	vector = vega.vector { relativex = 10, relativey = 20 }
+
+	-- when:
+	vector = -vector
+
+	-- then:
+	assert_equal(-10, vector.relativex, "vector.relativex is not the expected.")
+	assert_equal(-20, vector.relativey, "vector.relativey is not the expected.")
+	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
 return vectortest
