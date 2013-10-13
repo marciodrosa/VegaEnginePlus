@@ -65,16 +65,32 @@ local function equal(v1, v2)
 	return rawget(v1, "x") == rawget(v2, "x") and rawget(v1, "y") == rawget(v2, "y") and rawget(v1, "relativex") == rawget(v2, "relativex") and rawget(v1, "relativey") == rawget(v2, "relativey")
 end
 
-local function operate(v1, v2, op)
-	local newv = vega.vector()
-	if type(v2) == "number" then
-		if v1.keeprelativex then newv.relativex = op(v1.relativex, v2) else newv.x = op(v1.x, v2) end
-		if v1.keeprelativey then newv.relativey = op(v1.relativey, v2) else newv.y = op(v1.y, v2) end
+local function operatevectorandnumber(v, n, op, result, coordinate)
+	if v["keeprelative"..coordinate] then
+		result["relative"..coordinate] = op(v["relative"..coordinate], n)
 	else
-		if v1.keeprelativex then newv.relativex = op(v1.relativex, v2.relativex or v2[1]) else newv.x = op(v1.x, v2.x or v2[1]) end
-		if v1.keeprelativey then newv.relativey = op(v1.relativey, v2.relativey or v2[2]) else newv.y = op(v1.y, v2.y or v2[2]) end
+		result[coordinate] = op(v[coordinate], n)
 	end
-	return newv
+end
+
+local function operatevectorandvector(v1, v2, op, result, coordinate, coordinateindex)
+	if v1.keeprelativex then
+		result["relative"..coordinate] = op(v1["relative"..coordinate], v2["relative"..coordinate] or v2[coordinateindex])
+	else
+		result[coordinate] = op(v1[coordinate] or v1[coordinateindex], v2[coordinate] or v2[coordinateindex])
+	end
+end
+
+local function operate(v1, v2, op)
+	local result = vega.vector()
+	if type(v2) == "number" then
+		operatevectorandnumber(v1, v2, op, result, "x")
+		operatevectorandnumber(v1, v2, op, result, "y")
+	else
+		operatevectorandvector(v1, v2, op, result, "x", 1)
+		operatevectorandvector(v1, v2, op, result, "y", 2)
+	end
+	return result
 end
 
 local function add(v1, v2)
@@ -123,6 +139,9 @@ end
 -- Note that the relative values depends of the context: a drawable size, for example, is relative to the drawable's
 -- parent size. The drawable origin is relative to the size of itself.
 --
+-- Math operations can be done with another vectors (created or not with this function) or numbers. Numbers are only
+-- accepted if they are right values.
+--
 -- @param initialvalues optional table with the initial values
 -- @param relativefunction optional function that must return a table with x and y fields. This table is used as
 -- absolute values when calculate relative values.
@@ -135,7 +154,15 @@ function vega.vector(initialvalues, relativefunction)
 		y = 0
 	}
 
-	local metatable = {}
+	local metatable = {
+		__eq = equal,
+		__add = add,
+		__sub = sub,
+		__mul = mul,
+		__div = div,
+		__pow = pow,
+		__unm = unm
+	}
 
 	function metatable.__newindex(t, index, value)
 		if index == "x" then setvectorvalues(t, "x", value, nil, false)
@@ -160,14 +187,6 @@ function vega.vector(initialvalues, relativefunction)
 		elseif index == 2 then return t.y
 		else return rawget(t, index) end
 	end
-
-	metatable.__eq = equal
-	metatable.__add = add
-	metatable.__sub = sub
-	metatable.__mul = mul
-	metatable.__div = div
-	metatable.__pow = pow
-	metatable.__unm = unm
 
 	setmetatable(v, metatable)
 	setinitialvalues(v, initialvalues)

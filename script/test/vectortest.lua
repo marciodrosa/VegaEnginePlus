@@ -669,7 +669,7 @@ function vectortest.test_should_operate_vector_with_simple_table()
 	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
 end
 
-function vectortest.test_should_operate_relative_vector_with_simple_table()
+function vectortest.test_should_do_math_operation_with_relative_vector_and_simple_table()
 	-- given:
 	vector = vega.vector { relativex = 10, relativey = 20 }
 	local v2 = { 5, 2 }
@@ -682,6 +682,21 @@ function vectortest.test_should_operate_relative_vector_with_simple_table()
 	assert_equal(22, vector.relativey, "vector.relativey is not the expected.")
 	assert_true(vector.keeprelativex, "vector.keeprelativex is not the expected.")
 	assert_true(vector.keeprelativey, "vector.keeprelativey is not the expected.")
+end
+
+function vectortest.test_should_do_math_operation_with_simple_table_and_vector()
+	-- given:
+	vector = vega.vector { x = 10, y = 20 }
+	local t = { 5, 2 }
+
+	-- when:
+	vector = t + vector
+
+	-- then:
+	assert_equal(15, vector.x, "vector.relativex is not the expected.")
+	assert_equal(22, vector.y, "vector.relativey is not the expected.")
+	assert_false(vector.keeprelativex, "vector.keeprelativex is not the expected.")
+	assert_false(vector.keeprelativey, "vector.keeprelativey is not the expected.")
 end
 
 return vectortest
