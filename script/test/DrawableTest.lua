@@ -339,4 +339,13 @@ function drawabletest.test_should_iterate_using_pairs_function()
 	assert_equal(t.beforedraw, drawable.beforedraw, "Should set the 'beforedraw' in the auxiliar table.")
 end
 
+function drawabletest.test_should_convert_to_vector_when_set_scale()
+	-- when:
+	drawable.scale = { 10, 20 }
+
+	-- then:
+	assert_equal(10, drawable.scale.x, "Scale should have the x field.")
+	assert_equal(20, drawable.scale.y, "Scale should have the y field.")
+end
+
 return drawabletest
