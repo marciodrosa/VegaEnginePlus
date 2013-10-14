@@ -44,6 +44,14 @@ void SceneRender::Init()
 	isInitiated = true;
 }
 
+/**
+Returns true if the Init method was called.
+*/
+bool SceneRender::IsInitiated()
+{
+	return isInitiated;
+}
+
 void SceneRender::SetScreenSize(int w, int h)
 {
 	screenWidth = w;

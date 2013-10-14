@@ -2,6 +2,14 @@ require "vega.vegatable"
 require "vega.content"
 require "vega.input"
 require "vega.util"
+require "vega.vector"
+
+local function createdisplay()
+	return {
+		size = vega.vector { 0, 0 },
+		fullscreen = false,
+	}
+end
 
 --- Context is the current state of the engine. Contains the variables that
 -- can be changed to modify the current context. Note: some fields, like scene and module, can't

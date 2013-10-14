@@ -32,6 +32,7 @@ namespace vega
 		SceneRender();
 		virtual ~SceneRender();
 		void Init();
+		bool IsInitiated();
 		void SetScreenSize(int w, int h);
 		void Render(lua_State*);
 	private:

@@ -49,6 +49,10 @@ void CApi::Init(lua_State *luaState)
 	lua_pushcfunction(luaState, ScreenSizeLuaFunction);
 	lua_settable(luaState, -3);
 	
+	lua_pushstring(luaState, "setscreensize");
+	lua_pushcfunction(luaState, SetScreenSizeLuaFunction);
+	lua_settable(luaState, -3);
+	
 	lua_pushstring(luaState, "loadtexture");
 	lua_pushcfunction(luaState, LoadTextureLuaFunction);
 	lua_settable(luaState, -3);
@@ -115,7 +119,18 @@ int CApi::ClearScreenLuaFunction(lua_State *luaState)
 }
 
 /**
-Return two values to the Lua call: the width and height of the screen.
+Updates the screen size. The args of the function are: width, heigth and a boolean to indicates
+the window mode (true = window, false = fullscreen).
+*/
+int CApi::SetScreenSizeLuaFunction(lua_State *luaState)
+{
+	App::GetSingleton()->SetScreenSize(lua_tonumber(luaState, -3), lua_tonumber(luaState, -2), lua_toboolean(luaState, -1));
+	return 0;
+}
+
+/**
+Return three values to the Lua call: the width and height of the screen and a boolean indicating if
+it is in window mode.
 */
 int CApi::ScreenSizeLuaFunction(lua_State *luaState)
 {
@@ -123,7 +138,8 @@ int CApi::ScreenSizeLuaFunction(lua_State *luaState)
 	App::GetSingleton()->GetScreenSize(&w, &h);
 	lua_pushnumber(luaState, w);
 	lua_pushnumber(luaState, h);
-	return 2;
+	lua_pushboolean(luaState, App::GetSingleton()->IsWindowMode());
+	return 3;
 }
 
 /**

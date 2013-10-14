@@ -13,8 +13,9 @@ vega.mainloop = {
 }
 
 local function checkdisplaysize(context)
-	local screenwidth, screenheight = vega.capi.screensize()
+	local screenwidth, screenheight, windowmode = vega.capi.screensize()
 	context.output.display.size = { x = screenwidth, y = screenheight }
+	context.output.display.windowmode = windowmode
 	for i, v in ipairs(context.scene.layers) do
 		v.camera:refreshsizebylayer(screenwidth, screenheight)
 	end

@@ -26,7 +26,9 @@ namespace vega
 		lua_State* GetLuaState();
 		void ProcessInput();
 		void OnRenderFinished();
+		void SetScreenSize(int w, int h, bool windowMode);
 		void GetScreenSize(int *w, int *h);
+		bool IsWindowMode();
 		SceneRender& GetSceneRender();
 		void AddTexture(Texture*);
 		void ReleaseTextures();

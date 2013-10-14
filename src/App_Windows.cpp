@@ -27,15 +27,12 @@ void App::InitSDL()
 		ss << "Warning: failed to init image libraries: " << IMG_GetError();
 		Log::Info(ss.str());
 	}
-	int videoModeFlags = SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
 	int w = 800;
 	int h = 600;
-	SDL_SetVideoMode(w, h, 32, videoModeFlags);
+	SetScreenSize(w, h, true);
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_ShowCursor(true);
 	SDL_WM_SetCaption("Vega", NULL);
-	sceneRender.Init();
-	sceneRender.SetScreenSize(w, h);
 }
 
 /**
@@ -88,10 +85,25 @@ MouseButton App::GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, 
 	return newMouseButtonState;
 }
 
+void App::SetScreenSize(int w, int h, bool windowMode)
+{
+	int videoModeFlags = SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
+	if (!windowMode)
+		videoModeFlags |= SDL_FULLSCREEN;
+	SDL_SetVideoMode(w, h, 32, videoModeFlags);
+	sceneRender.Init();
+	sceneRender.SetScreenSize(w, h);
+}
+
 void App::GetScreenSize(int *w, int *h)
 {
 	*w = SDL_GetVideoSurface()->w;
 	*h = SDL_GetVideoSurface()->h;
+}
+
+bool App::IsWindowMode()
+{
+	return (SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) == 0;
 }
 
 void App::OnRenderFinished()
