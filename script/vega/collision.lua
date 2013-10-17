@@ -63,6 +63,14 @@ function vega.collision.drawablecollideswithdisplaypoint(d, point, layer, displa
 	return vega.collision.drawablecollideswithpoint(d, point)
 end
 
+--- Returns true if the drawable collides with the mouse cursor.
+-- @arg d the drawable to test.
+-- @arg layer the layer of the drawable, If nil, it is ignored.
+-- @arg context the context object that contains the mouse and the display.
+function vega.collision.drawablecollideswithmouse(d, layer, context)
+	return vega.collision.drawablecollideswithdisplaypoint(d, context.input.mouse.position, layer, context.output.display)
+end
+
 --[[
 function vega.collision.drawablecollideswithrect(d, rect, layer1, layer2)
 end

@@ -430,4 +430,78 @@ function collisiontest.test_drawable_should_collide_with_display_point()
 	assert_false(collideswithpoint2, "The drawable should not collide with the second point.")
 end
 
+function collisiontest.test_drawable_should_collide_with_mouse()
+	-- given:
+	local drawablelayer = vega.layer {
+		camera = vega.camera {
+			position = { x = 50, y = 50 },
+			size = { x = 100, y = 100 },
+		}
+	}
+	local display = {
+		size = { x = 200, y = 200 },
+	}
+	local drawable = vega.drawable {
+		position = { x = 0, y = 0 },
+		size = { x = 10, y = 10 },
+	}
+	local mouseposition = {
+		x = 20,
+		y = 0
+	}
+	local context = {
+		input = {
+			mouse = {
+				position = mouseposition
+			}
+		},
+		output = {
+			display = display
+		}
+	}
+
+	-- when:
+	local collides = vega.collision.drawablecollideswithmouse(drawable, drawablelayer, context)
+
+	-- then:
+	assert_true(collides, "The drawable should collide with the mouse.")
+end
+
+function collisiontest.test_drawable_should_not_collide_with_mouse()
+	-- given:
+	local drawablelayer = vega.layer {
+		camera = vega.camera {
+			position = { x = 50, y = 50 },
+			size = { x = 100, y = 100 },
+		}
+	}
+	local display = {
+		size = { x = 200, y = 200 },
+	}
+	local drawable = vega.drawable {
+		position = { x = 0, y = 0 },
+		size = { x = 10, y = 10 },
+	}
+	local mouseposition = {
+		x = 21,
+		y = 0
+	}
+	local context = {
+		input = {
+			mouse = {
+				position = mouseposition
+			}
+		},
+		output = {
+			display = display
+		}
+	}
+
+	-- when:
+	local collides = vega.collision.drawablecollideswithmouse(drawable, drawablelayer, context)
+
+	-- then:
+	assert_false(collides, "The drawable should not collide with the mouse.")
+end
+
 return collisiontest
