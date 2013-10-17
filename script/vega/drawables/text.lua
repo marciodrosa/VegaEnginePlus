@@ -92,7 +92,7 @@ end
 local function lineposition(textdrawable, linenumber, linewidth)
 	local pos = {
 		x = 0,
-		y = textdrawable.fontsize * (linenumber - 1)
+		y = textdrawable.size.y - (textdrawable.fontsize * linenumber)
 	}
 	if textdrawable.align == "left" then
 		pos.x = 0

@@ -1,6 +1,7 @@
 require "sampleutil"
 require "firstsample"
 require "secondsample"
+require "textsample"
 
 mainmenu = {}
 
@@ -22,6 +23,12 @@ function mainmenu:execute(context)
 			label = "second",
 			callback = function(context)
 				context.nextmodule = secondsample
+			end
+		},
+		{
+			label = "text",
+			callback = function(context)
+				context.nextmodule = textsample
 			end
 		},
 	})

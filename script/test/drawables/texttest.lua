@@ -275,19 +275,20 @@ end
 function texttest.test_should_calculate_line_position()
 	-- given:
 	text.fontsize = 10
+	text.size.y = 100
 
 	-- when:
 	local pos = text:lineposition(3, 400)
 
 	-- then:
 	assert_equal(0, pos.x, "x is not the expected.")
-	assert_equal(20, pos.y, "y is not the expected.")
+	assert_equal(70, pos.y, "y is not the expected.")
 end
 
 function texttest.test_should_calculate_line_position_align_left()
 	-- given:
 	text.fontsize = 10
-	text.size = { x = 1000, y = 1 }
+	text.size = { x = 1000, y = 100 }
 	text.align = "left"
 
 	-- when:
@@ -295,13 +296,13 @@ function texttest.test_should_calculate_line_position_align_left()
 
 	-- then:
 	assert_equal(0, pos.x, "x is not the expected.")
-	assert_equal(20, pos.y, "y is not the expected.")
+	assert_equal(70, pos.y, "y is not the expected.")
 end
 
 function texttest.test_should_calculate_line_position_align_right()
 	-- given:
 	text.fontsize = 10
-	text.size = { x = 1000, y = 1 }
+	text.size = { x = 1000, y = 100 }
 	text.align = "right"
 
 	-- when:
@@ -309,13 +310,13 @@ function texttest.test_should_calculate_line_position_align_right()
 
 	-- then:
 	assert_equal(600, pos.x, "x is not the expected.")
-	assert_equal(20, pos.y, "y is not the expected.")
+	assert_equal(70, pos.y, "y is not the expected.")
 end
 
 function texttest.test_should_calculate_line_position_align_center()
 	-- given:
 	text.fontsize = 10
-	text.size = { x = 1000, y = 1 }
+	text.size = { x = 1000, y = 100 }
 	text.align = "center"
 
 	-- when:
@@ -323,7 +324,7 @@ function texttest.test_should_calculate_line_position_align_center()
 
 	-- then:
 	assert_equal(300, pos.x, "x is not the expected.")
-	assert_equal(20, pos.y, "y is not the expected.")
+	assert_equal(70, pos.y, "y is not the expected.")
 end
 
 function texttest.test_should_create_drawables_for_characters()
@@ -346,37 +347,37 @@ function texttest.test_should_create_drawables_for_characters()
 	local d = text.charactersdrawable.children[6]
 	local k = text.charactersdrawable.children[7]
 	assert_equal(0, v.position.x, "v.position.x is not the expected.")
-	assert_equal(0, v.position.y, "v.position.y is not the expected.")
+	assert_equal(20, v.position.y, "v.position.y is not the expected.")
 	assert_equal(10, v.size.x, "v.size.x is not the expected.")
 	assert_equal(20, v.size.y, "v.size.y is not the expected.")
 
 	assert_equal(10, e.position.x, "e.position.x is not the expected.")
-	assert_equal(0, e.position.y, "e.position.y is not the expected.")
+	assert_equal(20, e.position.y, "e.position.y is not the expected.")
 	assert_equal(10, e.size.x, "e.size.x is not the expected.")
 	assert_equal(20, e.size.y, "e.size.y is not the expected.")
 
 	assert_equal(20, g.position.x, "g.position.x is not the expected.")
-	assert_equal(0, g.position.y, "g.position.y is not the expected.")
+	assert_equal(20, g.position.y, "g.position.y is not the expected.")
 	assert_equal(10, g.size.x, "g.size.x is not the expected.")
 	assert_equal(20, g.size.y, "g.size.y is not the expected.")
 
 	assert_equal(30, a.position.x, "a.position.x is not the expected.")
-	assert_equal(0, a.position.y, "a.position.y is not the expected.")
+	assert_equal(20, a.position.y, "a.position.y is not the expected.")
 	assert_equal(10, a.size.x, "a.size.x is not the expected.")
 	assert_equal(20, a.size.y, "a.size.y is not the expected.")
 
 	assert_equal(0, s.position.x, "s.position.x is not the expected.")
-	assert_equal(20, s.position.y, "s.position.y is not the expected.")
+	assert_equal(0, s.position.y, "s.position.y is not the expected.")
 	assert_equal(10, s.size.x, "s.size.x is not the expected.")
 	assert_equal(20, s.size.y, "s.size.y is not the expected.")
 
 	assert_equal(10, d.position.x, "d.position.x is not the expected.")
-	assert_equal(20, d.position.y, "d.position.y is not the expected.")
+	assert_equal(0, d.position.y, "d.position.y is not the expected.")
 	assert_equal(10, d.size.x, "d.size.x is not the expected.")
 	assert_equal(20, d.size.y, "d.size.y is not the expected.")
 
 	assert_equal(20, k.position.x, "k.position.x is not the expected.")
-	assert_equal(20, k.position.y, "k.position.y is not the expected.")
+	assert_equal(0, k.position.y, "k.position.y is not the expected.")
 	assert_equal(10, k.size.x, "k.size.x is not the expected.")
 	assert_equal(20, k.size.y, "k.size.y is not the expected.")
 end
