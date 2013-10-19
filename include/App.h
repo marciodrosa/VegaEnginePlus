@@ -51,9 +51,12 @@ namespace vega
 #ifdef VEGA_WINDOWS
 		void InitGLFW();
 		static void GLFWErrorCallback(int error, const char* description);
-		int CheckInputOnWindows();
+		static void GLFWMouseScrollCallback(GLFWwindow *, double, double);
+		void ProcessMouseEvents();
 		MouseButton GetMouseButtonState(int mouseButtonId, MouseButton& lastMouseButtonState);
+
 		GLFWwindow* window;
+		static float scroll;
 #endif
 
 #ifdef VEGA_ANDROID

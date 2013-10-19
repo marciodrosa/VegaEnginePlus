@@ -11,6 +11,8 @@ using namespace std;
 
 #ifdef VEGA_WINDOWS
 
+float App::scroll = 0;
+
 void App::InitGLFW()
 {
 	glfwSetErrorCallback(App::GLFWErrorCallback);
@@ -26,6 +28,7 @@ void App::InitGLFW()
 		return;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetScrollCallback(window, App::GLFWMouseScrollCallback);
 	sceneRender.Init();
 	sceneRender.SetScreenSize(640, 480);
 }
@@ -35,42 +38,37 @@ void App::GLFWErrorCallback(int error, const char* description)
 	Log::Error(description);
 }
 
+void App::GLFWMouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset)
+{
+	scroll = yoffset;
+}
+
 /**
-Process the input events.
+Processes the input events.
 */
 void App::ProcessInput()
 {
 	glfwPollEvents();
 	if (glfwWindowShouldClose(window))
 		SetExecutingFieldToFalse();
+	ProcessMouseEvents();
+	scroll = 0;
+}
 
-	//SDL_Event evt;
-	float motionZ = 0.f;
-	//while (SDL_PollEvent(&evt))
-	//{
-	//	switch (evt.type)
-	//	{
-	//	case SDL_QUIT:
-	//		SetExecutingFieldToFalse();
-	//		break;
-	//	case SDL_MOUSEBUTTONDOWN:
-	//		if (evt.button.button == SDL_BUTTON_WHEELUP)
-	//			motionZ = 1.f;
-	//		if (evt.button.button == SDL_BUTTON_WHEELDOWN)
-	//			motionZ = -1.f;
-	//		break;
-	//	}
-	//}
-
+/**
+Processes the mouse cursor position and button states. It also updates the context.input.mouse Lua table.
+*/
+void App::ProcessMouseEvents()
+{
 	double newMouseX = 0, newMouseY = 0;
 	glfwGetCursorPos(window, &newMouseX, &newMouseY);
 	Mouse lastMouseState = currentMouseState;
 	Mouse newMouseState;
 	newMouseState.SetPosition(Vector2((float) newMouseX, (float) 480.f - newMouseY));
-	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), motionZ);
+	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), scroll);
 	newMouseState.SetLeftMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_LEFT, lastMouseState.GetLeftMouseButton()));
-	newMouseState.SetMiddleMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_RIGHT, lastMouseState.GetMiddleMouseButton()));
-	newMouseState.SetRightMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_MIDDLE, lastMouseState.GetRightMouseButton()));
+	newMouseState.SetMiddleMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_MIDDLE, lastMouseState.GetMiddleMouseButton()));
+	newMouseState.SetRightMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_RIGHT, lastMouseState.GetRightMouseButton()));
 	currentMouseState = newMouseState;
 	
 	lua_getfield(luaState, -1, "input");
