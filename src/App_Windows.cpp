@@ -15,22 +15,15 @@ float App::scroll = 0;
 
 void App::InitGLFW()
 {
+	int windowWidth = 640;
+	int windowHeight = 480;
 	glfwSetErrorCallback(App::GLFWErrorCallback);
 	if (!glfwInit())
 	{
 		Log::Error("Unable to init GLFW.");
 		return;
 	}
-	window = glfwCreateWindow(640, 480, "Vega", NULL, NULL);
-	if (window == NULL)
-	{
-		Log::Error("Unable to create GLFW window.");
-		return;
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetScrollCallback(window, App::GLFWMouseScrollCallback);
-	sceneRender.Init();
-	sceneRender.SetScreenSize(640, 480);
+	CreateWindow(800, 600, true);
 }
 
 void App::GLFWErrorCallback(int error, const char* description)
@@ -60,11 +53,13 @@ Processes the mouse cursor position and button states. It also updates the conte
 */
 void App::ProcessMouseEvents()
 {
+	int windowHeight;
+	glfwGetWindowSize(window, NULL, &windowHeight);
 	double newMouseX = 0, newMouseY = 0;
 	glfwGetCursorPos(window, &newMouseX, &newMouseY);
 	Mouse lastMouseState = currentMouseState;
 	Mouse newMouseState;
-	newMouseState.SetPosition(Vector2((float) newMouseX, (float) 480.f - newMouseY));
+	newMouseState.SetPosition(Vector2((float) newMouseX, (float) windowHeight - newMouseY));
 	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), scroll);
 	newMouseState.SetLeftMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_LEFT, lastMouseState.GetLeftMouseButton()));
 	newMouseState.SetMiddleMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_MIDDLE, lastMouseState.GetMiddleMouseButton()));
@@ -89,23 +84,37 @@ MouseButton App::GetMouseButtonState(int mouseButtonId, MouseButton& lastMouseBu
 
 void App::SetScreenSize(int w, int h, bool windowMode)
 {
-	/*int videoModeFlags = SDL_OPENGL | SDL_DOUBLEBUF | SDL_HWSURFACE;
-	if (!windowMode)
-		videoModeFlags |= SDL_FULLSCREEN;
-	SDL_SetVideoMode(w, h, 32, videoModeFlags);
-	sceneRender.Init();
-	sceneRender.SetScreenSize(w, h);*/
+	CreateWindow(w, h, windowMode);
+}
+
+bool App::CreateWindow(int w, int h, bool windowMode)
+{
+	if (window != NULL)
+		glfwDestroyWindow(window);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	window = glfwCreateWindow(w, h, "Vega", windowMode ? NULL : glfwGetPrimaryMonitor(), NULL);
+	if (window != NULL)
+	{
+		glfwMakeContextCurrent(window);
+		glfwSetScrollCallback(window, App::GLFWMouseScrollCallback);
+		sceneRender.Init();
+		sceneRender.SetScreenSize(w, h);
+	}
+	else
+	{
+		Log::Error("Unable to create GLFW window.");
+		return false;
+	}
 }
 
 void App::GetScreenSize(int *w, int *h)
 {
-	*w = 640;//SDL_GetVideoSurface()->w;
-	*h = 480;//SDL_GetVideoSurface()->h;
+	glfwGetWindowSize(window, &(*w), &(*h));
 }
 
 bool App::IsWindowMode()
 {
-	return false;//(SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) == 0;
+	return glfwGetWindowMonitor(window) == NULL;
 }
 
 void App::OnRenderFinished()
