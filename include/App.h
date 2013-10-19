@@ -52,7 +52,7 @@ namespace vega
 		void InitGLFW();
 		static void GLFWErrorCallback(int error, const char* description);
 		int CheckInputOnWindows();
-		//static MouseButton GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState);
+		MouseButton GetMouseButtonState(int mouseButtonId, MouseButton& lastMouseButtonState);
 		GLFWwindow* window;
 #endif
 

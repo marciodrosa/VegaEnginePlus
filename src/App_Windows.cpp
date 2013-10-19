@@ -40,12 +40,12 @@ Process the input events.
 */
 void App::ProcessInput()
 {
+	glfwPollEvents();
 	if (glfwWindowShouldClose(window))
 		SetExecutingFieldToFalse();
-	glfwPollEvents();
 
 	//SDL_Event evt;
-	//float motionZ = 0.f;
+	float motionZ = 0.f;
 	//while (SDL_PollEvent(&evt))
 	//{
 	//	switch (evt.type)
@@ -62,32 +62,32 @@ void App::ProcessInput()
 	//	}
 	//}
 
-	//int newMouseX, newMouseY;
-	//Uint8 mouseState = SDL_GetMouseState(&newMouseX, &newMouseY);
-	//newMouseY = SDL_GetVideoSurface()->h - newMouseY; // to invert the Y coordinate; for vega, 0 is the bottom of the screen.
-	//Mouse lastMouseState = currentMouseState;
-	//Mouse newMouseState;
-	//newMouseState.SetPosition(Vector2((float) newMouseX, (float) newMouseY));
-	//newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), motionZ);
-	//newMouseState.SetLeftMouseButton(GetMouseButtonState(1, mouseState, lastMouseState.GetLeftMouseButton()));
-	//newMouseState.SetMiddleMouseButton(GetMouseButtonState(2, mouseState, lastMouseState.GetMiddleMouseButton()));
-	//newMouseState.SetRightMouseButton(GetMouseButtonState(3, mouseState, lastMouseState.GetRightMouseButton()));
-	//currentMouseState = newMouseState;
-	//
-	//lua_getfield(luaState, -1, "input");
-	//lua_getfield(luaState, -1, "mouse");
-	//newMouseState.WriteOnLuaTable(luaState);
-	//lua_pop(luaState, 2); // pops mouse and input
+	double newMouseX = 0, newMouseY = 0;
+	glfwGetCursorPos(window, &newMouseX, &newMouseY);
+	Mouse lastMouseState = currentMouseState;
+	Mouse newMouseState;
+	newMouseState.SetPosition(Vector2((float) newMouseX, (float) 480.f - newMouseY));
+	newMouseState.SetMotion(Vector2(newMouseX - lastMouseState.GetPosition().x, newMouseY - lastMouseState.GetPosition().y), motionZ);
+	newMouseState.SetLeftMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_LEFT, lastMouseState.GetLeftMouseButton()));
+	newMouseState.SetMiddleMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_RIGHT, lastMouseState.GetMiddleMouseButton()));
+	newMouseState.SetRightMouseButton(GetMouseButtonState(GLFW_MOUSE_BUTTON_MIDDLE, lastMouseState.GetRightMouseButton()));
+	currentMouseState = newMouseState;
+	
+	lua_getfield(luaState, -1, "input");
+	lua_getfield(luaState, -1, "mouse");
+	newMouseState.WriteOnLuaTable(luaState);
+	lua_pop(luaState, 2); // pops mouse and input
 }
 
-//MouseButton App::GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState)
-//{
-//	MouseButton newMouseButtonState;
-//	newMouseButtonState.pressed = (sdlMouseState & SDL_BUTTON(sdlMouseButtonId)) != 0;
-//	newMouseButtonState.wasClicked = newMouseButtonState.pressed && !lastMouseButtonState.pressed;
-//	newMouseButtonState.wasReleased = !newMouseButtonState.pressed && lastMouseButtonState.pressed;
-//	return newMouseButtonState;
-//}
+MouseButton App::GetMouseButtonState(int mouseButtonId, MouseButton& lastMouseButtonState)
+{
+	MouseButton newMouseButtonState;
+	int state = glfwGetMouseButton(window, mouseButtonId);
+	newMouseButtonState.pressed = state == GLFW_PRESS;
+	newMouseButtonState.wasClicked = newMouseButtonState.pressed && !lastMouseButtonState.pressed;
+	newMouseButtonState.wasReleased = !newMouseButtonState.pressed && lastMouseButtonState.pressed;
+	return newMouseButtonState;
+}
 
 void App::SetScreenSize(int w, int h, bool windowMode)
 {
