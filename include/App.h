@@ -3,6 +3,7 @@
 
 #include "VegaDefines.h"
 #include "Android.h"
+#include "GLFW.h"
 #include "Lua.h"
 #include "SceneRender.h"
 #include "Texture.h"
@@ -48,9 +49,11 @@ namespace vega
 		void SetExecutingFieldToFalse();
 
 #ifdef VEGA_WINDOWS
-		void InitSDL();
+		void InitGLFW();
+		static void GLFWErrorCallback(int error, const char* description);
 		int CheckInputOnWindows();
-		static MouseButton GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState);
+		//static MouseButton GetMouseButtonState(int sdlMouseButtonId, Uint8 sdlMouseState, MouseButton& lastMouseButtonState);
+		GLFWwindow* window;
 #endif
 
 #ifdef VEGA_ANDROID

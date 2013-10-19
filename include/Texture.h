@@ -1,11 +1,12 @@
 #ifndef VEGA_TEXTURE_H
 #define VEGA_TEXTURE_H
 
-#include "SDL.h"
 #include "Android.h"
+#include "GLFW.h"
 #include "OpenGL.h"
 #include "VegaDefines.h"
 #include <string>
+#include <vector>
 
 namespace vega
 {
@@ -29,7 +30,8 @@ namespace vega
 		bool LoadData(std::string filename);
 
 #ifdef VEGA_WINDOWS
-		SDL_Surface *surface;
+		std::vector<unsigned char> imageData;
+		unsigned width, height;
 #endif
 
 #ifdef VEGA_ANDROID
@@ -38,7 +40,6 @@ namespace vega
 		AndroidBitmapInfo bitmapInfo;
 		void* pixelData;
 #endif
-
 		GLuint glTextureName;
 	};
 }

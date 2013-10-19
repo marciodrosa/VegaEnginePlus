@@ -2,9 +2,15 @@
 #include "../include/Lua.h"
 #include "../include/CApi.h"
 #include "../include/Log.h"
+#include "../include/GLFW.h"
 
 #include <sstream>
 #include <ctime>
+
+#ifdef VEGA_WINDOWS
+	#include <chrono>
+	#include <thread>
+#endif
 
 using namespace std;
 using namespace vega;
@@ -34,8 +40,7 @@ App::App() : luaState(NULL)
 App::~App()
 {
 #ifdef VEGA_WINDOWS
-	IMG_Quit();
-	SDL_Quit();
+	glfwTerminate();
 #endif
 }
 
@@ -47,7 +52,7 @@ void App::Execute(string scriptName)
 	Log::Info("Initializing app...");
 	
 #ifdef VEGA_WINDOWS
-	InitSDL();
+	InitGLFW();
 #endif
 
 #ifdef VEGA_ANDROID
@@ -181,7 +186,8 @@ void App::SyncEnd(long expectedFps)
 	if (waitTime > 0)
 	{
 #ifdef VEGA_WINDOWS
-		SDL_Delay(waitTime);
+		chrono::milliseconds ms(waitTime);
+		this_thread::sleep_for(ms);
 #endif
 	}
 }

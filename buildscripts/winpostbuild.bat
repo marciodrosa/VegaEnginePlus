@@ -12,7 +12,7 @@ set _scriptsoutputpath=%_outputpath%\script
 set _contentoutputpath=%_outputpath%\content
 
 :: other:
-set _vegadlls=libjpeg-8.dll libpng15-15.dll libtiff-5.dll libwebp-2.dll lua52.dll SDL.dll SDL_image.dll zlib1.dll
+set _vegadlls=lua52.dll
 
 :: start:
 echo "Starting post build of Lua SDK..."

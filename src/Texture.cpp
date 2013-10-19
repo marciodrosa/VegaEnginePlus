@@ -33,7 +33,7 @@ Texture* Texture::Load(std::string filename)
 
 Texture::Texture() :
 #ifdef VEGA_WINDOWS
-	surface(NULL),
+	width(0), height(0),
 #endif
 #ifdef VEGA_ANDROID
 	javaEnv(NULL),
@@ -45,10 +45,6 @@ Texture::Texture() :
 
 Texture::~Texture()
 {
-#ifdef VEGA_WINDOWS
-	if (surface)
-		SDL_FreeSurface(surface);
-#endif
 #ifdef VEGA_ANDROID
 	if (javaBitmap)
 		javaEnv->DeleteGlobalRef(javaBitmap);

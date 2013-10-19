@@ -16,3 +16,9 @@ Folder structure explanation:
   - vega: scripts of the Vega SDK
 - samples: C++ header and source files for samples
 - android, ios, windows: projects, libraries and binaries for each platform (main project, unit tests and samples)
+
+-------------------------------
+
+External libraries:
+- GLFW: http://www.glfw.org
+- lodepng: http://lodev.org/lodepng

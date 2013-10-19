@@ -1,4 +1,7 @@
 #include "../include/Texture.h"
+#include "../include/Log.h"
+#include "../include/lodepng/lodepng.h"
+#include <sstream>
 
 #ifdef VEGA_WINDOWS
 
@@ -10,7 +13,7 @@ Returns the width of the texture image.
 */
 int Texture::GetWidth()
 {
-	return surface == NULL ? 0 : surface->w;
+	return width;
 }
 
 /**
@@ -18,7 +21,7 @@ Returns the height of the texture image.
 */
 int Texture::GetHeight()
 {
-	return surface == NULL ? 0 : surface->h;
+	return height;
 }
 
 /**
@@ -26,10 +29,7 @@ Returns the texture format to be used with OpenGL. Only RGB and RGBA are correct
 */
 GLenum Texture::GetOpenGLTextureFormat()
 {
-    if (surface->format->BytesPerPixel==3)
-        return GL_RGB;
-    else
-        return GL_RGBA;
+    return GL_RGBA;
 }
 
 /**
@@ -38,7 +38,7 @@ texture data.
 */
 void* Texture::GetData()
 {
-	return surface->pixels;
+	return &imageData[0];
 }
 
 /**
@@ -46,7 +46,6 @@ Lock the texture to allow the access to the pixel data with the GetData function
 */
 void Texture::Lock()
 {
-	SDL_LockSurface(surface);
 }
 
 /**
@@ -54,7 +53,6 @@ Unlock the pixel data. Call it after call Lock and GetData functions.
 */
 void Texture::Unlock()
 {
-	SDL_UnlockSurface(surface);
 }
 
 /**
@@ -63,8 +61,16 @@ Returns true if loaded with success.
 */
 bool Texture::LoadData(string filename)
 {
-	surface = IMG_Load(filename.c_str());
-	return surface != NULL;
+	unsigned error = lodepng::decode(imageData, width, height, filename.c_str());
+	if (error)
+	{
+		stringstream ss;
+		ss << "decoder error " << error << ": " << lodepng_error_text(error);
+		Log::Error(ss.str());
+		return false;
+	}
+	else
+		return true;
 }
 
 #endif

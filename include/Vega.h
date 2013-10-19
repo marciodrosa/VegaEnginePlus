@@ -9,9 +9,9 @@
 #include "Log.h"
 #include "Lua.h"
 #include "Mouse.h"
+#include "GLFW.h"
 #include "OpenGL.h"
 #include "SceneRender.h"
-#include "SDL.h"
 #include "Texture.h"
 
 #endif

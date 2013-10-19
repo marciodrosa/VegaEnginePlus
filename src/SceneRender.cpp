@@ -1,6 +1,5 @@
 #include "../include/SceneRender.h"
 #include "../include/OpenGL.h"
-#include "../include/SDL.h"
 #include "../include/Log.h"
 
 #include <iostream>

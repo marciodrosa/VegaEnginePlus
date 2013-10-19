@@ -1,14 +1,10 @@
 #ifndef VEGA_OPENGL_H
 #define VEGA_OPENGL_H
 
-// This header includes the OpenGL headers.
+// This header includes the OpenGL headers. If using GLFW, the inclusion of OpenGL is made by GLFW.
 
 #include "VegaDefines.h"
-
-#ifdef VEGA_WINDOWS
-#include <windows.h>
-#include <GL/GL.h>
-#endif
+#include "GLFW.h"
 
 #ifdef VEGA_ANDROID
 #include <GLES/gl.h>
