@@ -79,6 +79,16 @@ void App::Execute(string scriptName)
 	else
 	{
 		CApi::Init(luaState);
+		Log::Info("Initializing display table...");
+		lua_getglobal(luaState, "vega");
+		lua_getfield(luaState, -1, "mainloop");
+		lua_getfield(luaState, -1, "initdisplay");
+		lua_pushvalue(luaState, -2);
+		lua_call(luaState, 1, 0);
+		lua_pop(luaState, 2);
+
+		Log::Info("Requiring the script:");
+		Log::Info(scriptName);
 		lua_getglobal(luaState, "require");
 		lua_pushstring(luaState, scriptName.c_str());
 		if (lua_pcall(luaState, 1, 1, 0) != 0)

@@ -5,6 +5,14 @@ require "vega.capi"
 
 local currentmodule = nil
 
+local displaybackup = {
+	size = {
+		x = 0,
+		y = 0
+	},
+	windowmode = false
+}
+
 --- The main loop of the application. It contains an "execute" functions that starts the loop. The
 -- app automatically calls this function. To set the entry point of the app, sets the field "module"
 -- using vega.mainloop.context.module = myentrypointmodule.
@@ -12,13 +20,38 @@ vega.mainloop = {
 	context = vega.context()
 }
 
-local function checkdisplaysize(context)
+local function wasdisplaychanged(display)
+	return display.size.x ~= displaybackup.size.x or display.size.y ~= displaybackup.size.y or display.windowmode ~= displaybackup.windowmode
+end
+
+local function changerealdisplaysizeifneeded(context)
+	local display = context.output.display
+	if wasdisplaychanged(display) then
+		vega.capi.setscreensize(display.size.x, display.size.y, display.windowmode)
+	end
+end
+
+local function updatedisplaytablewithrealdisplay(context)
 	local screenwidth, screenheight, windowmode = vega.capi.screensize()
-	context.output.display.size = { x = screenwidth, y = screenheight }
+	context.output.display.size.x = screenwidth
+	context.output.display.size.y = screenheight
 	context.output.display.windowmode = windowmode
+	displaybackup.size.x = screenwidth
+	displaybackup.size.y = screenheight
+	displaybackup.windowmode = windowmode
+end
+
+local function updatelayerssizewithdisplay(context)
+	local screenwidth, screenheight = context.output.display.size.x, context.output.display.size.y
 	for i, v in ipairs(context.scene.layers) do
 		v.camera:refreshsizebylayer(screenwidth, screenheight)
 	end
+end
+
+local function checkdisplaysize(context)
+	changerealdisplaysizeifneeded(context)
+	updatedisplaytablewithrealdisplay(context)
+	updatelayerssizewithdisplay(context)
 end
 
 local function checkmodule(self)
@@ -62,6 +95,11 @@ local function sync(self)
 	else
 		vega.capi.syncend(30)
 	end
+end
+
+--- Internal function called by the app to initialize the display table.
+function vega.mainloop:initdisplay()
+	updatedisplaytablewithrealdisplay(self.context)
 end
 
 --- Runs the loop. This function doesn't return until the loop is running. To finish the loop execution,
