@@ -118,7 +118,7 @@ void App::ReloadTextures()
 
 void App::GetScreenSize(int *w, int *h)
 {
-	glfwGetWindowSize(window, &(*w), &(*h));
+	glfwGetFramebufferSize(window, &(*w), &(*h));
 }
 
 bool App::IsWindowMode()
