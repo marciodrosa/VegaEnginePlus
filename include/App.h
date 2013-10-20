@@ -51,6 +51,7 @@ namespace vega
 #ifdef VEGA_WINDOWS
 		void InitGLFW();
 		bool CreateWindow(int w, int h, bool windowMode);
+		void ReloadTextures();
 		static void GLFWErrorCallback(int error, const char* description);
 		static void GLFWMouseScrollCallback(GLFWwindow *, double, double);
 		void ProcessMouseEvents();

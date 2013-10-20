@@ -14,14 +14,7 @@ Texture* Texture::Load(std::string filename)
 	if (texture->LoadData(filename))
 	{
 		glGenTextures(1, &texture->glTextureName);
-		glBindTexture(GL_TEXTURE_2D, texture->glTextureName);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		texture->Lock();
-		GLenum format = texture->GetOpenGLTextureFormat();
-		glTexImage2D(GL_TEXTURE_2D, 0, format, texture->GetWidth(), texture->GetHeight(), 0, format, GL_UNSIGNED_BYTE, texture->GetData());
-		texture->Unlock();
+		texture->Reload();
 	}
 	else
 	{
@@ -51,6 +44,18 @@ Texture::~Texture()
 #endif
 	if (glIsTexture(glTextureName))
 		glDeleteTextures(1, &glTextureName);
+}
+
+void Texture::Reload()
+{
+	glBindTexture(GL_TEXTURE_2D, glTextureName);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	Lock();
+	GLenum format = GetOpenGLTextureFormat();
+	glTexImage2D(GL_TEXTURE_2D, 0, format, GetWidth(), GetHeight(), 0, format, GL_UNSIGNED_BYTE, GetData());
+	Unlock();
 }
 
 /**

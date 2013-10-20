@@ -18,6 +18,7 @@ namespace vega
 	public:
 		static Texture* Load(std::string filename);
 		virtual ~Texture();
+		void Reload();
 		GLuint GetOpenGLTextureName();
 		int GetWidth();
 		int GetHeight();

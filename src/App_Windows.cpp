@@ -15,15 +15,15 @@ float App::scroll = 0;
 
 void App::InitGLFW()
 {
-	int windowWidth = 640;
-	int windowHeight = 480;
+	int windowWidth = 800;
+	int windowHeight = 600;
 	glfwSetErrorCallback(App::GLFWErrorCallback);
 	if (!glfwInit())
 	{
 		Log::Error("Unable to init GLFW.");
 		return;
 	}
-	CreateWindow(800, 600, true);
+	CreateWindow(windowWidth, windowHeight, true);
 }
 
 void App::GLFWErrorCallback(int error, const char* description)
@@ -99,11 +99,20 @@ bool App::CreateWindow(int w, int h, bool windowMode)
 		glfwSetScrollCallback(window, App::GLFWMouseScrollCallback);
 		sceneRender.Init();
 		sceneRender.SetScreenSize(w, h);
+		ReloadTextures();
 	}
 	else
 	{
 		Log::Error("Unable to create GLFW window.");
 		return false;
+	}
+}
+
+void App::ReloadTextures()
+{
+	for (list<Texture*>::iterator i = textures.begin(); i != textures.end(); ++i)
+	{
+		(*i)->Reload();
 	}
 }
 
