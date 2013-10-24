@@ -29,3 +29,23 @@ function vega.util.pairswithprivatetable(t, privatet)
 	end
 	return nextfunction, t, nil
 end
+
+--- Similar to copyvaluesintotable function. It receives a list of tables and returns a mix
+-- of all fields. The second table fields are setted into the first table, then the third table
+-- fields, then the fourth, and so on.
+-- @param tables a list of tables.
+-- @return the first table, with all fields of the other tables setted into it.
+function vega.util.mix(tables)
+	local result = nil
+	if #tables > 0 then
+		result = tables[1]
+		for i, t in ipairs(tables) do
+			if i > 1 then
+				for k, v in pairs(t) do
+					result[k] = v
+				end
+			end
+		end
+	end
+	return result
+end
