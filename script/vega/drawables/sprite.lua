@@ -2,10 +2,7 @@ require "vega.vegatable"
 require "vega.drawable"
 require "vega.util"
 
-local functions = {}
-
---- Calculates and returns the total frames count, based on columns and rows count.
-function functions:getframescount()
+local function getframescount(self)
 	local count = self.rows * self.columns
 	if self.extensions ~= nil then
 		for i, v in ipairs(self.extensions) do
@@ -48,15 +45,29 @@ local function gettextureanduvsforcurrentframe(self)
 end
 
 --- Implements the beforedraw function to calculate the texture and uvs coordinates of the sprite.
-function functions:beforedraw()
+local function beforedraw(self)
 	self.texturebackup = self.texture
 	self.texture, self.topleftuv, self.bottomrightuv = gettextureanduvsforcurrentframe(self)
 end
 
 --- Implements the afterdraw function to reset some modifications made before the rendering.
-function functions:afterdraw()
+local function afterdraw(self)
 	self.texture = self.texturebackup
 	self.texturebackup = nil
+end
+
+local function configuremetatable(sprite)
+	local mt = getmetatable(sprite)
+	local originalindex = mt.__index
+	local originalnewindex = mt.__newindex
+	mt.__index = function(t, index)
+		if index == "framescount" then return getframescount(t)
+		else return originalindex(t, index) end
+	end 
+	mt.__newindex = function(t, index, value)
+		if index == "framescount" then error "Field 'framescount' is read-only."
+		else originalnewindex(t, index, value) end
+	end
 end
 
 --- Creates a drawable that subdivide the texture in multiple frames. This division is calculated
@@ -70,13 +81,19 @@ end
 -- defined, the sprite can use many images to represent the frames. It can be used if you have
 -- so many frames that you extrapolates the max texture size allowed by the video hardware.
 -- @field texturebackup internal field
-function vega.spritedrawable(initialvalues)
-	local sprite = vega.drawable()
-	sprite.columns = 1
-	sprite.rows = 1
-	sprite.frame = 1
-	sprite.getframescount = functions.getframescount
-	sprite.beforedraw = functions.beforedraw
-	sprite.afterdraw = functions.afterdraw
-	return vega.util.copyvaluesintotable(initialvalues, sprite)
+-- @field framescount the total frames count, calculated using the columns and rows count. This is a
+-- read-only field.
+function vega.drawables.sprite(initialvalues)
+	local sprite = vega.util.mix {
+		vega.drawable {
+			columns = 1,
+			rows = 1,
+			frame = 1,
+			beforedraw = beforedraw,
+			afterdraw = afterdraw
+		},
+		initialvalues
+	}
+	configuremetatable(sprite)
+	return sprite
 end

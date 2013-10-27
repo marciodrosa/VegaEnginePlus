@@ -1,13 +1,13 @@
-local spritedrawabletest = {}
+local spritetest = {}
 local sprite = {}
 local parent = {}
 
-function spritedrawabletest.setup()
-	sprite = vega.spritedrawable()
+function spritetest.setup()
+	sprite = vega.drawables.sprite()
 	assert_table(sprite, "Should create a table for the sprite drawable.")
 end
 
-function spritedrawabletest.test_drawable_fields()
+function spritetest.test_drawable_fields()
 	assert_equal(1, sprite.columns, "columns is not the expected.")
 	assert_equal(1, sprite.rows, "rows is not the expected.")
 	assert_equal(1, sprite.frame, "frame is not the expected.")
@@ -15,19 +15,19 @@ function spritedrawabletest.test_drawable_fields()
 	assert_equal(vega.vector { x = 0, y = 0 }, sprite.position, "The sprite should be a drawable, but the drawable field 'position' is not the expected.")
 end
 
-function spritedrawabletest.test_should_calculate_frames_count()
+function spritetest.test_should_calculate_frames_count()
 	-- given:
 	sprite.rows = 10
 	sprite.columns = 3
 	
 	-- when:
-	local count = sprite:getframescount()
+	local count = sprite.framescount
 	
 	-- then:
 	assert_equal(30, count, "The frames count is not the expected.")
 end
 
-function spritedrawabletest.test_should_update_uvs_before_draw()
+function spritetest.test_should_update_uvs_before_draw()
 	-- given:
 	sprite.columns = 10
 	sprite.rows = 2
@@ -43,7 +43,7 @@ function spritedrawabletest.test_should_update_uvs_before_draw()
 	assert_equal(1, sprite.bottomrightuv.y, "bottomrightuv.y is not the expected.")
 end
 
-function spritedrawabletest.test_should_keep_texture_before_draw() -- this test exist because the texture can be changed when the extensions are used
+function spritetest.test_should_keep_texture_before_draw() -- this test exist because the texture can be changed when the extensions are used
 	-- given:
 	local texture = {}
 	sprite.texture = texture
@@ -58,7 +58,7 @@ function spritedrawabletest.test_should_keep_texture_before_draw() -- this test 
 	assert_equal(texture, sprite.texture, "texture is not the expected.")
 end
 
-function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_frame_is_less_than_one()
+function spritetest.test_should_set_nil_uvs_and_texture_if_frame_is_less_than_one()
 	-- given:
 	sprite.columns = 10
 	sprite.rows = 2
@@ -73,7 +73,7 @@ function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_frame_is_less
 	assert_nil(sprite.texture, "texture should be nil.")
 end
 
-function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_columns_is_less_than_one()
+function spritetest.test_should_set_nil_uvs_and_texture_if_columns_is_less_than_one()
 	-- given:
 	sprite.columns = 0
 	sprite.rows = 2
@@ -88,7 +88,7 @@ function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_columns_is_le
 	assert_nil(sprite.texture, "texture should be nil.")
 end
 
-function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_rows_is_less_than_one()
+function spritetest.test_should_set_nil_uvs_and_texture_if_rows_is_less_than_one()
 	-- given:
 	sprite.columns = 10
 	sprite.rows = 0
@@ -103,7 +103,7 @@ function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_rows_is_less_
 	assert_nil(sprite.texture, "texture should be nil.")
 end
 
-function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_frame_is_out_of_range()
+function spritetest.test_should_set_nil_uvs_and_texture_if_frame_is_out_of_range()
 	-- given:
 	sprite.columns = 10
 	sprite.rows = 2
@@ -118,7 +118,7 @@ function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_frame_is_out_
 	assert_nil(sprite.texture, "texture should be nil.")
 end
 
-function spritedrawabletest.test_should_set_uvs_and_texture_from_extension()
+function spritetest.test_should_set_uvs_and_texture_from_extension()
 	-- given:
 	sprite.extensions = {
 		{
@@ -142,7 +142,7 @@ function spritedrawabletest.test_should_set_uvs_and_texture_from_extension()
 	assert_equal(sprite.extensions[1].texture, sprite.texture, "Should set the texture of the extension.")
 end
 
-function spritedrawabletest.test_should_set_uvs_and_texture_from_second_extension()
+function spritetest.test_should_set_uvs_and_texture_from_second_extension()
 	-- given:
 	sprite.extensions = {
 		{
@@ -171,7 +171,7 @@ function spritedrawabletest.test_should_set_uvs_and_texture_from_second_extensio
 	assert_equal(sprite.extensions[2].texture, sprite.texture, "Should set the texture of the extension.")
 end
 
-function spritedrawabletest.test_should_set_current_texture_after_draw_with_extension_texture()
+function spritetest.test_should_set_current_texture_after_draw_with_extension_texture()
 	-- given:
 	local defaulttexture = {}
 	sprite.extensions = {
@@ -194,7 +194,7 @@ function spritedrawabletest.test_should_set_current_texture_after_draw_with_exte
 	assert_equal(defaulttexture, sprite.texture, "Should set the default texture (not the extension texture) after draw.")
 end
 
-function spritedrawabletest.test_should_calculate_frames_count_with_extensions()
+function spritetest.test_should_calculate_frames_count_with_extensions()
 	-- given:
 	sprite.extensions = {
 		{
@@ -212,13 +212,13 @@ function spritedrawabletest.test_should_calculate_frames_count_with_extensions()
 	sprite.columns = 3
 	
 	-- when:
-	local count = sprite:getframescount()
+	local count = sprite.framescount
 	
 	-- then:
 	assert_equal(58, count, "The frames count is not the expected.")
 end
 
-function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_frame_is_out_of_range_with_extensions()
+function spritetest.test_should_set_nil_uvs_and_texture_if_frame_is_out_of_range_with_extensions()
 	-- given:
 	sprite.extensions = {
 		{
@@ -245,4 +245,8 @@ function spritedrawabletest.test_should_set_nil_uvs_and_texture_if_frame_is_out_
 	assert_nil(sprite.texture, "texture should be nil.")
 end
 
-return spritedrawabletest
+function spritetest.test_should_throw_error_when_set_a_value_to_framescount_field()
+	assert_error("Field 'framescount' is read-only.", function() sprite.framescount = 10 end)
+end
+
+return spritetest

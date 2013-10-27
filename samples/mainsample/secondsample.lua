@@ -34,7 +34,7 @@ function secondsample:execute(context)
 			origin = { relativex = 0.5, relativey = 0.5 },
 			position = { relativex = 0.5, relativey = 0.5 }
 		},
-		vega.spritedrawable {
+		vega.drawables.sprite {
 			name = "coin",
 			size = { x = 0.2, y = 0.2 },
 			position = { x = 0.5, y = 0.5 },
@@ -121,7 +121,7 @@ function secondsample:execute(context)
 			update = function(self, context)
 				local coin = context.scene.layers[1].root.children.coin
 				coin.frame = coin.frame + 1
-				if coin.frame > coin:getframescount() then coin.frame = 1 end
+				if coin.frame > coin.framescount then coin.frame = 1 end
 			end
 		},
 		{
